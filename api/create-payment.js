@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const secretKey = process.env.YOOKASSA_SECRET_KEY || 'test_ZJY4_fYM_0i5vlcCf_95ICzT_QcM5xpTTFBU3cV_qTU';
 
     const amount = Number(price);
-    const qty = Number(quantity) || 1;
+    const qty = Math.max(1, Math.min(99, parseInt(quantity, 10) || 1));
     const formattedAmount = amount.toFixed(2);
     const itemName = item_name || item_id;
     const isUpgr = is_upgrade === true || is_upgrade === 'true';

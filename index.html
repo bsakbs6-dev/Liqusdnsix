@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=5.1">
+  <link rel="stylesheet" href="style.css?v=5.2">
   
   <script>
     tailwind.config = {
@@ -564,7 +564,7 @@
             <button type="button" onclick="changeQuantity(-1)" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold text-base flex items-center justify-center border border-gray-700 active:scale-95 transition">
               -
             </button>
-            <input type="number" id="modalQuantityInput" min="1" max="99" value="1" onchange="onQuantityChange()" oninput="onQuantityChange()"
+            <input type="number" id="modalQuantityInput" min="1" max="99" maxlength="2" value="1" onchange="onQuantityChange()" oninput="onQuantityChange()" onkeydown="onQuantityKeyDown(event)" onpaste="onQuantityPaste(event)"
               class="w-full text-center py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-bold text-sm outline-none transition">
             <button type="button" onclick="changeQuantity(1)" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold text-base flex items-center justify-center border border-gray-700 active:scale-95 transition">
               +
@@ -649,7 +649,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=5.1"></script>
+  <script src="app.js?v=5.2"></script>
   <script>lucide.createIcons();</script>
 </body>
 </html>

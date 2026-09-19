@@ -80,7 +80,7 @@ export default async function handler(req, res) {
       type: category === 'privileges' ? 'group' : (category || 'item'),
       group: category === 'privileges' ? item_id : undefined,
       item_name: item_name || item_id,
-      quantity: Number(quantity) || 1,
+      quantity: Math.max(1, Math.min(99, parseInt(quantity, 10) || 1)),
       require_online: false,
       commands: commands
     };

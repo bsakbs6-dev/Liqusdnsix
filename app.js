@@ -741,9 +741,9 @@ function closeCheckoutModal() {
 function changeQuantity(delta) {
   const input = document.getElementById('modalQuantityInput');
   if (!input) return;
-  let val = parseInt(input.value) || 1;
+  let val = parseInt(input.value, 10) || 1;
   val = Math.max(1, Math.min(99, val + delta));
-  input.value = val;
+  input.value = String(val);
   selectedQuantity = val;
   playSound('click');
   updateModalPrice();
@@ -752,11 +752,47 @@ function changeQuantity(delta) {
 function onQuantityChange() {
   const input = document.getElementById('modalQuantityInput');
   if (!input) return;
-  let val = parseInt(input.value);
+  let raw = String(input.value || "").replace(/\D/g, '');
+  let val = parseInt(raw, 10);
   if (isNaN(val) || val < 1) val = 1;
   if (val > 99) val = 99;
+  input.value = String(val);
   selectedQuantity = val;
   updateModalPrice();
+}
+
+function onQuantityKeyDown(e) {
+  const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
+  if (allowedKeys.includes(e.key) || e.ctrlKey || e.metaKey) return;
+  
+  // Block non-digits (e.g. e, -, +, ., ,)
+  if (!/^\d$/.test(e.key)) {
+    e.preventDefault();
+    return;
+  }
+  
+  const input = e.target;
+  const selStart = input.selectionStart;
+  const selEnd = input.selectionEnd;
+  const hasSelection = selStart !== null && selEnd !== null && selStart !== selEnd;
+  
+  if (!hasSelection && input.value.length >= 2) {
+    e.preventDefault();
+  }
+}
+
+function onQuantityPaste(e) {
+  e.preventDefault();
+  const pasteData = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+  let clean = parseInt(pasteData.replace(/\D/g, ''), 10);
+  if (isNaN(clean) || clean < 1) clean = 1;
+  if (clean > 99) clean = 99;
+  const input = document.getElementById('modalQuantityInput');
+  if (input) {
+    input.value = String(clean);
+    selectedQuantity = clean;
+    updateModalPrice();
+  }
 }
 
 function updateModalPrice() {
@@ -1347,7 +1383,7 @@ async function processPayment() {
 
   const paymentMethod = document.getElementById('paymentMethodSelect')?.value || "sbp";
   const isMultiItem = selectedProduct.id.startsWith('case_') || selectedProduct.id.startsWith('tokens_') || selectedProduct.id.startsWith('coins_');
-  const qty = isMultiItem ? selectedQuantity : 1;
+  const qty = isMultiItem ? Math.max(1, Math.min(99, selectedQuantity)) : 1;
   const basePrice = isUpgrade ? (upgradeBasePrice * qty) : (selectedProduct.price * qty);
   const discountedPrice = Math.max(1, Math.round(basePrice * (1 - currentDiscount)));
 
