@@ -86,12 +86,14 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, purchases: store.recentPurchases, promoCodes: store.promoCodes });
       }
 
-      const { nick, item, time, price, promo, order_id } = body;
+      const { nick, item, time, price, promo, order_id, is_upgrade, from_rank } = body;
       const cleanNick = nick ? String(nick).trim() : '';
       const cleanItem = item ? String(item).trim() : '';
       const cleanPromo = promo ? String(promo).trim().toUpperCase() : '';
       const cleanPrice = (price !== undefined && price !== null && price !== '') ? Number(price) : null;
       const cleanOrderId = order_id ? String(order_id).trim() : null;
+      const isUpgr = is_upgrade === true || is_upgrade === 'true';
+      const fromRnk = from_rank ? String(from_rank).trim() : '';
 
       // Deduplicate order_id processing
       const isAlreadyProcessed = cleanOrderId && store.processedOrders.includes(cleanOrderId);
@@ -128,7 +130,9 @@ export default async function handler(req, res) {
             promo: cleanPromo || '',
             time: time || 'только что',
             timestamp: now,
-            order_id: cleanOrderId || ''
+            order_id: cleanOrderId || '',
+            is_upgrade: isUpgr,
+            from_rank: fromRnk
           });
           if (store.recentPurchases.length > 30) {
             store.recentPurchases = store.recentPurchases.slice(0, 30);
@@ -138,6 +142,8 @@ export default async function handler(req, res) {
           if (cleanPrice !== null) store.recentPurchases[0].price = cleanPrice;
           if (cleanPromo) store.recentPurchases[0].promo = cleanPromo;
           if (cleanOrderId) store.recentPurchases[0].order_id = cleanOrderId;
+          if (isUpgr) store.recentPurchases[0].is_upgrade = isUpgr;
+          if (fromRnk) store.recentPurchases[0].from_rank = fromRnk;
         }
 
         saveStoreData(store);

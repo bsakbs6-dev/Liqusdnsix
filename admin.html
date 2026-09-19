@@ -319,7 +319,7 @@
             <div class="sm:col-span-2">
               <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Команда (без слэша /)</label>
               <div class="flex gap-2">
-                <input type="text" id="consoleCommandInput" placeholder="lp user {player} parent set emperor" 
+                <input type="text" id="consoleCommandInput" placeholder="lp user {player} parent add emperor" 
                   class="w-full px-3 py-2.5 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-mono text-xs outline-none">
                 <button onclick="dispatchConsoleCommand()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition shrink-0">
                   Выполнить
@@ -332,7 +332,7 @@
           <div class="pt-2 border-t border-gray-800">
             <span class="text-[11px] text-gray-400 font-semibold">Быстрые шаблоны:</span>
             <div class="flex flex-wrap gap-1.5 mt-2">
-              <button onclick="setConsoleTemplate('lp user {player} parent set emperor')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">Выдать Императора</button>
+              <button onclick="setConsoleTemplate('lp user {player} parent add emperor')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">Выдать Императора</button>
               <button onclick="setConsoleTemplate('crates key give {player} donate 10')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">10 Кейсов Доната</button>
               <button onclick="setConsoleTemplate('tokens give {player} 1000')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">1000 Жетонов</button>
               <button onclick="setConsoleTemplate('broadcast &6&l[FloryMine] &aАдмин-панель активна!')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">Анонс в чат</button>
@@ -412,7 +412,7 @@
 
         <div>
           <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Консольные команды (по одной на строке, {player})</label>
-          <textarea id="modalProductCommands" rows="3" placeholder="lp user {player} parent set warrior&#10;crates key give {player} donate 1"
+          <textarea id="modalProductCommands" rows="3" placeholder="lp user {player} parent add warrior&#10;crates key give {player} donate 1"
             class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-emerald-300 outline-none"></textarea>
         </div>
 

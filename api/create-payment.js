@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { player, item_id, item_name, price, quantity, promo, method } = req.body || {};
+    const { player, item_id, item_name, price, quantity, promo, method, is_upgrade, upgrade_from, upgrade_to } = req.body || {};
 
     if (!player || !item_id || !price) {
       return res.status(400).json({ error: 'Missing required parameters (player, item_id, price)' });
@@ -29,7 +29,12 @@ export default async function handler(req, res) {
     const qty = Number(quantity) || 1;
     const formattedAmount = amount.toFixed(2);
     const itemName = item_name || item_id;
-    const description = `Покупка ${itemName}${qty > 1 ? ' (x' + qty + ')' : ''} для игрока ${player} (FloryMine)`;
+    const isUpgr = is_upgrade === true || is_upgrade === 'true';
+    const upgrFrom = upgrade_from || '';
+    
+    let description = isUpgr
+      ? `Докуп ${itemName}${upgrFrom ? ' (с ' + upgrFrom + ')' : ''} для игрока ${player} (FloryMine)`
+      : `Покупка ${itemName}${qty > 1 ? ' (x' + qty + ')' : ''} для игрока ${player} (FloryMine)`;
 
     // Idempotence key for YooKassa
     const idempotenceKey = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}`;
@@ -55,7 +60,10 @@ export default async function handler(req, res) {
         quantity: String(qty),
         promo: promo || '',
         price: String(amount),
-        order_id: idempotenceKey
+        order_id: idempotenceKey,
+        is_upgrade: isUpgr ? 'true' : 'false',
+        upgrade_from: upgrFrom,
+        upgrade_to: upgrade_to || itemName
       }
     };
 

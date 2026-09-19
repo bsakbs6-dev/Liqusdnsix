@@ -540,6 +540,8 @@
             <input type="text" id="modalNicknameInput" placeholder="Напишите свой игровой никнейм" 
               class="w-full pl-9 pr-3 py-2.5 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-semibold text-xs sm:text-sm outline-none transition placeholder:text-gray-500">
           </div>
+          <!-- Rank Upgrade & Restriction Status Alert -->
+          <div id="modalRankAlert" class="hidden mt-2 text-xs p-2.5 rounded-xl font-semibold leading-relaxed border transition-all"></div>
         </div>
 
         <!-- Promo Code -->
@@ -572,62 +574,7 @@
 
         <!-- Warning / Error status for Services (e.g. permanent ban/mute check) -->
         <div id="modalServiceWarning" class="hidden text-xs p-2.5 rounded-xl font-medium leading-relaxed"></div>
-
-        <!-- Payment Method Tiles (ЮKassa Methods) -->
-        <div>
-          <label class="block text-[10px] sm:text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Способ оплаты (ЮKassa)</label>
-          <div class="grid grid-cols-2 gap-2 sm:gap-2.5" id="paymentMethodsGrid">
-            
-            <!-- SBP Tile (Default Selected) -->
-            <div onclick="selectPaymentMethod('sbp')" id="payMethod-sbp" class="payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border-2 border-amber-400 bg-amber-500/15 shadow-[0_0_15px_rgba(245,158,11,0.25)] transition-all flex items-center gap-2 sm:gap-2.5 group">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-base shrink-0 group-hover:scale-110 transition-transform">
-                ⚡
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1">
-                  <span class="text-xs sm:text-sm font-bold text-white leading-tight">СБП</span>
-                  <span class="text-[8px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-300 font-bold uppercase">0%</span>
-                </div>
-                <p class="text-[9px] sm:text-[10px] text-gray-400 truncate">QR-код и банки</p>
-              </div>
-            </div>
-
-            <!-- Bank Cards Tile -->
-            <div onclick="selectPaymentMethod('bank_card')" id="payMethod-bank_card" class="payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-gray-800 bg-gray-950/70 hover:border-gray-700 hover:bg-gray-900/60 transition-all flex items-center gap-2 sm:gap-2.5 group">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-base shrink-0 group-hover:scale-110 transition-transform">
-                💳
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-xs sm:text-sm font-bold text-white leading-tight">Карты РФ</span>
-                <p class="text-[9px] sm:text-[10px] text-gray-400 truncate">МИР, Visa, MC</p>
-              </div>
-            </div>
-
-            <!-- SberPay / T-Pay Tile -->
-            <div onclick="selectPaymentMethod('sberpay')" id="payMethod-sberpay" class="payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-gray-800 bg-gray-950/70 hover:border-gray-700 hover:bg-gray-900/60 transition-all flex items-center gap-2.5 sm:gap-3 group">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 group-hover:scale-110 transition-transform">
-                🟢
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-xs sm:text-sm font-bold text-white leading-tight">SberPay / T-Pay</span>
-                <p class="text-[9px] sm:text-[10px] text-gray-400 truncate">В 1 клик</p>
-              </div>
-            </div>
-
-            <!-- YooMoney Tile -->
-            <div onclick="selectPaymentMethod('yoo_money')" id="payMethod-yoo_money" class="payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-gray-800 bg-gray-950/70 hover:border-gray-700 hover:bg-gray-900/60 transition-all flex items-center gap-2.5 sm:gap-3 group">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-base shrink-0 group-hover:scale-110 transition-transform">
-                🟣
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-xs sm:text-sm font-bold text-white leading-tight">ЮMoney</span>
-                <p class="text-[9px] sm:text-[10px] text-gray-400 truncate">Кошелек</p>
-              </div>
-            </div>
-
-          </div>
-          <input type="hidden" id="paymentMethodSelect" value="sbp">
-        </div>
+        <input type="hidden" id="paymentMethodSelect" value="sbp">
 
         <!-- Price display -->
         <div class="bg-gray-950/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-gray-800 flex items-center justify-between shadow-inner">

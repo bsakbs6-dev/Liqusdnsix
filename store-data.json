@@ -18,7 +18,7 @@
         "price": 79,
         "badge": "Старт",
         "category": "privileges",
-        "commands": ["lp user {player} parent set voin"],
+        "commands": ["lp user {player} parent add voin"],
         "perks": [
           "Точки дома: 2 точки",
           "Количество приватов: 4 региона",
@@ -39,7 +39,7 @@
         "price": 159,
         "badge": "Огонь",
         "category": "privileges",
-        "commands": ["lp user {player} parent set berserk"],
+        "commands": ["lp user {player} parent add berserk"],
         "perks": [
           "Точки дома: 3 точки",
           "Количество приватов: 5 регионов",
@@ -61,7 +61,7 @@
         "price": 359,
         "badge": "Защитник",
         "category": "privileges",
-        "commands": ["lp user {player} parent set spartanec"],
+        "commands": ["lp user {player} parent add spartanec"],
         "perks": [
           "Точки дома: 4 точки",
           "Количество приватов: 6 регионов",
@@ -83,7 +83,7 @@
         "price": 579,
         "badge": "Топ выбор",
         "category": "privileges",
-        "commands": ["lp user {player} parent set rytsart"],
+        "commands": ["lp user {player} parent add rytsart"],
         "perks": [
           "Точки дома: 5 точек",
           "Количество приватов: 7 регионов",
@@ -105,7 +105,7 @@
         "price": 899,
         "badge": "Элита",
         "category": "privileges",
-        "commands": ["lp user {player} parent set lord"],
+        "commands": ["lp user {player} parent add lord"],
         "perks": [
           "Точки дома: 6 точек",
           "Количество приватов: 8 регионов",
@@ -129,7 +129,7 @@
         "price": 1249,
         "badge": "ХИТ ПРОДАЖ",
         "category": "privileges",
-        "commands": ["lp user {player} parent set vladika"],
+        "commands": ["lp user {player} parent add vladika"],
         "perks": [
           "Точки дома: 8 точек",
           "Количество приватов: 10 регионов",
@@ -151,7 +151,7 @@
         "price": 1799,
         "badge": "МАКСИМУМ",
         "category": "privileges",
-        "commands": ["lp user {player} parent set imperator"],
+        "commands": ["lp user {player} parent add imperator"],
         "perks": [
           "Точки дома: 10 точек",
           "Количество приватов: 12 регионов",

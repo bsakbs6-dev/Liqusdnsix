@@ -43,13 +43,13 @@ export default async function handler(req, res) {
 
       const commandTemplates = {
         // Ranks (DeluxeMenus hierarchy)
-        warrior: ["lp user {player} parent set voin"],
-        berserk: ["lp user {player} parent set berserk"],
-        spartan: ["lp user {player} parent set spartanec"],
-        knight: ["lp user {player} parent set rytsart"],
-        lord: ["lp user {player} parent set lord"],
-        vladyka: ["lp user {player} parent set vladika"],
-        emperor: ["lp user {player} parent set imperator"],
+        warrior: ["lp user {player} parent add voin"],
+        berserk: ["lp user {player} parent add berserk"],
+        spartan: ["lp user {player} parent add spartanec"],
+        knight: ["lp user {player} parent add rytsart"],
+        lord: ["lp user {player} parent add lord"],
+        vladyka: ["lp user {player} parent add vladika"],
+        emperor: ["lp user {player} parent add imperator"],
 
         // Cases
         case_donate_1: ["florycase give {player} 1 donate"],
@@ -72,8 +72,11 @@ export default async function handler(req, res) {
         srv_unmute: ["unmute {player}"]
       };
 
-      const rawCommands = commandTemplates[itemId] || [`lp user {player} parent set ${itemId}`];
+      const rawCommands = commandTemplates[itemId] || [`lp user {player} parent add ${itemId}`];
       const commands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
+
+      const isUpgrade = metadata.is_upgrade === 'true' || metadata.is_upgrade === true;
+      const upgradeFrom = metadata.upgrade_from || '';
 
       const pluginPayload = {
         transaction_id: `YOO-${paymentId}`,
@@ -81,8 +84,11 @@ export default async function handler(req, res) {
         item_id: itemId,
         item_name: itemName,
         quantity: quantity,
+        require_online: false,
         commands: commands,
         price: amount,
+        is_upgrade: isUpgrade,
+        upgrade_from: upgradeFrom,
         timestamp: new Date().toISOString()
       };
 
@@ -119,7 +125,16 @@ export default async function handler(req, res) {
         fetch(`${siteUrl}/api/purchases`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nick: player, item: itemName, price: amount, promo: promoCode, order_id: orderId, time: 'только что' })
+          body: JSON.stringify({
+            nick: player,
+            item: itemName,
+            price: amount,
+            promo: promoCode,
+            order_id: orderId,
+            is_upgrade: isUpgrade,
+            from_rank: upgradeFrom,
+            time: 'только что'
+          })
         }).catch(() => {});
       } catch (e) {}
     }

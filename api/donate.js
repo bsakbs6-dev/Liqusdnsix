@@ -41,13 +41,13 @@ export default async function handler(req, res) {
     // Command mapping for LuckPerms & Console commands
     const commandTemplates = {
       // Ranks (DeluxeMenus hierarchy)
-      warrior: ["lp user {player} parent set voin"],
-      berserk: ["lp user {player} parent set berserk"],
-      spartan: ["lp user {player} parent set spartanec"],
-      knight: ["lp user {player} parent set rytsart"],
-      lord: ["lp user {player} parent set lord"],
-      vladyka: ["lp user {player} parent set vladika"],
-      emperor: ["lp user {player} parent set imperator"],
+      warrior: ["lp user {player} parent add voin"],
+      berserk: ["lp user {player} parent add berserk"],
+      spartan: ["lp user {player} parent add spartanec"],
+      knight: ["lp user {player} parent add rytsart"],
+      lord: ["lp user {player} parent add lord"],
+      vladyka: ["lp user {player} parent add vladika"],
+      emperor: ["lp user {player} parent add imperator"],
 
       // Cases
       case_donate_1: ["florycase give {player} 1 donate"],
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
       srv_unmute: ["unmute {player}"]
     };
 
-    const rawCommands = commandTemplates[item_id] || [`lp user {player} parent set ${item_id}`];
+    const rawCommands = commandTemplates[item_id] || [`lp user {player} parent add ${item_id}`];
     const commands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
 
     const payload = {

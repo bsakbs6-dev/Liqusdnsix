@@ -9,6 +9,42 @@ let selectedQuantity = 1;
 let currentDiscount = 0;
 let appliedPromo = "";
 
+// Rank Hierarchy & Upgrades State
+const RANK_HIERARCHY = [
+  { id: 'default', name: 'Игрок', price: 0, level: 0, purchasable: false, lpGroups: ['default', 'player'] },
+  { id: 'warrior', name: 'Воин', price: 79, level: 1, purchasable: true, lpGroups: ['voin', 'warrior'] },
+  { id: 'berserk', name: 'Берсерк', price: 159, level: 2, purchasable: true, lpGroups: ['berserk'] },
+  { id: 'spartan', name: 'Спартанец', price: 359, level: 3, purchasable: true, lpGroups: ['spartanec', 'spartan'] },
+  { id: 'knight', name: 'Рыцарь', price: 579, level: 4, purchasable: true, lpGroups: ['rytsart', 'knight'] },
+  { id: 'lord', name: 'Лорд', price: 899, level: 5, purchasable: true, lpGroups: ['lord'] },
+  { id: 'vladyka', name: 'Владыка', price: 1249, level: 6, purchasable: true, lpGroups: ['vladika', 'vladyka'] },
+  { id: 'emperor', name: 'Император', price: 1799, level: 7, purchasable: true, lpGroups: ['imperator', 'emperor'] },
+  // High / Staff / Admin / Media Ranks (Cannot buy privileges at all)
+  { id: 'youtube', name: 'YouTube', price: 0, level: 10, purchasable: false, lpGroups: ['youtube', 'yt', 'media'] },
+  { id: 'helper', name: 'Хелпер', price: 0, level: 20, purchasable: false, lpGroups: ['helper', 'help'] },
+  { id: 'moder', name: 'Модератор', price: 0, level: 30, purchasable: false, lpGroups: ['moder', 'moderator', 'stmoder'] },
+  { id: 'admin', name: 'Администратор', price: 0, level: 40, purchasable: false, lpGroups: ['admin', 'administrator', 'gladmin'] },
+  { id: 'developer', name: 'Разработчик', price: 0, level: 50, purchasable: false, lpGroups: ['developer', 'dev', 'coder'] },
+  { id: 'owner', name: 'Создатель', price: 0, level: 100, purchasable: false, lpGroups: ['owner', 'glava', 'osnovatel'] }
+];
+
+let isRankBlocked = false;
+let isUpgrade = false;
+let upgradeFromRank = null;
+let upgradeBasePrice = 0;
+let playerRankCache = {};
+
+function getRankInfoByGroupOrId(str) {
+  if (!str) return RANK_HIERARCHY[0];
+  const lower = String(str).toLowerCase().trim();
+  const match = RANK_HIERARCHY.find(r => r.id === lower || r.name.toLowerCase() === lower || (r.lpGroups && r.lpGroups.includes(lower)));
+  if (match) return match;
+  if (lower !== 'default' && lower !== 'player') {
+    return { id: lower, name: lower.charAt(0).toUpperCase() + lower.slice(1), price: 0, level: 100, purchasable: false };
+  }
+  return RANK_HIERARCHY[0];
+}
+
 // Web Audio API Synthesizer
 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
@@ -613,6 +649,17 @@ function openCheckout(id) {
   selectedQuantity = 1;
   currentDiscount = 0;
   appliedPromo = "";
+  isRankBlocked = false;
+  isUpgrade = false;
+  upgradeFromRank = null;
+  upgradeBasePrice = 0;
+
+  // Reset alert boxes
+  const rankAlert = document.getElementById('modalRankAlert');
+  if (rankAlert) {
+    rankAlert.className = "hidden";
+    rankAlert.innerHTML = "";
+  }
 
   // Set Top Image Banner
   const modalImg = document.getElementById('modalProductImage');
@@ -671,30 +718,16 @@ function openCheckout(id) {
   }, 10);
 
   if (nickInput && nickInput.value.trim()) {
-    checkPlayerPunishment(nickInput.value.trim(), item.id);
+    checkPlayerEligibility(nickInput.value.trim(), item);
   }
 }
 
 let selectedPaymentMethod = "sbp";
 
 function selectPaymentMethod(method) {
-  selectedPaymentMethod = method;
+  selectedPaymentMethod = method || "sbp";
   const input = document.getElementById('paymentMethodSelect');
-  if (input) input.value = method;
-  
-  try {
-    playSound('click');
-  } catch (e) {}
-
-  const tiles = document.querySelectorAll('.payment-method-tile');
-  tiles.forEach(tile => {
-    tile.className = "payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-gray-800 bg-gray-950/70 hover:border-gray-700 hover:bg-gray-900/60 transition-all flex items-center gap-2 sm:gap-2.5 group";
-  });
-
-  const activeTile = document.getElementById(`payMethod-${method}`);
-  if (activeTile) {
-    activeTile.className = "payment-method-tile cursor-pointer p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border-2 border-amber-400 bg-amber-500/15 shadow-[0_0_15px_rgba(245,158,11,0.25)] transition-all flex items-center gap-2 sm:gap-2.5 group active";
-  }
+  if (input) input.value = selectedPaymentMethod;
 }
 
 function closeCheckoutModal() {
@@ -728,18 +761,264 @@ function onQuantityChange() {
 
 function updateModalPrice() {
   if (!selectedProduct) return;
+  const oldPriceEl = document.getElementById('modalOldPrice');
+  const totalPriceEl = document.getElementById('modalTotalPrice');
+
+  if (isRankBlocked) {
+    if (oldPriceEl) oldPriceEl.classList.add('hidden');
+    if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
+    return;
+  }
+
   const isMultiItem = selectedProduct.id.startsWith('case_') || selectedProduct.id.startsWith('tokens_') || selectedProduct.id.startsWith('coins_');
   const qty = isMultiItem ? selectedQuantity : 1;
-  const basePrice = selectedProduct.price * qty;
+  const effectiveBasePrice = isUpgrade ? (upgradeBasePrice * qty) : (selectedProduct.price * qty);
 
   if (currentDiscount > 0) {
-    const discounted = Math.max(1, Math.round(basePrice * (1 - currentDiscount)));
-    document.getElementById('modalOldPrice').classList.remove('hidden');
-    document.getElementById('modalOldPrice').innerText = `${basePrice} ₽`;
-    document.getElementById('modalTotalPrice').innerText = `${discounted} ₽`;
+    const discounted = Math.max(1, Math.round(effectiveBasePrice * (1 - currentDiscount)));
+    if (oldPriceEl) {
+      oldPriceEl.classList.remove('hidden');
+      oldPriceEl.innerText = `${effectiveBasePrice} ₽`;
+    }
+    if (totalPriceEl) totalPriceEl.innerText = `${discounted} ₽`;
   } else {
-    document.getElementById('modalOldPrice').classList.add('hidden');
-    document.getElementById('modalTotalPrice').innerText = `${basePrice} ₽`;
+    if (isUpgrade && selectedProduct.price > effectiveBasePrice) {
+      if (oldPriceEl) {
+        oldPriceEl.classList.remove('hidden');
+        oldPriceEl.innerText = `${selectedProduct.price * qty} ₽`;
+      }
+    } else {
+      if (oldPriceEl) oldPriceEl.classList.add('hidden');
+    }
+    if (totalPriceEl) totalPriceEl.innerText = `${effectiveBasePrice} ₽`;
+  }
+}
+
+// Unified Eligibility & Rank Check for Modal
+async function checkPlayerEligibility(nick, item) {
+  if (!item) return;
+  const cleanNick = (nick || "").trim();
+
+  // 1. Check services (unban, unmute)
+  if (item.id === 'srv_unban' || item.id === 'srv_unmute') {
+    isRankBlocked = false;
+    isUpgrade = false;
+    upgradeFromRank = null;
+    upgradeBasePrice = 0;
+    const alertBox = document.getElementById('modalRankAlert');
+    if (alertBox) {
+      alertBox.className = 'hidden';
+      alertBox.innerHTML = '';
+    }
+    return checkPlayerPunishment(cleanNick, item.id);
+  }
+
+  // 2. Check privileges (rank restrictions & upgrades)
+  const isPrivilege = item.category === 'privileges' || RANK_HIERARCHY.some(r => r.id === item.id && r.level > 0 && r.purchasable);
+  if (isPrivilege) {
+    return checkPlayerRankEligibility(cleanNick, item);
+  }
+
+  // 3. Reset for other items (cases, tokens, currency): NEVER blocked by player rank!
+  isRankBlocked = false;
+  isUpgrade = false;
+  upgradeFromRank = null;
+  upgradeBasePrice = 0;
+  const alertBox = document.getElementById('modalRankAlert');
+  if (alertBox) {
+    alertBox.className = 'hidden';
+    alertBox.innerHTML = '';
+  }
+  const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
+  if (payBtn) {
+    payBtn.disabled = false;
+    payBtn.innerHTML = `
+      <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
+      <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black"></i>
+      <span>Перейти к оплате</span>
+      <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
+    `;
+    lucide.createIcons();
+  }
+  updateModalPrice();
+}
+
+async function checkPlayerRankEligibility(nick, product) {
+  const alertBox = document.getElementById('modalRankAlert');
+  const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
+  const oldPriceEl = document.getElementById('modalOldPrice');
+  const totalPriceEl = document.getElementById('modalTotalPrice');
+
+  if (!alertBox) return;
+
+  const cleanNick = (nick || "").trim();
+  if (!cleanNick) {
+    isRankBlocked = false;
+    isUpgrade = false;
+    upgradeFromRank = null;
+    upgradeBasePrice = 0;
+    alertBox.className = 'hidden';
+    alertBox.innerHTML = '';
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.innerHTML = `
+        <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
+        <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black"></i>
+        <span>Перейти к оплате</span>
+        <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
+      `;
+      lucide.createIcons();
+    }
+    updateModalPrice();
+    return;
+  }
+
+  // Show subtle checking status
+  alertBox.className = 'block text-xs p-2.5 rounded-xl font-semibold leading-relaxed bg-gray-900/80 text-gray-300 border border-gray-700/60';
+  alertBox.innerHTML = '<span class="inline-block animate-spin mr-1.5">⏳</span> Проверяем текущую привилегию игрока...';
+
+  try {
+    let data = playerRankCache[cleanNick.toLowerCase()];
+    if (!data) {
+      const res = await fetch(`/api/player?name=${encodeURIComponent(cleanNick)}`);
+      if (res.ok) {
+        data = await res.json();
+        playerRankCache[cleanNick.toLowerCase()] = data;
+      }
+    }
+
+    const currentRank = getRankInfoByGroupOrId(data?.group_id || data?.group || 'default');
+    const targetRank = getRankInfoByGroupOrId(product.id);
+
+    // CASE 0: Player has status above Emperor (Staff, Admin, Media, Owner with level > 7)
+    if (currentRank.level > 7) {
+      isRankBlocked = true;
+      isUpgrade = false;
+      upgradeFromRank = null;
+      upgradeBasePrice = 0;
+
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/50 shadow-sm';
+      alertBox.innerHTML = `
+        <div class="flex items-start gap-2">
+          <span class="text-base text-red-400 shrink-0">🚫</span>
+          <div>
+            <div>У вас статус <span class="text-white font-extrabold font-brand underline">${currentRank.name}</span>!</div>
+            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка любых донат-привилегий для вашего статуса заблокирована.</div>
+          </div>
+        </div>
+      `;
+
+      if (payBtn) {
+        payBtn.disabled = true;
+        payBtn.innerHTML = `
+          <i data-lucide="lock" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"></i>
+          <span>Привилегии недоступны</span>
+        `;
+        lucide.createIcons();
+      }
+
+      if (oldPriceEl) oldPriceEl.classList.add('hidden');
+      if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
+      return;
+    }
+
+    // CASE 1: Equal or higher privilege -> Block purchase
+    if (currentRank.level >= targetRank.level && targetRank.level > 0) {
+      isRankBlocked = true;
+      isUpgrade = false;
+      upgradeFromRank = null;
+      upgradeBasePrice = 0;
+
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/50 shadow-sm';
+      alertBox.innerHTML = `
+        <div class="flex items-start gap-2">
+          <span class="text-base text-red-400 shrink-0">🚫</span>
+          <div>
+            <div>У вас уже есть привилегия <span class="text-white font-extrabold font-brand underline">${currentRank.name}</span>!</div>
+            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка равной или более низкой привилегии («${targetRank.name}») заблокирована.</div>
+          </div>
+        </div>
+      `;
+
+      if (payBtn) {
+        payBtn.disabled = true;
+        payBtn.innerHTML = `
+          <i data-lucide="lock" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"></i>
+          <span>Привилегия уже приобретена</span>
+        `;
+        lucide.createIcons();
+      }
+
+      if (oldPriceEl) oldPriceEl.classList.add('hidden');
+      if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
+      return;
+    }
+
+    // CASE 2: Lower privilege -> Surcharge / Upgrade (ДОКУП)
+    if (currentRank.level > 0 && currentRank.level < targetRank.level && targetRank.level <= 7) {
+      isRankBlocked = false;
+      isUpgrade = true;
+      upgradeFromRank = currentRank;
+      
+      const priceDiff = Math.max(1, targetRank.price - currentRank.price);
+      upgradeBasePrice = priceDiff;
+
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-amber-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]';
+      alertBox.innerHTML = `
+        <div class="flex items-start gap-2">
+          <span class="text-base text-amber-400 shrink-0">⚡</span>
+          <div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-brand font-black uppercase tracking-wider">ДОКУП</span>
+              <span>С «${currentRank.name}» до «${targetRank.name}»</span>
+            </div>
+            <div class="text-[11px] text-gray-300 font-medium mt-1">
+              Стоимость: <b class="text-amber-300 font-brand">${targetRank.price} ₽</b> - <b class="text-emerald-400 font-brand">${currentRank.price} ₽</b> = <b class="text-white font-brand text-sm">${priceDiff} ₽</b>
+              <span class="text-emerald-400 ml-1">(Ваша экономия: ${currentRank.price} ₽)</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (payBtn) {
+        payBtn.disabled = false;
+        payBtn.innerHTML = `
+          <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
+          <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-black fill-current"></i>
+          <span>Докупить привилегию</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
+        `;
+        lucide.createIcons();
+      }
+
+      updateModalPrice();
+      return;
+    }
+
+    // CASE 3: Regular player (no rank)
+    isRankBlocked = false;
+    isUpgrade = false;
+    upgradeFromRank = null;
+    upgradeBasePrice = 0;
+    alertBox.className = 'hidden';
+    alertBox.innerHTML = '';
+
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.innerHTML = `
+        <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
+        <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black"></i>
+        <span>Перейти к оплате</span>
+        <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
+      `;
+      lucide.createIcons();
+    }
+
+    updateModalPrice();
+  } catch (err) {
+    alertBox.className = 'hidden';
+    alertBox.innerHTML = '';
+    updateModalPrice();
   }
 }
 
@@ -1026,6 +1305,12 @@ async function processPayment() {
   }
   currentNick = nick;
 
+  if (isRankBlocked) {
+    playSound('click');
+    showToast('У вас уже приобретена эта или более высокая привилегия!', '🚫');
+    return;
+  }
+
   // Check permanent punishment for unban / unmute
   if (selectedProduct && (selectedProduct.id === 'srv_unban' || selectedProduct.id === 'srv_unmute')) {
     const isAllowed = await checkPlayerPunishment(nick, selectedProduct.id);
@@ -1045,7 +1330,7 @@ async function processPayment() {
   const paymentMethod = document.getElementById('paymentMethodSelect')?.value || "sbp";
   const isMultiItem = selectedProduct.id.startsWith('case_') || selectedProduct.id.startsWith('tokens_') || selectedProduct.id.startsWith('coins_');
   const qty = isMultiItem ? selectedQuantity : 1;
-  const basePrice = selectedProduct.price * qty;
+  const basePrice = isUpgrade ? (upgradeBasePrice * qty) : (selectedProduct.price * qty);
   const discountedPrice = Math.max(1, Math.round(basePrice * (1 - currentDiscount)));
 
   const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
@@ -1056,7 +1341,7 @@ async function processPayment() {
   }
 
   try {
-    // Create signed invoice for AnyPay
+    // Create signed invoice for YooKassa
     const response = await fetch('/api/create-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1068,7 +1353,10 @@ async function processPayment() {
         quantity: qty,
         promo: appliedPromo,
         category: activeCategory,
-        method: paymentMethod
+        method: paymentMethod,
+        is_upgrade: isUpgrade,
+        upgrade_from: upgradeFromRank ? upgradeFromRank.name : '',
+        upgrade_to: selectedProduct.name
       })
     });
 
@@ -1085,6 +1373,8 @@ async function processPayment() {
           item: selectedProduct.name,
           price: discountedPrice,
           promo: appliedPromo || '',
+          is_upgrade: isUpgrade,
+          from_rank: upgradeFromRank ? upgradeFromRank.name : '',
           time: Date.now()
         }));
       } catch (e) {}
@@ -1126,7 +1416,9 @@ function deduplicatePurchases(list) {
         price: (item.price !== undefined && item.price !== null && item.price !== '') ? Number(item.price) : null,
         promo: item.promo ? String(item.promo).trim().toUpperCase() : '',
         time: item.time || 'только что',
-        timestamp: item.timestamp || Date.now()
+        timestamp: item.timestamp || Date.now(),
+        is_upgrade: item.is_upgrade === true || item.is_upgrade === 'true',
+        from_rank: item.from_rank || ''
       });
     }
   }
@@ -1166,27 +1458,43 @@ function initPurchasesTicker() {
   ticker.style.paddingLeft = '';
 
   // Render each purchase strictly once without any duplication
-  ticker.innerHTML = recentPurchases.map(p => createTickerItemHTML(p.nick, p.item, p.time)).join('');
+  ticker.innerHTML = recentPurchases.map(p => createTickerItemHTML(p.nick, p.item, p.time, p.is_upgrade, p.from_rank)).join('');
 }
 
-function createTickerItemHTML(nick, item, time) {
+function createTickerItemHTML(nick, item, time, isUpgrade, fromRank) {
+  const isUpgr = isUpgrade === true || isUpgrade === 'true' || (typeof item === 'string' && item.toLowerCase().startsWith('докуп'));
+  const actionText = isUpgr ? `Докупил ${item}` : `Купил ${item}`;
+  
+  if (isUpgr) {
+    return `
+      <div class="flex items-center gap-2.5 bg-gradient-to-r from-[#0d1e1c] via-[#0f2420] to-[#0c101a] border border-emerald-500/40 px-3.5 py-1.5 rounded-full shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.18)]">
+        <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 font-brand font-extrabold text-[9px] uppercase tracking-wider">ДОКУП</span>
+        <span class="font-bold text-xs text-white tracking-wide font-sans">${nick}</span>
+        <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 shadow-sm">${actionText}</span>
+        <span class="text-[10px] text-gray-400 font-medium">${time || 'только что'}</span>
+      </div>
+    `;
+  }
+
   return `
     <div class="flex items-center gap-2.5 bg-gradient-to-r from-[#111726] to-[#0c101a] border border-amber-500/30 px-3.5 py-1.5 rounded-full shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.12)]">
       <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
       <span class="font-bold text-xs text-white tracking-wide font-sans">${nick}</span>
-      <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 shadow-sm">${item}</span>
+      <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 shadow-sm">${actionText}</span>
       <span class="text-[10px] text-gray-400 font-medium">${time || 'только что'}</span>
     </div>
   `;
 }
 
-function addPurchaseToTicker(nick, item, time, price, promo) {
+function addPurchaseToTicker(nick, item, time, price, promo, isUpgrade, fromRank) {
   if (!nick || !item) return;
   const cleanNick = String(nick).trim();
   const cleanItem = String(item).trim();
   const timeStr = time || "только что";
   const cleanPrice = (price !== undefined && price !== null && price !== '') ? Number(price) : null;
   const cleanPromo = promo ? String(promo).trim().toUpperCase() : '';
+  const isUpgr = isUpgrade === true || isUpgrade === 'true';
+  const fromRnk = fromRank || '';
 
   const now = Date.now();
   // Deduplicate against first element if within 10 seconds
@@ -1197,6 +1505,8 @@ function addPurchaseToTicker(nick, item, time, price, promo) {
     recentPurchases[0].time = timeStr;
     if (cleanPrice !== null) recentPurchases[0].price = cleanPrice;
     if (cleanPromo) recentPurchases[0].promo = cleanPromo;
+    if (isUpgr) recentPurchases[0].is_upgrade = isUpgr;
+    if (fromRnk) recentPurchases[0].from_rank = fromRnk;
   } else {
     recentPurchases.unshift({
       nick: cleanNick,
@@ -1204,7 +1514,9 @@ function addPurchaseToTicker(nick, item, time, price, promo) {
       price: cleanPrice,
       promo: cleanPromo,
       time: timeStr,
-      timestamp: now
+      timestamp: now,
+      is_upgrade: isUpgr,
+      from_rank: fromRnk
     });
   }
 
@@ -1550,7 +1862,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalNickInput) {
     modalNickInput.addEventListener('input', () => {
       if (selectedProduct) {
-        checkPlayerPunishment(modalNickInput.value.trim(), selectedProduct.id);
+        checkPlayerEligibility(modalNickInput.value.trim(), selectedProduct);
+      }
+    });
+    modalNickInput.addEventListener('blur', () => {
+      if (selectedProduct) {
+        checkPlayerEligibility(modalNickInput.value.trim(), selectedProduct);
       }
     });
     modalNickInput.addEventListener('keyup', (e) => {
@@ -1618,11 +1935,13 @@ document.addEventListener('DOMContentLoaded', () => {
               const pItem = data.item || pending?.item || '';
               const pPrice = data.price !== undefined ? data.price : pending?.price;
               const pPromo = data.promo || pending?.promo || '';
+              const pIsUpgrade = data.is_upgrade !== undefined ? data.is_upgrade : (pending?.is_upgrade || false);
+              const pFromRank = data.from_rank || pending?.from_rank || '';
               const safeKey = checkOrderId || checkYooId || `DONE_${Date.now()}`;
 
               if (!sessionStorage.getItem(`flory_done_${safeKey}`)) {
                 sessionStorage.setItem(`flory_done_${safeKey}`, '1');
-                addPurchaseToTicker(pPlayer, pItem, 'только что', pPrice, pPromo);
+                addPurchaseToTicker(pPlayer, pItem, 'только что', pPrice, pPromo, pIsUpgrade, pFromRank);
               }
 
               if (data.promoCodes && Array.isArray(data.promoCodes)) {

@@ -767,7 +767,9 @@ function deduplicatePurchasesList(list) {
         price: (item.price !== undefined && item.price !== null && item.price !== '') ? Number(item.price) : null,
         promo: item.promo ? String(item.promo).trim().toUpperCase() : '',
         time: item.time || 'только что',
-        timestamp: item.timestamp || Date.now()
+        timestamp: item.timestamp || Date.now(),
+        is_upgrade: item.is_upgrade === true || item.is_upgrade === 'true',
+        from_rank: item.from_rank || ''
       });
     }
   }
@@ -821,32 +823,42 @@ function renderAdminPurchases(list) {
     return;
   }
 
-  tbody.innerHTML = list.map((p, idx) => `
-    <tr class="hover:bg-gray-900/50 transition border-b border-gray-800/40">
-      <td class="p-3.5 flex items-center gap-2.5">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-bold text-white font-sans">${p.nick}</span>
-      </td>
-      <td class="p-3.5">
-        <span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-brand font-bold text-xs shadow-sm">${p.item}</span>
-      </td>
-      <td class="p-3.5">
-        ${p.promo ? `<span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold text-[11px]">${p.promo}</span>` : `<span class="text-gray-600 font-mono text-[11px]">—</span>`}
-      </td>
-      <td class="p-3.5">
-        ${(p.price !== undefined && p.price !== null && p.price !== '') ? `<span class="font-bold text-emerald-400 font-mono text-xs">${p.price} ₽</span>` : `<span class="text-gray-500 font-mono text-[11px]">—</span>`}
-      </td>
-      <td class="p-3.5 text-gray-400 font-mono text-[11px]">${p.time || 'недавно'}</td>
-      <td class="p-3.5 text-right space-x-2">
-        <button onclick="reDispatchPurchase('${p.nick}', '${p.item}')" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
-          Выдать заново
-        </button>
-        <button onclick="deletePurchaseItem(${idx})" class="px-2.5 py-1 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 font-bold text-[11px] transition">
-          Удалить
-        </button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = list.map((p, idx) => {
+    const isUpgr = p.is_upgrade === true || p.is_upgrade === 'true' || (typeof p.item === 'string' && p.item.toLowerCase().startsWith('докуп'));
+    const itemLabel = isUpgr
+      ? `<div class="flex items-center gap-1.5 flex-wrap">
+          <span class="px-2 py-0.5 rounded bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 font-brand font-extrabold text-[10px] uppercase tracking-wider">ДОКУП</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 font-brand font-bold text-xs shadow-sm">Докуп: ${p.item}${p.from_rank ? ' (с ' + p.from_rank + ')' : ''}</span>
+        </div>`
+      : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-brand font-bold text-xs shadow-sm">${p.item}</span>`;
+
+    return `
+      <tr class="hover:bg-gray-900/50 transition border-b border-gray-800/40">
+        <td class="p-3.5 flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full ${isUpgr ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse"></span>
+          <span class="font-bold text-white font-sans">${p.nick}</span>
+        </td>
+        <td class="p-3.5">
+          ${itemLabel}
+        </td>
+        <td class="p-3.5">
+          ${p.promo ? `<span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold text-[11px]">${p.promo}</span>` : `<span class="text-gray-600 font-mono text-[11px]">—</span>`}
+        </td>
+        <td class="p-3.5">
+          ${(p.price !== undefined && p.price !== null && p.price !== '') ? `<span class="font-bold text-emerald-400 font-mono text-xs">${p.price} ₽</span>` : `<span class="text-gray-500 font-mono text-[11px]">—</span>`}
+        </td>
+        <td class="p-3.5 text-gray-400 font-mono text-[11px]">${p.time || 'недавно'}</td>
+        <td class="p-3.5 text-right space-x-2">
+          <button onclick="reDispatchPurchase('${p.nick}', '${p.item}')" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
+            Выдать заново
+          </button>
+          <button onclick="deletePurchaseItem(${idx})" class="px-2.5 py-1 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 font-bold text-[11px] transition">
+            Удалить
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function deletePurchaseItem(index) {
@@ -885,16 +897,23 @@ async function clearAllPurchases() {
 async function openAddPurchaseModal() {
   const nick = prompt('Никнейм игрока (например, Devil_First_More):');
   if (!nick || !nick.trim()) return;
-  const item = prompt('Название товара (например, Император, Донат Кейс x3):');
+  const item = prompt('Название товара (например, Спартанец, Донат Кейс x3):');
   if (!item || !item.trim()) return;
+  const isUpgr = confirm('Это докуп привилегии? (OK - Да, Отмена - Обычная покупка)');
+  let fromRank = '';
+  if (isUpgr) {
+    fromRank = prompt('С какой привилегии докуп? (например, Берсерк):', 'Берсерк') || '';
+  }
   const promo = prompt('Промокод (необязательно, например TWOUSE):', '');
-  const price = prompt('Оплаченная сумма в ₽ (например, 89):', '');
+  const price = prompt('Оплаченная сумма в ₽ (например, 200):', '');
 
   const newEntry = {
     nick: nick.trim(),
     item: item.trim(),
     promo: promo ? promo.trim().toUpperCase() : '',
     price: price ? Number(price) : null,
+    is_upgrade: isUpgr,
+    from_rank: fromRank ? fromRank.trim() : '',
     time: 'только что'
   };
 

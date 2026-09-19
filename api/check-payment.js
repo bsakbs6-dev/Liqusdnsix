@@ -115,6 +115,9 @@ export default async function handler(req, res) {
     const cleanPrice = Number(paymentData.amount?.value) || Number(metadata.price) || 0;
     const safeOrderId = metadata.order_id || orderId || yooId;
 
+    const isUpgrade = metadata.is_upgrade === 'true' || metadata.is_upgrade === true;
+    const upgradeFrom = metadata.upgrade_from || '';
+
     const store = getStoreData();
     if (!Array.isArray(store.recentPurchases)) store.recentPurchases = [];
     if (!Array.isArray(store.promoCodes)) store.promoCodes = [];
@@ -129,13 +132,13 @@ export default async function handler(req, res) {
       const donateSecretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
 
       const commandTemplates = {
-        warrior: ["lp user {player} parent set voin"],
-        berserk: ["lp user {player} parent set berserk"],
-        spartan: ["lp user {player} parent set spartanec"],
-        knight: ["lp user {player} parent set rytsart"],
-        lord: ["lp user {player} parent set lord"],
-        vladyka: ["lp user {player} parent set vladika"],
-        emperor: ["lp user {player} parent set imperator"],
+        warrior: ["lp user {player} parent add voin"],
+        berserk: ["lp user {player} parent add berserk"],
+        spartan: ["lp user {player} parent add spartanec"],
+        knight: ["lp user {player} parent add rytsart"],
+        lord: ["lp user {player} parent add lord"],
+        vladyka: ["lp user {player} parent add vladika"],
+        emperor: ["lp user {player} parent add imperator"],
 
         case_donate_1: ["florycase give {player} 1 donate"],
         case_donate_3: ["florycase give {player} 3 donate"],
@@ -155,7 +158,7 @@ export default async function handler(req, res) {
         srv_unmute: ["unmute {player}"]
       };
 
-      const rawCommands = commandTemplates[itemId] || [`lp user {player} parent set ${itemId}`];
+      const rawCommands = commandTemplates[itemId] || [`lp user {player} parent add ${itemId}`];
       const commands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
 
       try {
@@ -174,8 +177,11 @@ export default async function handler(req, res) {
             item_id: itemId,
             item_name: itemName,
             quantity: Number(metadata.quantity) || 1,
+            require_online: false,
             commands: commands,
             price: cleanPrice,
+            is_upgrade: isUpgrade,
+            upgrade_from: upgradeFrom,
             timestamp: new Date().toISOString()
           }),
           signal: controller.signal
@@ -200,7 +206,9 @@ export default async function handler(req, res) {
           promo: promoCode || '',
           time: 'только что',
           timestamp: Date.now(),
-          order_id: safeOrderId
+          order_id: safeOrderId,
+          is_upgrade: isUpgrade,
+          from_rank: upgradeFrom
         });
         if (store.recentPurchases.length > 30) {
           store.recentPurchases = store.recentPurchases.slice(0, 30);
@@ -225,6 +233,8 @@ export default async function handler(req, res) {
       item: itemName,
       price: cleanPrice,
       promo: promoCode,
+      is_upgrade: isUpgrade,
+      from_rank: upgradeFrom,
       promoCodes: store.promoCodes
     });
   } catch (err) {
