@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/rules", "destination": "/rules.html" },
+    { "source": "/requisites", "destination": "/requisites.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin-manage", "destination": "/admin.html" },
+    { "source": "/control", "destination": "/admin.html" },
+    { "source": "/manage", "destination": "/admin.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
+}

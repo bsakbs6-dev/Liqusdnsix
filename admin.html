@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>FloryMine — Панель управления магазином</title>
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=3.9">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            flory: {
+              glow: '#f59e0b',
+              gold: '#fbbf24',
+              orange: '#f97316',
+              dark: '#07090e'
+            }
+          },
+          fontFamily: {
+            brand: ['Unbounded', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#07090e] text-gray-100 font-sans antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-black relative">
+
+  <!-- Glow Background -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80vw] max-w-[600px] h-[350px] bg-gradient-to-b from-amber-600/15 via-orange-500/5 to-transparent blur-[120px] rounded-full"></div>
+    <div class="bg-grid-pattern absolute inset-0 opacity-[0.03]"></div>
+  </div>
+
+  <!-- 1. LOGIN SCREEN (Shown if not authenticated) -->
+  <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07090e]">
+    <div class="w-full max-w-md bg-[#0c101a] border border-amber-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(245,158,11,0.15)] relative backdrop-blur-xl">
+      
+      <!-- Lock Badge Icon -->
+      <div class="flex justify-center mb-5">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-yellow-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+          <i data-lucide="shield-lock" class="w-8 h-8"></i>
+        </div>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-xl sm:text-2xl font-black font-brand text-white">FLORY<span class="text-amber-400">ADMIN</span></h1>
+        <p class="text-xs text-gray-400 mt-1">Панель управления магазином и сервером</p>
+      </div>
+
+      <form id="loginForm" action="javascript:void(0);" onsubmit="handleLogin(event); return false;" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5">Мастер-пароль</label>
+          <div class="relative">
+            <i data-lucide="key" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="adminPasswordInput" placeholder="Введите пароль администратора" required onkeydown="if(event.key==='Enter'){handleLogin(event);}"
+              class="w-full pl-10 pr-10 py-3 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-medium text-sm outline-none transition placeholder:text-gray-600">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+              <i id="eyeIcon" data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="loginErrorMsg" class="hidden text-xs p-2.5 rounded-xl font-semibold bg-red-500/20 text-red-300 border border-red-500/40 text-center"></div>
+
+        <button type="button" onclick="handleLogin(event)" id="loginSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(245,158,11,0.4)] transition active:scale-95 flex items-center justify-center gap-2">
+          <span>Войти в систему</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-gray-800/80 text-center">
+        <a href="/" class="text-xs text-gray-400 hover:text-amber-400 transition flex items-center justify-center gap-1">
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+          Вернуться на сайт магазина
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ADMIN DASHBOARD (Hidden until authenticated) -->
+  <div id="adminDashboard" class="hidden relative z-10 flex-1 flex flex-col">
+    
+    <!-- Top Header Bar -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#0a0e17]/95 border-b border-amber-500/20 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-sm">
+            <div class="w-full h-full bg-[#0d131f] rounded-[10px] flex items-center justify-center text-amber-400 font-bold">
+              ⚡
+            </div>
+          </div>
+          <div>
+            <div class="font-brand font-extrabold text-base text-white flex items-center gap-1.5">
+              FLORY<span class="text-amber-400">ADMIN</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-mono uppercase font-bold">v2.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header Actions: Server Online Badge, Save Button, Logout -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-gray-400">Сервер:</span>
+            <span id="serverStatusBadge" class="text-white font-mono font-bold">Online</span>
+          </div>
+
+          <button onclick="saveAllStoreData()" id="saveChangesBtn" class="px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-brand font-bold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Сохранить</span>
+          </button>
+
+          <a href="/" target="_blank" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs transition flex items-center gap-1.5" title="Открыть магазин">
+            <i data-lucide="external-link" class="w-4 h-4 text-amber-400"></i>
+            <span class="hidden md:inline">Магазин</span>
+          </a>
+
+          <button onclick="handleLogout()" class="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition" title="Выйти">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+      
+      <!-- Stats Quick Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        
+        <div class="p-4 rounded-2xl bg-[#0e1320] border border-amber-500/20 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[11px] text-gray-400 uppercase font-bold tracking-wider">Всего товаров</span>
+            <div id="statTotalProducts" class="text-xl sm:text-2xl font-black font-brand text-white mt-0.5">21</div>
+          </div>
+          <div class="p-3 rounded-xl bg-amber-500/10 text-amber-400"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#0e1320] border border-purple-500/20 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[11px] text-gray-400 uppercase font-bold tracking-wider">Категории</span>
+            <div id="statTotalCategories" class="text-xl sm:text-2xl font-black font-brand text-white mt-0.5">5</div>
+          </div>
+          <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400"><i data-lucide="layout-grid" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#0e1320] border border-emerald-500/20 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[11px] text-gray-400 uppercase font-bold tracking-wider">Промокоды</span>
+            <div id="statTotalPromos" class="text-xl sm:text-2xl font-black font-brand text-white mt-0.5">4</div>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400"><i data-lucide="tag" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#0e1320] border border-blue-500/20 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="text-[11px] text-gray-400 uppercase font-bold tracking-wider">ЮKassa</span>
+            <div class="text-sm sm:text-base font-black font-brand text-blue-400 mt-0.5">#1470048</div>
+          </div>
+          <div class="p-3 rounded-xl bg-blue-500/10 text-blue-400"><i data-lucide="credit-card" class="w-5 h-5"></i></div>
+        </div>
+
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar border-b border-gray-800">
+        <button onclick="switchAdminTab('products')" id="tabBtn-products" class="admin-tab-btn active px-4 py-2.5 rounded-xl font-brand font-bold text-xs sm:text-sm tracking-wide transition flex items-center gap-2 text-amber-400 bg-amber-500/15 border border-amber-500/30">
+          <i data-lucide="box" class="w-4 h-4"></i>
+          Товары и Привилегии
+        </button>
+        <button onclick="switchAdminTab('categories')" id="tabBtn-categories" class="admin-tab-btn px-4 py-2.5 rounded-xl font-brand font-bold text-xs sm:text-sm tracking-wide transition flex items-center gap-2 text-gray-400 hover:text-white bg-transparent border border-transparent hover:bg-gray-900">
+          <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+          Каталоги
+        </button>
+        <button onclick="switchAdminTab('promos')" id="tabBtn-promos" class="admin-tab-btn px-4 py-2.5 rounded-xl font-brand font-bold text-xs sm:text-sm tracking-wide transition flex items-center gap-2 text-gray-400 hover:text-white bg-transparent border border-transparent hover:bg-gray-900">
+          <i data-lucide="ticket-percent" class="w-4 h-4"></i>
+          Промокоды
+        </button>
+        <button onclick="switchAdminTab('purchases')" id="tabBtn-purchases" class="admin-tab-btn px-4 py-2.5 rounded-xl font-brand font-bold text-xs sm:text-sm tracking-wide transition flex items-center gap-2 text-gray-400 hover:text-white bg-transparent border border-transparent hover:bg-gray-900">
+          <i data-lucide="history" class="w-4 h-4"></i>
+          Лента покупок
+        </button>
+        <button onclick="switchAdminTab('console')" id="tabBtn-console" class="admin-tab-btn px-4 py-2.5 rounded-xl font-brand font-bold text-xs sm:text-sm tracking-wide transition flex items-center gap-2 text-gray-400 hover:text-white bg-transparent border border-transparent hover:bg-gray-900">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          Консоль сервера
+        </button>
+      </div>
+
+      <!-- TAB 1: PRODUCTS TAB -->
+      <section id="tabContent-products" class="admin-tab-content space-y-4">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <select id="filterProductCategory" onchange="filterProductsDisplay()" class="px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-bold text-white outline-none">
+              <option value="all">Все категории</option>
+              <option value="privileges">Привилегии</option>
+              <option value="cases">Кейсы</option>
+              <option value="currency">Валюта</option>
+              <option value="services">Услуги</option>
+            </select>
+            <input type="text" id="searchProductInput" oninput="filterProductsDisplay()" placeholder="Поиск товара..."
+              class="px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-white outline-none placeholder:text-gray-500 w-44 sm:w-60">
+          </div>
+
+          <button onclick="openProductEditModal(null)" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition active:scale-95 flex items-center gap-1.5 shadow">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            Добавить товар
+          </button>
+        </div>
+
+        <div id="adminProductsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Rendered by admin.js -->
+        </div>
+      </section>
+
+      <!-- TAB 2: CATEGORIES TAB -->
+      <section id="tabContent-categories" class="admin-tab-content hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-brand font-bold text-white">Разделы каталога магазина</h2>
+          <button onclick="openCategoryEditModal(null)" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> Добавить каталог
+          </button>
+        </div>
+
+        <div id="adminCategoriesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered by admin.js -->
+        </div>
+      </section>
+
+      <!-- TAB 3: PROMO CODES TAB -->
+      <section id="tabContent-promos" class="admin-tab-content hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-brand font-bold text-white">Промокоды на скидку</h2>
+          <button onclick="openPromoEditModal(null)" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> Добавить промокод
+          </button>
+        </div>
+
+        <div id="adminPromosList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered by admin.js -->
+        </div>
+      </section>
+
+      <!-- TAB 4: PURCHASES TICKER TAB -->
+      <section id="tabContent-purchases" class="admin-tab-content hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-brand font-bold text-white">Лента последних покупок на сервере</h2>
+          <div class="flex items-center gap-2">
+            <button onclick="clearAllPurchases()" class="px-3.5 py-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-brand font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> Очистить все
+            </button>
+            <button onclick="openAddPurchaseModal()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i> Добавить запись
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#0e1320] border border-gray-800 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-gray-300">
+              <thead class="bg-gray-950 text-gray-400 font-bold uppercase tracking-wider border-b border-gray-800">
+                <tr>
+                  <th class="p-3.5">Игрок</th>
+                  <th class="p-3.5">Купленный товар</th>
+                  <th class="p-3.5">Промокод</th>
+                  <th class="p-3.5">Оплачено</th>
+                  <th class="p-3.5">Время</th>
+                  <th class="p-3.5 text-right">Действия</th>
+                </tr>
+              </thead>
+              <tbody id="adminPurchasesTableBody" class="divide-y divide-gray-800/60">
+                <!-- Rendered by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: MINECRAFT CONSOLE TAB -->
+      <section id="tabContent-console" class="admin-tab-content hidden space-y-4">
+        <div class="bg-[#0e1320] border border-amber-500/30 rounded-2xl p-4 sm:p-6 shadow-md space-y-4">
+          <div>
+            <h2 class="text-base font-brand font-bold text-white flex items-center gap-2">
+              <i data-lucide="terminal" class="w-5 h-5 text-amber-400"></i>
+              Отправка команд на сервер Minecraft
+            </h2>
+            <p class="text-xs text-gray-400 mt-1">Прямое выполнение через плагин <span class="text-amber-400 font-mono">FloryAutoDonate</span> на порту 25933</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Никнейм игрока</label>
+              <input type="text" id="consolePlayerInput" placeholder="Devil_First_More" value="Devil_First_More"
+                class="w-full px-3 py-2.5 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-mono text-xs outline-none">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Команда (без слэша /)</label>
+              <div class="flex gap-2">
+                <input type="text" id="consoleCommandInput" placeholder="lp user {player} parent set emperor" 
+                  class="w-full px-3 py-2.5 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-white font-mono text-xs outline-none">
+                <button onclick="dispatchConsoleCommand()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition shrink-0">
+                  Выполнить
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Command Shortcuts -->
+          <div class="pt-2 border-t border-gray-800">
+            <span class="text-[11px] text-gray-400 font-semibold">Быстрые шаблоны:</span>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <button onclick="setConsoleTemplate('lp user {player} parent set emperor')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">Выдать Императора</button>
+              <button onclick="setConsoleTemplate('crates key give {player} donate 10')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">10 Кейсов Доната</button>
+              <button onclick="setConsoleTemplate('tokens give {player} 1000')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">1000 Жетонов</button>
+              <button onclick="setConsoleTemplate('broadcast &6&l[FloryMine] &aАдмин-панель активна!')" class="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-[11px] font-mono text-amber-300 border border-gray-700">Анонс в чат</button>
+            </div>
+          </div>
+
+          <!-- Output Log -->
+          <div>
+            <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Журнал ответов сервера</label>
+            <pre id="consoleOutputLog" class="p-3 rounded-xl bg-black border border-gray-800 text-emerald-400 font-mono text-xs max-h-48 overflow-y-auto whitespace-pre-wrap">Готов к отправке команд...</pre>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: PRODUCT EDIT / ADD -->
+  <div id="productModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0e1320] border border-amber-500/40 rounded-2xl max-w-xl w-full p-5 sm:p-7 max-h-[90vh] overflow-y-auto space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 id="productModalTitle" class="font-brand font-bold text-base sm:text-lg text-white">Редактирование товара</h3>
+        <button onclick="closeProductModal()" class="p-1.5 rounded-full bg-gray-800 text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <form id="productEditForm" onsubmit="saveProductModal(event)" class="space-y-3">
+        <input type="hidden" id="modalProductOriginalId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Категория</label>
+            <select id="modalProductCategory" class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-semibold text-white outline-none">
+              <option value="privileges">Привилегии</option>
+              <option value="cases">Кейсы</option>
+              <option value="currency">Валюта</option>
+              <option value="services">Услуги</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">ID Товара (латиница)</label>
+            <input type="text" id="modalProductId" placeholder="warrior, case_custom_1" required
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-white outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Название товара</label>
+            <input type="text" id="modalProductName" placeholder="Воин / Донат Кейс" required
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-bold text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Иконка (Emoji)</label>
+            <input type="text" id="modalProductIcon" placeholder="⚔️, 👑, 📦" value="⚔️"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-center text-white outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Цена (₽)</label>
+            <input type="number" id="modalProductPrice" placeholder="79" min="1" required
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-bold text-amber-400 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Бейджик (ХИТ, СКИДКА)</label>
+            <input type="text" id="modalProductBadge" placeholder="Старт / Хит / Топ"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-white outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Путь к картинке (URL или images/...)</label>
+          <input type="text" id="modalProductImage" placeholder="images/warrior.jpg" required
+            class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-white outline-none">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Консольные команды (по одной на строке, {player})</label>
+          <textarea id="modalProductCommands" rows="3" placeholder="lp user {player} parent set warrior&#10;crates key give {player} donate 1"
+            class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-emerald-300 outline-none"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Список преимуществ / перков (по одному на строке)</label>
+          <textarea id="modalProductPerks" rows="4" placeholder="Точки дома: 2 точки&#10;Количество приватов: 4 региона&#10;Стартовый кит-набор"
+            class="w-full px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-200 outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-gray-800 flex justify-end gap-2">
+          <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs">Отмена</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase">Сохранить товар</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PROMO EDIT / ADD (Advanced) -->
+  <div id="promoModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0e1320] border border-amber-500/40 rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 id="promoModalTitle" class="font-brand font-bold text-base text-white">Промокод</h3>
+        <button onclick="closePromoModal()" class="p-1.5 rounded-full bg-gray-800 text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <form id="promoEditForm" onsubmit="savePromoModal(event)" class="space-y-3">
+        <input type="hidden" id="modalPromoOriginalCode">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Промокод (Код)</label>
+            <input type="text" id="modalPromoCode" placeholder="NEWWIPE" required
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs font-mono font-bold uppercase text-amber-400 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Процент скидки (%)</label>
+            <input type="number" id="modalPromoDiscount" placeholder="25" min="1" max="99" required
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs font-bold text-white outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Лимит (0 = безлим)</label>
+            <input type="number" id="modalPromoMaxUses" placeholder="0" min="0" value="0"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs font-mono text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Использовано раз</label>
+            <input type="number" id="modalPromoUsedCount" placeholder="0" min="0" value="0"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs font-mono text-amber-300 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Применимость</label>
+            <select id="modalPromoAppliesTo" class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs font-bold text-white outline-none">
+              <option value="all">Все товары магазина</option>
+              <option value="privileges">Только Привилегии</option>
+              <option value="cases">Только Кейсы</option>
+              <option value="currency">Только Валюта (Жетоны)</option>
+              <option value="services">Только Услуги (Разбан/Размут)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Действует С (Дата и время)</label>
+            <input type="datetime-local" id="modalPromoValidFrom"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs text-gray-200 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Действует ДО (Дата и время)</label>
+            <input type="datetime-local" id="modalPromoValidUntil"
+              class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs text-gray-200 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Описание / Заметка</label>
+          <input type="text" id="modalPromoDesc" placeholder="Скидка в честь вайпа на анархии"
+            class="w-full px-3 py-2 bg-gray-950 border border-gray-700 focus:border-amber-400 rounded-xl text-xs text-gray-300 outline-none">
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="modalPromoActive" checked class="w-4 h-4 rounded text-amber-500 bg-gray-950 border-gray-700 focus:ring-0">
+          <label for="modalPromoActive" class="text-xs font-bold text-gray-300 cursor-pointer">Промокод активен и доступен для ввода</label>
+        </div>
+
+        <div class="pt-3 border-t border-gray-800 flex justify-end gap-2">
+          <button type="button" onclick="closePromoModal()" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs">Отмена</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase shadow">Сохранить промокод</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-gray-900/95 border border-emerald-500/50 text-white px-5 py-3 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center gap-2 backdrop-blur-md">
+      <div id="toastIcon" class="text-emerald-400 font-bold text-sm">✓</div>
+      <div id="toastMessage" class="text-xs sm:text-sm font-semibold">Готово!</div>
+    </div>
+  </div>
+
+  <script src="admin.js?v=4.6"></script>
+  <script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

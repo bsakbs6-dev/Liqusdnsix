@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /admin
+Disallow: /admin-manage
+Disallow: /manage
+Disallow: /control
+Disallow: /api/
+Allow: /
+Allow: /rules
+Allow: /requisites
+Allow: /terms
+Allow: /privacy
+
+Sitemap: https://www.florymine.fun/sitemap.xml

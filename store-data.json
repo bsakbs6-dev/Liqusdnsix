@@ -1,0 +1,434 @@
+{
+  "categories": [
+    { "id": "all", "name": "Все товары", "icon": "sparkles" },
+    { "id": "privileges", "name": "Привилегии", "icon": "crown" },
+    { "id": "cases", "name": "Кейсы", "icon": "box" },
+    { "id": "currency", "name": "Валюта", "icon": "coins" },
+    { "id": "services", "name": "Услуги", "icon": "wrench" }
+  ],
+  "products": {
+    "privileges": [
+      {
+        "id": "warrior",
+        "name": "Воин",
+        "icon": "⚔️",
+        "image": "images/warrior.jpg",
+        "color": "from-slate-600 to-zinc-500",
+        "borderColor": "border-slate-500/40",
+        "price": 79,
+        "badge": "Старт",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set voin"],
+        "perks": [
+          "Точки дома: 2 точки",
+          "Количество приватов: 4 региона",
+          "Слотов на аукционе: 4 предмета",
+          "Стартовый кит-набор (/kit Воин)",
+          "Режим АФК и игнорирование (/afk, /ignore, /sit)",
+          "Префикс в табе, чате и над головой",
+          "Уникальная роль в Discord-сервере"
+        ]
+      },
+      {
+        "id": "berserk",
+        "name": "Берсерк",
+        "icon": "🔥",
+        "image": "images/berserk.jpg",
+        "color": "from-orange-600 to-amber-500",
+        "borderColor": "border-orange-500/40",
+        "price": 159,
+        "badge": "Огонь",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set berserk"],
+        "perks": [
+          "Точки дома: 3 точки",
+          "Количество приватов: 5 регионов",
+          "Слотов на аукционе: 6 предметов",
+          "Кит-набор Берсерка (/kit Берсек)",
+          "Кормление игроков (/feed ник)",
+          "Установка и удаление варпов (/setwarp, /delwarp)",
+          "Виртуальный Эндер-сундук и поза лежа (/ec, /lay)",
+          "Все возможности рангов ниже"
+        ]
+      },
+      {
+        "id": "spartan",
+        "name": "Спартанец",
+        "icon": "🛡️",
+        "image": "images/spartan.jpg",
+        "color": "from-lime-600 to-emerald-500",
+        "borderColor": "border-lime-500/40",
+        "price": 359,
+        "badge": "Защитник",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set spartanec"],
+        "perks": [
+          "Точки дома: 4 точки",
+          "Количество приватов: 6 регионов",
+          "Слотов на аукционе: 8 предметов",
+          "Кит-набор Спартанца (/kit Спартанец)",
+          "Лечение игроков и тушение (/heal ник, /ext)",
+          "Починка предметов в руках (/repair)",
+          "Возврат на место смерти и суицид (/back, /suicide)",
+          "Все возможности рангов ниже"
+        ]
+      },
+      {
+        "id": "knight",
+        "name": "Рыцарь",
+        "icon": "⚡",
+        "image": "images/knight.jpg",
+        "color": "from-yellow-500 to-amber-400",
+        "borderColor": "border-yellow-400/50",
+        "price": 579,
+        "badge": "Топ выбор",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set rytsart"],
+        "perks": [
+          "Точки дома: 5 точек",
+          "Количество приватов: 7 регионов",
+          "Слотов на аукционе: 10 предметов",
+          "Кит-набор Рыцаря (/kit Рыцарь)",
+          "Поиск игроков рядом (/near)",
+          "Персональное время и погода (/ptime, /pweather)",
+          "Баланс игроков и верстак (/checkbalance ник, /workbench)",
+          "Все возможности рангов ниже"
+        ]
+      },
+      {
+        "id": "lord",
+        "name": "Лорд",
+        "icon": "🔮",
+        "image": "images/lord.jpg",
+        "color": "from-purple-600 to-indigo-500",
+        "borderColor": "border-purple-500/50",
+        "price": 899,
+        "badge": "Элита",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set lord"],
+        "perks": [
+          "Точки дома: 6 точек",
+          "Количество приватов: 8 регионов",
+          "Слотов на аукционе: 10 предметов",
+          "Кит-набор Лорда (/kit Лорд)",
+          "Виртуальная наковальня (/anvil)",
+          "Полная починка всего инвентаря (/repair all)",
+          "Прыжок в точку взгляда (/jump)",
+          "Объявления на весь сервер (/bc)",
+          "Скрытие баланса (/checkbalance on|off)",
+          "Все возможности рангов ниже"
+        ]
+      },
+      {
+        "id": "vladyka",
+        "name": "Владыка",
+        "icon": "👑",
+        "image": "images/vladyka.jpg",
+        "color": "from-amber-600 via-orange-600 to-yellow-500",
+        "borderColor": "border-amber-500/60",
+        "price": 1249,
+        "badge": "ХИТ ПРОДАЖ",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set vladika"],
+        "perks": [
+          "Точки дома: 8 точек",
+          "Количество приватов: 10 регионов",
+          "Слотов на аукционе: 12 предметов",
+          "Основной и дополнительный киты (/kit Владыка, /kit +)",
+          "Режим бесконечного полета (/fly)",
+          "Просмотр инвентаря игроков (/invsee ник)",
+          "Переименование предметов (/rename)",
+          "Все возможности рангов ниже"
+        ]
+      },
+      {
+        "id": "emperor",
+        "name": "Император",
+        "icon": "💎",
+        "image": "images/emperor.jpg",
+        "color": "from-amber-500 via-yellow-400 to-orange-500",
+        "borderColor": "border-yellow-500/70",
+        "price": 1799,
+        "badge": "МАКСИМУМ",
+        "category": "privileges",
+        "commands": ["lp user {player} parent set imperator"],
+        "perks": [
+          "Точки дома: 10 точек",
+          "Количество приватов: 12 регионов",
+          "Слотов на аукционе: 16 предметов",
+          "Кит-набор Императора + Все киты сервера (/kit Император, /kit +)",
+          "МОМЕНТАЛЬНАЯ телепортация без задержек",
+          "Доступ в закрытый чат персонала (/sc [сообщение])",
+          "Полноценная связь с модерацией сервера",
+          "Все возможности и команды сервера"
+        ]
+      }
+    ],
+    "cases": [
+      {
+        "id": "case_donate_1",
+        "name": "Донат Кейс x1",
+        "icon": "📦",
+        "image": "images/case_donate_1.png",
+        "color": "from-amber-600 to-yellow-500",
+        "borderColor": "border-amber-500/40",
+        "price": 119,
+        "badge": "x1 Ключ",
+        "category": "cases",
+        "commands": ["florycase give {player} 1 donate"],
+        "perks": [
+          "1 Ключ от Донат Кейса",
+          "Дроп привилегий от Воина до Владыки",
+          "100% окупаемость при открытии",
+          "Мгновенное начисление на сервере"
+        ]
+      },
+      {
+        "id": "case_donate_3",
+        "name": "Донат Кейс x3",
+        "icon": "📦",
+        "image": "images/case_donate_3.png",
+        "color": "from-amber-600 to-yellow-500",
+        "borderColor": "border-amber-500/40",
+        "price": 300,
+        "badge": "x3 Выгода",
+        "category": "cases",
+        "commands": ["florycase give {player} 3 donate"],
+        "perks": [
+          "3 Ключа от Донат Кейса со скидкой",
+          "Дроп привилегий от Воина до Владыки",
+          "Высокий шанс выбить высшие ранги",
+          "Мгновенное начисление на сервере"
+        ]
+      },
+      {
+        "id": "case_donate_10",
+        "name": "Донат Кейс x10",
+        "icon": "👑",
+        "image": "images/case_donate_10.png",
+        "color": "from-amber-500 to-orange-500",
+        "borderColor": "border-amber-500/50",
+        "price": 890,
+        "badge": "x10 ОПТ",
+        "category": "cases",
+        "commands": ["florycase give {player} 10 donate"],
+        "perks": [
+          "10 Ключей от Донат Кейса (Оптом)",
+          "Дроп привилегий от Воина до Владыки",
+          "Максимальная выгода и шанс на Владыку",
+          "Гарантированный крупный куш"
+        ]
+      },
+      {
+        "id": "case_tokens_1",
+        "name": "Кейс с Жетонами x1",
+        "icon": "🪙",
+        "image": "images/case_tokens_1.png",
+        "color": "from-yellow-600 to-amber-500",
+        "borderColor": "border-yellow-500/40",
+        "price": 39,
+        "badge": "x1 Ключ",
+        "category": "cases",
+        "commands": ["florycase give {player} 1 tokens"],
+        "perks": [
+          "1 Ключ от Кейса с Жетонами",
+          "Дроп от 25 до 2 500 Жетонов",
+          "Быстрое зачисление валюты",
+          "Мгновенное открытие на сервере"
+        ]
+      },
+      {
+        "id": "case_tokens_5",
+        "name": "Кейс с Жетонами x5",
+        "icon": "🪙",
+        "image": "images/case_tokens_5.png",
+        "color": "from-yellow-600 to-amber-500",
+        "borderColor": "border-yellow-500/40",
+        "price": 150,
+        "badge": "x5 Выгода",
+        "category": "cases",
+        "commands": ["florycase give {player} 5 tokens"],
+        "perks": [
+          "5 Ключей от Кейса с Жетонами",
+          "Экономия при покупке набором",
+          "Дроп тысяч жетонов на баланс",
+          "Мгновенное открытие на сервере"
+        ]
+      },
+      {
+        "id": "case_tokens_15",
+        "name": "Кейс с Жетонами x15",
+        "icon": "💎",
+        "image": "images/case_tokens_15.png",
+        "color": "from-amber-500 to-yellow-400",
+        "borderColor": "border-amber-500/50",
+        "price": 375,
+        "badge": "x15 МЕГА",
+        "category": "cases",
+        "commands": ["florycase give {player} 15 tokens"],
+        "perks": [
+          "15 Ключей от Кейса с Жетонами (Мега-пак)",
+          "Максимальный шанс сорвать Джекпот",
+          "Крупнейший набор для быстрой прокачки",
+          "Мгновенное открытие на сервере"
+        ]
+      }
+    ],
+    "currency": [
+      {
+        "id": "tokens_50",
+        "name": "50 Жетонов",
+        "icon": "🪙",
+        "image": "images/tokens_50.png",
+        "color": "from-yellow-500 to-amber-400",
+        "borderColor": "border-yellow-500/30",
+        "price": 50,
+        "badge": "50 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 50"],
+        "perks": [
+          "50 Жетонов на игровой баланс",
+          "Покупка уникальных товаров на спавне",
+          "Моментальное авто-зачисление"
+        ]
+      },
+      {
+        "id": "tokens_100",
+        "name": "100 Жетонов",
+        "icon": "🪙",
+        "image": "images/tokens_100.png",
+        "color": "from-yellow-500 to-amber-400",
+        "borderColor": "border-yellow-500/30",
+        "price": 89,
+        "badge": "100 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 100"],
+        "perks": [
+          "100 Жетонов на игровой баланс",
+          "Стартовый пакет со скидкой",
+          "Моментальное авто-зачисление"
+        ]
+      },
+      {
+        "id": "tokens_500",
+        "name": "500 Жетонов",
+        "icon": "💰",
+        "image": "images/tokens_500.png",
+        "color": "from-amber-500 to-yellow-400",
+        "borderColor": "border-amber-500/40",
+        "price": 399,
+        "badge": "500 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 500"],
+        "perks": [
+          "500 Жетонов на игровой баланс",
+          "Хватит на лучшую экипировку и ресурсы",
+          "Моментальное авто-зачисление"
+        ]
+      },
+      {
+        "id": "tokens_1000",
+        "name": "1 000 Жетонов",
+        "icon": "💰",
+        "image": "images/tokens_1000.png",
+        "color": "from-amber-500 to-orange-500",
+        "borderColor": "border-amber-500/40",
+        "price": 849,
+        "badge": "1000 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 1000"],
+        "perks": [
+          "1 000 Жетонов на игровой баланс",
+          "Крупный пакет валюты по выгодной цене",
+          "Моментальное авто-зачисление"
+        ]
+      },
+      {
+        "id": "tokens_5000",
+        "name": "5 000 Жетонов",
+        "icon": "💎",
+        "image": "images/tokens_5000.png",
+        "color": "from-yellow-500 to-amber-500",
+        "borderColor": "border-yellow-500/50",
+        "price": 4699,
+        "badge": "5000 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 5000"],
+        "perks": [
+          "5 000 Жетонов на игровой баланс",
+          "Премиальный запас для любого игрока",
+          "Моментальное авто-зачисление"
+        ]
+      },
+      {
+        "id": "tokens_10000",
+        "name": "10 000 Жетонов",
+        "icon": "👑",
+        "image": "images/tokens_10000.png",
+        "color": "from-amber-400 to-yellow-300",
+        "borderColor": "border-amber-400/60",
+        "price": 7500,
+        "badge": "10000 Жетонов",
+        "category": "currency",
+        "commands": ["p give {player} 10000"],
+        "perks": [
+          "10 000 Жетонов на игровой баланс",
+          "Максимальный банк и статус миллионера",
+          "Моментальное авто-зачисление"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "id": "srv_unban",
+        "name": "Разбан",
+        "icon": "🔓",
+        "image": "images/unban.jpg",
+        "color": "from-amber-600 to-orange-500",
+        "borderColor": "border-amber-500/30",
+        "price": 199,
+        "badge": "Снятие бана",
+        "category": "services",
+        "commands": ["unban {player}", "pardon {player}", "unbanip {player}"],
+        "perks": [
+          "Снятие блокировки на сервере FloryMine",
+          "Снимает любые временные баны",
+          "Не снимает вечные блокировки (навсегда)",
+          "Моментальная авто-разблокировка"
+        ]
+      },
+      {
+        "id": "srv_unmute",
+        "name": "Размут",
+        "icon": "💬",
+        "image": "images/unmute.jpg",
+        "color": "from-yellow-600 to-amber-500",
+        "borderColor": "border-yellow-500/30",
+        "price": 59,
+        "badge": "Снятие мута",
+        "category": "services",
+        "commands": ["unmute {player}"],
+        "perks": [
+          "Снятие блокировки игрового чата",
+          "Снимает любые временные муты",
+          "Не снимает вечные блокировки чата",
+          "Моментальная авто-разблокировка"
+        ]
+      }
+    ]
+  },
+  "promoCodes": [
+    {
+      "code": "TWOUSE",
+      "discount": 95,
+      "active": true,
+      "max_uses": 1,
+      "used_count": 0,
+      "valid_from": "",
+      "valid_until": "",
+      "applies_to": "all",
+      "desc": "Тестовая скидка 95% (лимит 1 использование)"
+    }
+  ],
+  "recentPurchases": []
+}
