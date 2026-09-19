@@ -795,8 +795,23 @@ function updateModalPrice() {
 }
 
 // Unified Eligibility & Rank Check for Modal
+let checkEligibilityTimer = null;
+let activeEligibilityToken = 0;
+
+function schedulePlayerEligibilityCheck(nick, item, immediate = false) {
+  if (checkEligibilityTimer) clearTimeout(checkEligibilityTimer);
+  if (immediate) {
+    checkPlayerEligibility(nick, item);
+  } else {
+    checkEligibilityTimer = setTimeout(() => {
+      checkPlayerEligibility(nick, item);
+    }, 200);
+  }
+}
+
 async function checkPlayerEligibility(nick, item) {
   if (!item) return;
+  const currentToken = ++activeEligibilityToken;
   const cleanNick = (nick || "").trim();
 
   // 1. Check services (unban, unmute)
@@ -816,7 +831,7 @@ async function checkPlayerEligibility(nick, item) {
   // 2. Check privileges (rank restrictions & upgrades)
   const isPrivilege = item.category === 'privileges' || RANK_HIERARCHY.some(r => r.id === item.id && r.level > 0 && r.purchasable);
   if (isPrivilege) {
-    return checkPlayerRankEligibility(cleanNick, item);
+    return checkPlayerRankEligibility(cleanNick, item, currentToken);
   }
 
   // 3. Reset for other items (cases, tokens, currency): NEVER blocked by player rank!
@@ -843,7 +858,7 @@ async function checkPlayerEligibility(nick, item) {
   updateModalPrice();
 }
 
-async function checkPlayerRankEligibility(nick, product) {
+async function checkPlayerRankEligibility(nick, product, token = 0) {
   const alertBox = document.getElementById('modalRankAlert');
   const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
   const oldPriceEl = document.getElementById('modalOldPrice');
@@ -881,11 +896,14 @@ async function checkPlayerRankEligibility(nick, product) {
     let data = playerRankCache[cleanNick.toLowerCase()];
     if (!data) {
       const res = await fetch(`/api/player?name=${encodeURIComponent(cleanNick)}`);
+      if (token && token !== activeEligibilityToken) return; // Stale request
       if (res.ok) {
         data = await res.json();
         playerRankCache[cleanNick.toLowerCase()] = data;
       }
     }
+
+    if (token && token !== activeEligibilityToken) return; // Stale request
 
     const currentRank = getRankInfoByGroupOrId(data?.group_id || data?.group || 'default');
     const targetRank = getRankInfoByGroupOrId(product.id);
@@ -1857,18 +1875,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind Enter & Input key on Modal Nickname Input
+  // Bind Enter, Input & Paste key on Modal Nickname Input
   const modalNickInput = document.getElementById('modalNicknameInput');
   if (modalNickInput) {
     modalNickInput.addEventListener('input', () => {
       if (selectedProduct) {
-        checkPlayerEligibility(modalNickInput.value.trim(), selectedProduct);
+        schedulePlayerEligibilityCheck(modalNickInput.value.trim(), selectedProduct, false);
       }
     });
     modalNickInput.addEventListener('blur', () => {
       if (selectedProduct) {
-        checkPlayerEligibility(modalNickInput.value.trim(), selectedProduct);
+        schedulePlayerEligibilityCheck(modalNickInput.value.trim(), selectedProduct, true);
       }
+    });
+    modalNickInput.addEventListener('change', () => {
+      if (selectedProduct) {
+        schedulePlayerEligibilityCheck(modalNickInput.value.trim(), selectedProduct, true);
+      }
+    });
+    modalNickInput.addEventListener('paste', () => {
+      setTimeout(() => {
+        if (selectedProduct) {
+          schedulePlayerEligibilityCheck(modalNickInput.value.trim(), selectedProduct, true);
+        }
+      }, 50);
     });
     modalNickInput.addEventListener('keyup', (e) => {
       if (e.key === 'Enter') processPayment();
