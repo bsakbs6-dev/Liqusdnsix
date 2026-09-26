@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата отменена — FloryMine Network</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #06080e;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    .font-brand {
+      font-family: 'Unbounded', sans-serif;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 relative overflow-x-hidden selection:bg-amber-500 selection:text-black">
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-red-500/10 rounded-full blur-[140px]"></div>
+  </div>
+
+  <main class="relative z-10 w-full max-w-lg mx-auto text-center my-auto py-8">
+    <a href="/" class="inline-flex items-center gap-3 mb-6 group transition">
+      <img src="/images/logo.png" alt="FloryMine" class="w-12 h-12 rounded-full border border-amber-500/40 shadow-lg group-hover:scale-105 transition">
+      <span class="font-brand font-black text-xl tracking-wider text-white">FLORY<span class="text-amber-400">MINE</span></span>
+    </a>
+
+    <div class="bg-[#0c1017]/90 border border-red-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-amber-400 to-red-500"></div>
+
+      <div class="w-20 h-20 mx-auto mb-5 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center shadow-lg shadow-red-500/10">
+        <i data-lucide="x-circle" class="w-10 h-10 text-red-400"></i>
+      </div>
+
+      <h1 class="font-brand font-extrabold text-2xl sm:text-3xl text-white mb-2">Оплата отменена</h1>
+      <p class="text-gray-300 text-sm sm:text-base mb-6">
+        Счёт не был оплачен или платёж был отменён в платёжной системе. Средства с вашего счёта не списывались.
+      </p>
+
+      <a href="/" class="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-brand font-black py-3 px-6 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Вернуться в магазин
+      </a>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата успешна! — FloryMine Network</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #06080e;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    .font-brand {
+      font-family: 'Unbounded', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 relative overflow-x-hidden selection:bg-amber-500 selection:text-black">
+  <!-- Background Glow -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[140px]"></div>
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[120px]"></div>
+  </div>
+
+  <main class="relative z-10 w-full max-w-lg mx-auto text-center my-auto py-8">
+    <!-- Brand Header -->
+    <a href="/" class="inline-flex items-center gap-3 mb-6 group transition">
+      <img src="/images/logo.png" alt="FloryMine" class="w-12 h-12 rounded-full border border-amber-500/40 shadow-lg group-hover:scale-105 transition">
+      <span class="font-brand font-black text-xl tracking-wider text-white">FLORY<span class="text-amber-400">MINE</span></span>
+    </a>
+
+    <!-- Success Card -->
+    <div class="bg-[#0c1017]/90 border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500"></div>
+
+      <!-- Icon -->
+      <div class="w-20 h-20 mx-auto mb-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/10 animate-bounce">
+        <i data-lucide="check-circle" class="w-10 h-10 text-emerald-400"></i>
+      </div>
+
+      <h1 class="font-brand font-extrabold text-2xl sm:text-3xl text-white mb-2">Оплата успешна!</h1>
+      <p class="text-gray-300 text-sm sm:text-base mb-6">
+        Спасибо за покупку! Донат выдан на сервере <span class="text-amber-400 font-semibold font-mono">mc.florymine.fun</span>
+      </p>
+
+      <!-- Purchase Details -->
+      <div class="bg-black/40 border border-white/5 rounded-xl p-4 text-left text-xs sm:text-sm space-y-2.5 mb-6">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Игрок:</span>
+          <span id="detailPlayer" class="font-mono font-bold text-amber-300 text-sm sm:text-base">Загрузка...</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Товар:</span>
+          <span id="detailItem" class="font-semibold text-white">Загрузка...</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-400">Сумма заказа:</span>
+          <span id="detailPrice" class="font-mono font-bold text-emerald-400">... ₽</span>
+        </div>
+        <div class="flex justify-between items-center text-[11px] text-gray-500 pt-2 border-t border-white/5">
+          <span>Номер счёта:</span>
+          <span id="detailInv" class="font-mono">#...</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/" class="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-brand font-black py-3 px-6 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm">
+          <i data-lucide="home" class="w-4 h-4"></i> На главную
+        </a>
+      </div>
+
+      <div class="mt-4 text-[11px] text-gray-400">
+        Автоматический переход на главную через <span id="countdownTimer" class="font-mono text-amber-400 font-bold">8</span> сек.
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Sound effect
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const playTone = (freq, type, duration, delay) => {
+        setTimeout(() => {
+          try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+          } catch(e) {}
+        }, delay);
+      };
+      playTone(523.25, 'triangle', 0.2, 50);
+      playTone(659.25, 'triangle', 0.2, 180);
+      playTone(783.99, 'triangle', 0.35, 320);
+      playTone(1046.50, 'triangle', 0.45, 460);
+    } catch(e) {}
+
+    // Confetti
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      setTimeout(() => {
+        confetti({ particleCount: 80, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 80, angle: 120, spread: 55, origin: { x: 1 } });
+      }, 350);
+    }
+
+    // Friendly names dict
+    const itemNames = {
+      warrior: "Воин",
+      berserk: "Берсерк",
+      spartan: "Спартанец",
+      knight: "Рыцарь",
+      lord: "Лорд",
+      vladyka: "Владыка",
+      emperor: "Император",
+      case_donate_1: "Донат-Кейс (1 шт)",
+      case_donate_3: "Донат-Кейс (3 шт)",
+      case_donate_10: "Донат-Кейс (10 шт)",
+      case_tokens_1: "Кейс с токенами (1 шт)",
+      case_tokens_5: "Кейс с токенами (5 шт)",
+      case_tokens_15: "Кейс с токенами (15 шт)",
+      tokens_50: "50 Токенов",
+      tokens_100: "100 Токенов",
+      tokens_500: "500 Токенов",
+      tokens_1000: "1,000 Токенов",
+      tokens_5000: "5,000 Токенов",
+      tokens_10000: "10,000 Токенов",
+      srv_unban: "Разбан игрока",
+      srv_unmute: "Размут игрока"
+    };
+
+    // Parse URL params
+    const params = new URLSearchParams(window.location.search);
+    const player = params.get('Shp_player') || 'Игрок';
+    const itemId = params.get('Shp_item') || '';
+    const rawSum = params.get('OutSum') || '0';
+    const invId = params.get('InvId') || '';
+    const orderId = params.get('Shp_order') || ('ROBO-' + invId);
+    const promo = params.get('Shp_promo') || '';
+    const isUpgr = params.get('Shp_upgr') === '1';
+    const upgrFrom = params.get('Shp_upfrom') || '';
+
+    const displayItem = itemNames[itemId] || itemId || 'Донат-услуга';
+    const displayPrice = parseFloat(rawSum) ? Math.round(parseFloat(rawSum)) : rawSum;
+
+    document.getElementById('detailPlayer').textContent = player;
+    document.getElementById('detailItem').textContent = displayItem;
+    document.getElementById('detailPrice').textContent = displayPrice + ' ₽';
+    document.getElementById('detailInv').textContent = '#' + (invId || 'Заказ');
+
+    // Record purchase to live ticker via relative POST
+    if (player && displayItem) {
+      fetch('/api/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nick: player,
+          item: displayItem,
+          price: Number(rawSum) || 0,
+          promo: promo,
+          order_id: orderId,
+          is_upgrade: isUpgr,
+          from_rank: upgrFrom,
+          time: 'только что'
+        })
+      }).catch(() => {});
+    }
+
+    // Also trigger Robokassa result endpoint in background to ensure delivery
+    if (invId && rawSum) {
+      fetch('/api/robokassa-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(params.entries()))
+      }).catch(() => {});
+    }
+
+    // Auto-redirect countdown
+    let seconds = 8;
+    const timerEl = document.getElementById('countdownTimer');
+    const interval = setInterval(() => {
+      seconds--;
+      if (timerEl) timerEl.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.location.href = '/';
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

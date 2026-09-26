@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+  <title>Публичная оферта — FloryMine</title>
+  
+  <!-- Favicons & App Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="images/favicon-192.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=5.4">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            flory: {
+              glow: '#f59e0b',
+              gold: '#fbbf24',
+              orange: '#f97316',
+              dark: '#0a0d14'
+            }
+          },
+          fontFamily: {
+            brand: ['Unbounded', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#07090e] text-gray-100 font-sans antialiased selection:bg-amber-500 selection:text-black min-h-screen flex flex-col relative w-full overflow-x-hidden">
+
+  <!-- Background decorative royal castle & glowing orbs -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden w-full h-full">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.38] scale-100" style="background-image: url('images/bg-royal.jpg'); filter: saturate(1.25) brightness(0.85);"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#07090e]/85 via-[#07090e]/75 to-[#07090e]/95"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_0%,rgba(245,158,11,0.18),transparent_70%)]"></div>
+    <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[90vw] max-w-[700px] h-[400px] bg-gradient-to-b from-amber-500/25 via-orange-500/15 to-transparent blur-[120px] rounded-full"></div>
+    <div class="bg-grid-pattern absolute inset-0 opacity-[0.03]"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#090d16]/95 border-b border-amber-500/20 shadow-[0_4px_30px_rgba(0,0,0,0.6)] w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5 sm:gap-3.5 group">
+        <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-yellow-300 shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-105 transition-transform">
+          <img src="images/logo.png" alt="FloryMine Logo" class="w-full h-full object-cover rounded-full bg-[#0d131f]">
+        </div>
+        <div>
+          <div class="font-brand font-extrabold text-base sm:text-xl tracking-wider text-white flex items-center gap-1">
+            FLORY<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">MINE</span>
+          </div>
+          <p class="hidden sm:block text-[11px] text-gray-400 font-medium tracking-wide">Анархия 1.21.x • Магазин сервера</p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a href="/" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-300 text-xs sm:text-sm font-bold flex items-center gap-1.5 transition border border-gray-700">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span>На главную</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT CONTAINER -->
+  <main class="relative pt-8 pb-16 z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 flex-grow">
+    
+    <!-- Top Action Breadcrumbs -->
+    <div class="mb-6 flex items-center justify-between text-xs text-gray-400">
+      <div class="flex items-center gap-2">
+        <a href="/" class="hover:text-amber-400 transition">Главная</a>
+        <span>/</span>
+        <span class="text-amber-400 font-medium">Публичная оферта</span>
+      </div>
+      <span class="text-[11px] text-gray-500 font-mono">Редакция от 2026 г.</span>
+    </div>
+
+    <div class="bg-[#0c101a]/90 border border-amber-500/30 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-[0_10px_50px_rgba(0,0,0,0.8)]">
+      
+      <div class="text-center pb-6 mb-6 border-b border-gray-800">
+        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-[11px] uppercase tracking-wider inline-block mb-3">Официальный документ</span>
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-brand font-black text-white">ПУБЛИЧНАЯ ОФЕРТА</h1>
+        <p class="text-xs sm:text-sm text-gray-400 mt-2">о заключении договора об оказании услуг (цифровой функционал и внутриигровые ценности)</p>
+        
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <a href="/oferta.docx" download="oferta_florymine.docx" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-black font-bold text-xs transition shadow-sm">
+            <i data-lucide="file-down" class="w-4 h-4"></i>
+            <span>Скачать оферту (.docx)</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-gray-300 leading-relaxed font-sans">
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">1. Общие положения</h2>
+      <p class="text-gray-300 leading-relaxed">В настоящей Публичной оферте содержатся условия заключения Договора об оказании услуг (далее по тексту - «Договор об оказании услуг» и/или «Договор»). Настоящей офертой признается предложение, адресованное одному или нескольким конкретным лицам, которое достаточно определенно и выражает намерение лица, сделавшего предложение, считать себя заключившим Договор с адресатом, которым будет принято предложение.</p>
+      <p class="text-gray-300 leading-relaxed">Совершение указанных в настоящей Оферте действий является подтверждением согласия обеих Сторон заключить Договор об оказании услуг на условиях, в порядке и объеме, изложенных в настоящей Оферте.</p>
+      <p class="text-gray-300 leading-relaxed">Нижеизложенный текст Публичной оферты является официальным публичным предложением Исполнителя, адресованный заинтересованному кругу лиц заключить Договор об оказании услуг в соответствии с положениями пункта 2 статьи 437 Гражданского кодекса РФ.</p>
+      <p class="text-gray-300 leading-relaxed">Договор об оказании услуг считается заключенным и приобретает силу с момента совершения Сторонами действий, предусмотренных в настоящей Оферте, и, означающих безоговорочное, а также полное принятие всех условий настоящей Оферты без каких-либо изъятий или ограничений на условиях присоединения.</p>
+      <h3 class="text-sm sm:text-base font-bold text-amber-300 mt-6 mb-2">Термины и определения</h3>
+      <p class="text-gray-300 leading-relaxed">Договор – текст настоящей Оферты с Приложениями, являющимися неотъемлемой частью настоящей Оферты, акцептованный Заказчиком путем совершения конклюдентных действий, предусмотренных настоящей Офертой.</p>
+      <p class="text-gray-300 leading-relaxed">Конклюдентные действия — это поведение, которое выражает согласие с предложением контрагента заключить, изменить или расторгнуть договор. Действия состоят в полном или частичном выполнении условий, которые предложил контрагент.</p>
+      <p class="text-gray-300 leading-relaxed">Сайт Исполнителя в сети «Интернет» – совокупность программ для электронных вычислительных машин и иной информации, содержащейся в информационной системе, доступ к которой обеспечивается посредством сети «Интернет» по доменному имени и сетевому адресу: <a href="https://www.florymine.fun" class="text-amber-400 hover:underline font-semibold">https://www.florymine.fun</a></p>
+      <p class="text-gray-300 leading-relaxed">Стороны Договора (Стороны) – Исполнитель и Заказчик.</p>
+      <p class="text-gray-300 leading-relaxed">Услуга – услуга, оказываемая Исполнителем Заказчику в порядке и на условиях, установленных настоящей Офертой.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">2. Предмет Договора</h2>
+      <p class="text-gray-300 leading-relaxed">Исполнитель обязуется оказать Заказчику Услуги, а Заказчик обязуется оплатить их в размере, порядке и сроки, установленные настоящим Договором.</p>
+      <p class="text-gray-300 leading-relaxed">Наименование, количество, порядок и иные условия оказания Услуг определяются на основании сведений Исполнителя при оформлении заявки Заказчиком, либо устанавливаются на сайте Исполнителя в сети «Интернет» <a href="https://www.florymine.fun" class="text-amber-400 hover:underline font-semibold">https://www.florymine.fun</a></p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель оказывает Услуги по настоящему Договору лично, либо с привлечением третьих лиц, при этом за действия третьих лиц Исполнитель отвечает перед Заказчиком как за свои собственные.</p>
+      <p class="text-gray-300 leading-relaxed">Договор заключается путем акцепта настоящей Оферты через совершение конклюдентных действий, выраженных в:</p>
+      <ul class="list-disc list-inside space-y-1.5 pl-2 text-gray-300">
+        <li>действиях, связанных с регистрацией учетной записи на Сайте Исполнителя в сети «Интернет» при наличии необходимости регистрации учетной записи;</li>
+        <li>оформлении и направлении Заказчиком заявки в адрес Исполнителя для оказания Услуг;</li>
+        <li>действиях, связанных с оплатой Услуг Заказчиком;</li>
+        <li>действиях, связанных с оказанием Услуг Исполнителем.</li>
+      </ul>
+      <p class="text-gray-300 leading-relaxed">Данный перечень неисчерпывающий, могут быть и другие действия, которые ясно выражают намерение лица принять предложение контрагента.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">3. Права и обязанности Сторон</h2>
+      <h3 class="text-sm sm:text-base font-bold text-amber-300 mt-6 mb-2">3.1. Права и обязанности Исполнителя</h3>
+      <p class="text-gray-300 leading-relaxed">Исполнитель обязуется оказать Услуги в соответствии с положениями настоящего Договора, в сроки и объеме, указанные в настоящем Договоре и (или) в порядке, указанном на Сайте Исполнителя.</p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель обязуется предоставлять Заказчику доступ к разделам Сайта, необходимым для получения информации, согласно пункту 2.1. Договора.</p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель несет ответственность за хранение и обработку персональных данных Заказчика, обеспечивает сохранение конфиденциальности этих данных и использует их исключительно для качественного оказания Услуг Заказчику.</p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель оставляет за собой право изменять сроки (период) оказания Услуг и условия настоящей Оферты в одностороннем порядке без предварительного уведомления Заказчика, публикуя указанные изменения на Сайте Исполнителя в сети «Интернет».</p>
+      <p class="text-gray-300 leading-relaxed">При этом новые / измененные условия, указываемые на Сайте, действуют только в отношении вновь заключаемых Договоров.</p>
+      <h3 class="text-sm sm:text-base font-bold text-amber-300 mt-6 mb-2">3.2. Права и обязанности Заказчика</h3>
+      <p class="text-gray-300 leading-relaxed">Заказчик обязан предоставлять достоверную информацию о себе при получении соответствующих Услуг.</p>
+      <p class="text-gray-300 leading-relaxed">Заказчик обязуется не воспроизводить, не повторять, не копировать, не продавать, а также не использовать в каких бы то ни было целях информацию и материалы, ставшие ему доступными в связи с оказанием Услуг, за исключением личного использования непосредственно самим Заказчиком без предоставления в какой-либо форме доступа каким-либо третьим лицам.</p>
+      <p class="text-gray-300 leading-relaxed">Заказчик обязуется принять Услуги, оказанные Исполнителем;</p>
+      <p class="text-gray-300 leading-relaxed">Заказчик вправе потребовать от Исполнителя вернуть денежные средства за неоказанные услуги, некачественно оказанные услуги, услуги, оказанные с нарушением сроков оказания, а также, если Заказчик решил отказаться от услуг по причинам, не связанным с нарушением обязательств со стороны Исполнителя, исключительно по основаниям, предусмотренным действующим законодательством Российской Федерации.</p>
+      <p class="text-gray-300 leading-relaxed">Заказчик гарантирует, что все условия Договора ему понятны; Заказчик принимает условия без оговорок, а также в полном объеме.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">4. Цена и порядок расчетов</h2>
+      <p class="text-gray-300 leading-relaxed">Стоимость услуг Исполнителя, оказываемых Заказчиком и порядок их оплаты, определяются на основании сведений Исполнителя при оформлении заявки Заказчиком либо устанавливаются на Сайте Исполнителя в сети «Интернет»: <a href="https://www.florymine.fun" class="text-amber-400 hover:underline font-semibold">https://www.florymine.fun</a></p>
+      <p class="text-gray-300 leading-relaxed">Все расчеты по Договору производятся в безналичном порядке.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">5. Конфиденциальность и безопасность</h2>
+      <p class="text-gray-300 leading-relaxed">При реализации настоящего Договора Стороны обеспечивают конфиденциальность и безопасность персональных данных в соответствии с актуальной редакцией ФЗ от 27.07.2006 г. № 152-ФЗ «О персональных данных» и ФЗ от 27.07.2006 г. № 149-ФЗ «Об информации, информационных технологиях и о защите информации».</p>
+      <p class="text-gray-300 leading-relaxed">Стороны обязуются сохранять конфиденциальность информации, полученной в ходе исполнения настоящего Договора, и принять все возможные меры, чтобы предохранить полученную информацию от разглашения.</p>
+      <p class="text-gray-300 leading-relaxed">Под конфиденциальной информацией понимается любая информация, передаваемая Исполнителем и Заказчиком в процессе реализации Договора и подлежащая защите, исключения указаны ниже.</p>
+      <p class="text-gray-300 leading-relaxed">Такая информация может содержаться в предоставляемых Исполнителю локальных нормативных актах, договорах, письмах, отчетах, аналитических материалах, результатах исследований, схемах, графиках, спецификациях и других документах, оформленных как на бумажных, так и на электронных носителях.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">6. Форс-мажор</h2>
+      <p class="text-gray-300 leading-relaxed">Стороны освобождаются от ответственности за неисполнение или ненадлежащее исполнение обязательств по Договору, если надлежащее исполнение оказалось невозможным вследствие непреодолимой силы, то есть чрезвычайных и непредотвратимых при данных условиях обстоятельств, под которыми понимаются: запретные действия властей, эпидемии, блокада, эмбарго, землетрясения, наводнения, пожары или другие стихийные бедствия.</p>
+      <p class="text-gray-300 leading-relaxed">В случае наступления этих обстоятельств Сторона обязана в течение 30 (Тридцати) рабочих дней уведомить об этом другую Сторону.</p>
+      <p class="text-gray-300 leading-relaxed">Документ, выданный уполномоченным государственным органом, является достаточным подтверждением наличия и продолжительности действия непреодолимой силы.</p>
+      <p class="text-gray-300 leading-relaxed">Если обстоятельства непреодолимой силы продолжают действовать более 60 (Шестидесяти) рабочих дней, то каждая Сторона вправе отказаться от настоящего Договора в одностороннем порядке.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">7. Ответственность Сторон</h2>
+      <p class="text-gray-300 leading-relaxed">В случае неисполнения и/или ненадлежащего исполнения своих обязательств по Договору, Стороны несут ответственность в соответствии с условиями настоящей Оферты.</p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель не несет ответственности за неисполнение и/или ненадлежащее исполнение обязательств по Договору, если такое неисполнение и/или ненадлежащее исполнение произошло по вине Заказчика.</p>
+      <p class="text-gray-300 leading-relaxed">Сторона, не исполнившая или ненадлежащим образом исполнившая обязательства по Договору, обязана возместить другой Стороне причиненные такими нарушениями убытки.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">8. Срок действия настоящей Оферты</h2>
+      <p class="text-gray-300 leading-relaxed">Оферта вступает в силу с момента размещения на Сайте Исполнителя и действует до момента её отзыва Исполнителем.</p>
+      <p class="text-gray-300 leading-relaxed">Исполнитель оставляет за собой право внести изменения в условия Оферты и/или отозвать Оферту в любой момент по своему усмотрению. Сведения об изменении или отзыве Оферты доводятся до Заказчика по выбору Исполнителя посредством размещения на сайте Исполнителя в сети «Интернет», в Личном кабинете Заказчика, либо путем направления соответствующего уведомления на электронный или почтовый адрес, указанный Заказчиком при заключении Договора или в ходе его исполнения.</p>
+      <p class="text-gray-300 leading-relaxed">Договор вступает в силу с момента Акцепта условий Оферты Заказчиком и действует до полного исполнения Сторонами обязательств по Договору.</p>
+      <p class="text-gray-300 leading-relaxed">Изменения, внесенные Исполнителем в Договор и опубликованные на сайте в форме актуализированной Оферты, считаются принятыми Заказчиком в полном объеме.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-3 border-b border-gray-800 pb-2">9. Дополнительные условия</h2>
+      <p class="text-gray-300 leading-relaxed">Договор, его заключение и исполнение регулируется действующим законодательством Российской Федерации. Все вопросы, не урегулированные настоящей Офертой или урегулированные не полностью, регулируются в соответствии с материальным правом Российской Федерации.</p>
+      <p class="text-gray-300 leading-relaxed">В случае возникновения спора, который может возникнуть между Сторонами в ходе исполнения ими своих обязательств по Договору, заключенному на условиях настоящей Оферты, Стороны обязаны урегулировать спор мирным путем до начала судебного разбирательства.</p>
+      <p class="text-gray-300 leading-relaxed">Судебное разбирательство осуществляется в соответствии с законодательством Российской Федерации.</p>
+      <p class="text-gray-300 leading-relaxed">Споры или разногласия, по которым Стороны не достигли договоренности, подлежат разрешению в соответствии с законодательством РФ. Досудебный порядок урегулирования спора является обязательным.</p>
+      <p class="text-gray-300 leading-relaxed">В качестве языка Договора, заключаемого на условиях настоящей Оферты, а также языка, используемого при любом взаимодействии Сторон (включая ведение переписки, предоставление требований / уведомлений / разъяснений, предоставление документов и т. д.), Стороны определили русский язык.</p>
+      <p class="text-gray-300 leading-relaxed">Все документы, подлежащие предоставлению в соответствии с условиями настоящей Оферты, должны быть составлены на русском языке либо иметь перевод на русский язык, удостоверенный в установленном порядке.</p>
+      <p class="text-gray-300 leading-relaxed">Бездействие одной из Сторон в случае нарушения условий настоящей Оферты не лишает права заинтересованной Стороны осуществлять защиту своих интересов позднее, а также не означает отказа от своих прав в случае совершения одной из Сторон подобных либо сходных нарушений в будущем.</p>
+      <p class="text-gray-300 leading-relaxed">Если на Сайте Исполнителя в сети «Интернет» есть ссылки на другие веб-сайты и материалы третьих лиц, такие ссылки размещены исключительно в целях информирования, и Исполнитель не имеет контроля в отношении содержания таких сайтов или материалов. Исполнитель не несет ответственность за любые убытки или ущерб, которые могут возникнуть в результате использования таких ссылок.</p>
+      <h2 class="text-base sm:text-lg font-bold text-amber-400 uppercase tracking-wider mt-8 mb-4 border-b border-gray-800 pb-2">10. Реквизиты Исполнителя</h2>
+
+      <div class="mt-6 bg-[#090d16] border border-amber-500/40 rounded-2xl p-5 sm:p-7 shadow-[0_0_30px_rgba(245,158,11,0.15)]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Исполнитель:</span>
+            <span class="font-bold text-white text-sm sm:text-base">Самозанятый Луцюк Иван Андреевич</span>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">ИНН:</span>
+            <span class="font-mono font-bold text-amber-400 text-sm sm:text-base">910614106137</span>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Статус налогообложения:</span>
+            <span class="font-semibold text-gray-200">Плательщик налога на профессиональный доход (НПД)</span>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Официальный сайт:</span>
+            <a href="https://www.florymine.fun" class="font-bold text-amber-400 hover:underline">https://www.florymine.fun</a>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Контактный телефон:</span>
+            <a href="tel:+79781939220" class="font-mono font-bold text-white hover:text-amber-400 transition">+7 (978) 193-92-20</a>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Служба поддержки (e-mail):</span>
+            <a href="mailto:support@florymine.fun" class="font-bold text-amber-400 hover:underline">support@florymine.fun</a>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Личный e-mail администратора:</span>
+            <a href="mailto:userbookmen2v2@mail.ru" class="font-mono text-gray-300 hover:text-amber-400">userbookmen2v2@mail.ru</a>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px] uppercase tracking-wider mb-0.5">Способы оплаты и доставки:</span>
+            <span class="text-gray-300">Банковские карты, СБП. Доставка цифровая, моментальная на сервере mc.florymine.fun</span>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-800 flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400">
+        <div>Исполнитель: <span class="text-white font-semibold">Самозанятый Луцюк И. А.</span> (ИНН: 910614106137)</div>
+        <a href="/" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-brand font-bold text-xs uppercase tracking-wider transition">Вернуться в магазин</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-amber-500/20 bg-[#06080e] py-8 sm:py-10 relative z-20 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div class="flex items-center justify-center md:justify-start gap-3">
+        <img src="images/logo.png" alt="FloryMine" class="w-10 h-10 rounded-full border border-amber-500/40 shadow">
+        <div>
+          <div class="font-brand font-extrabold text-sm sm:text-base text-white tracking-wider">FLORYMINE NETWORK</div>
+          <div class="text-[11px] text-gray-400 font-medium">Владелец проекта: <span class="text-gray-200">Луцюк И. А.</span> • ИНН: <span class="text-amber-400 font-mono">910614106137</span></div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-xs text-gray-400">
+        <a href="/rules" class="hover:text-amber-400 transition underline underline-offset-4">Правила сервера</a>
+        <span>•</span>
+        <a href="/oferta" class="text-amber-400 transition underline underline-offset-4 font-bold">Публичная оферта</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-amber-400 transition underline underline-offset-4">Конфиденциальность</a>
+        <span>•</span>
+        <a href="/requisites" class="hover:text-amber-400 transition underline underline-offset-4">Реквизиты и контакты</a>
+        <span>•</span>
+        <a href="mailto:support@florymine.fun" class="hover:text-amber-400 transition underline underline-offset-4">support@florymine.fun</a>
+      </div>
+
+      <div class="text-center text-[11px] text-gray-500">
+        © 2026 FloryMine. Все права защищены. Minecraft является торговой маркой Mojang AB.
+      </div>
+    </div>
+  </footer>
+
+  <script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

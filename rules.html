@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Свод правил игрового сервера — FloryMine</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            brand: ['Unbounded', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #07090e; }
+    .font-brand { font-family: 'Unbounded', sans-serif; }
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+  </style>
+</head>
+<body class="bg-[#07090e] text-gray-100 antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-amber-500 selection:text-black">
+
+  <!-- Glowing background lights -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[90vw] max-w-[650px] h-[380px] bg-gradient-to-b from-amber-600/20 via-orange-500/10 to-transparent blur-[110px] rounded-full"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[70vw] max-w-[500px] h-[500px] bg-yellow-600/10 blur-[130px] rounded-full"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#090d16]/95 border-b border-amber-500/20 shadow-[0_4px_30px_rgba(0,0,0,0.6)] w-full">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 to-yellow-300 shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-105 transition-transform">
+          <img src="images/logo.png" alt="FloryMine" class="w-full h-full object-cover rounded-full bg-[#0d131f]">
+        </div>
+        <div>
+          <div class="font-brand font-extrabold text-base sm:text-xl tracking-wider text-white">
+            FLORY<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">MINE</span>
+          </div>
+          <p class="hidden sm:block text-[11px] text-gray-400 font-medium">Свод правил проекта</p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a href="/" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-200 hover:text-amber-400 border border-gray-700 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span>В магазин</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full flex-grow">
+    
+    <!-- Hero Title -->
+    <div class="text-center mb-8 sm:mb-12">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs uppercase tracking-wider mb-3 shadow">
+        <i data-lucide="shield-alert" class="w-4 h-4"></i>
+        Официальный регламент
+      </div>
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black font-brand text-white tracking-wide mb-3">
+        Правила сервера <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-300">FloryMine</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Незнание правил не освобождает от ответственности. Играя на нашем сервере, вы автоматически соглашаетесь со всеми приведенными пунктами.
+      </p>
+
+      <!-- Quick Search Bar -->
+      <div class="mt-6 max-w-md mx-auto relative">
+        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input type="text" id="rulesSearch" placeholder="Поиск по номеру правила или ключевому слову..." oninput="filterRules()"
+          class="w-full pl-10 pr-4 py-2.5 bg-[#0e131f] border border-amber-500/30 focus:border-amber-400 rounded-2xl text-xs sm:text-sm text-white placeholder:text-gray-500 outline-none shadow-lg transition">
+      </div>
+    </div>
+
+    <!-- ACCORDION SECTIONS -->
+    <div class="space-y-4" id="rulesContainer">
+
+      <!-- SECTION 1: Общие положения -->
+      <details class="rule-section group bg-[#0e131f] border border-amber-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl transition-all" open>
+        <summary class="cursor-pointer flex items-center justify-between text-base sm:text-xl font-black font-brand text-amber-400 select-none">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-sm sm:text-base font-black">1.x</span>
+            <span>Общие положения и регламент</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-amber-400 group-open:rotate-180 transition-transform"></i>
+        </summary>
+
+        <div class="mt-5 space-y-3 pt-4 border-t border-gray-800/80 text-xs sm:text-sm leading-relaxed text-gray-300">
+          
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition">
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="font-mono font-bold text-amber-400 text-sm">➡︎ 1.1</span>
+              <h3 class="font-bold text-white">Решения администрации</h3>
+            </div>
+            <p class="text-gray-300">
+              Администрация имеет право отступать от правил. Решения, принятые администрацией, являются окончательными и не подлежат оспариванию. Мы оставляем за собой право самостоятельно оценивать каждую ситуацию, чтобы обеспечить справедливость и порядок на сервере.
+            </p>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition">
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="font-mono font-bold text-amber-400 text-sm">➡︎ 1.2</span>
+              <h3 class="font-bold text-white">Политика невозврата средств</h3>
+            </div>
+            <p class="text-gray-300">
+              Все денежные средства, пожертвованные на развитие сервера (донаты), считаются безвозмездной помощью. Возврат средств, потраченных на покупки внутри сервера или пожертвования, не предусмотрен ни при каких обстоятельствах, включая блокировку аккаунта или закрытие сервера.
+            </p>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition">
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="font-mono font-bold text-amber-400 text-sm">➡︎ 1.3</span>
+              <h3 class="font-bold text-white">Ознакомление и согласие</h3>
+            </div>
+            <p class="text-gray-300">
+              Присоединяясь к этому серверу, вы подтверждаете, что ознакомились с правилами и обязуетесь их соблюдать. Нарушение правил, даже по незнанию, влечет за собой наказание.
+            </p>
+          </div>
+
+        </div>
+      </details>
+
+      <!-- SECTION 2: Правила общения и чата -->
+      <details class="rule-section group bg-[#0e131f] border border-amber-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl transition-all" open>
+        <summary class="cursor-pointer flex items-center justify-between text-base sm:text-xl font-black font-brand text-amber-400 select-none">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-sm sm:text-base font-black">2.x</span>
+            <span>Правила общения и текстового чата</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-amber-400 group-open:rotate-180 transition-transform"></i>
+        </summary>
+
+        <div class="mt-5 space-y-3 pt-4 border-t border-gray-800/80 text-xs sm:text-sm leading-relaxed text-gray-300">
+          
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.1</span>
+                <span class="text-white font-semibold">Упоминание родственников:</span>
+              </div>
+              <p class="text-gray-300">Запрещено упоминать семью других участников в оскорбительном или негативном контексте.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-[11px]">
+              Мут: 3–12 часов
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.2</span>
+                <span class="text-white font-semibold">Оскорбления и угрозы:</span>
+              </div>
+              <p class="text-gray-300">
+                Оскорбления в любом виде строго запрещены (унижение, угрозы, неуважительное отношение).<br>
+                <span class="text-gray-400 text-xs">Список исключений: «Дебил», «Дурак», «Идиот», «ezka», «ezz», «слабый», «немощь».</span>
+              </p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-[11px]">
+              Мут: 1–6 часов
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.3</span>
+                <span class="text-white font-semibold">Нецензурная лексика (Мат):</span>
+              </div>
+              <p class="text-gray-300">Запрещен мат и любая нецензурная лексика (прямой мат и его завуалированные формы).</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold text-[11px]">
+              Мут: 15–30 минут
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.4</span>
+                <span class="text-white font-semibold">Флуд и Спам:</span>
+              </div>
+              <p class="text-gray-300">Запрещается отправлять 3 или более однотипных сообщения за 2 минуты, а также бессмысленные наборы символов/букв.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold text-[11px]">
+              Мут: 1–3 часа
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.5</span>
+                <span class="text-white font-semibold">Провокации и троллинг:</span>
+              </div>
+              <p class="text-gray-300">Запрещаются любые действия, направленные на разжигание конфликтов, споров или агрессии среди участников.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-[11px]">
+              Мут: 3–12 часов
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.6</span>
+                <span class="text-white font-semibold">Реклама и пиар:</span>
+              </div>
+              <p class="text-gray-300">Пиар Discord каналов / соц.сетей, не связанных с проектом (Исключение — стримы/видео на нашем сервере).</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-[11px]">
+              Мут: 12 ч – 3 дня
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.7</span>
+                <span class="text-white font-semibold">Подстрекательство к нарушениям:</span>
+              </div>
+              <p class="text-gray-300">Подстрекательство игроков к нарушению правил проекта.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/40 text-red-300 font-bold text-[11px]">
+              Мут: 1–3 дня / Навсегда
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.8</span>
+                <span class="text-white font-semibold">Розжиг розни и дискриминация:</span>
+              </div>
+              <p class="text-gray-300">Проявления расизма, нацизма, фашизма, межнациональной или религиозной розни.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-[11px]">
+              Мут: 1–6 часов
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.9</span>
+                <span class="text-white font-semibold">Попрошайничество:</span>
+              </div>
+              <p class="text-gray-300">Просьбы о деньгах, вещах или ресурсах в общем чате.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 font-bold text-[11px]">
+              Мут: 30–60 минут
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.10</span>
+                <span class="text-white font-semibold">Злоупотребление КАПСОМ:</span>
+              </div>
+              <p class="text-gray-300">Сообщения, где более 80% текста написано заглавными буквами (исключение — слова до 5 букв).</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 font-bold text-[11px]">
+              Мут: 15–30 минут
+            </span>
+          </div>
+
+        </div>
+      </details>
+
+      <!-- SECTION 3: Игровой процесс и безопасность -->
+      <details class="rule-section group bg-[#0e131f] border border-amber-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl transition-all" open>
+        <summary class="cursor-pointer flex items-center justify-between text-base sm:text-xl font-black font-brand text-amber-400 select-none">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-sm sm:text-base font-black">3.x</span>
+            <span>Игровой процесс, безопасность и правила сервера</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-amber-400 group-open:rotate-180 transition-transform"></i>
+        </summary>
+
+        <div class="mt-5 space-y-3 pt-4 border-t border-gray-800/80 text-xs sm:text-sm leading-relaxed text-gray-300">
+          
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.0</span>
+                <span class="text-white font-semibold">Понижение/снятие привилегии:</span>
+              </div>
+              <p class="text-gray-300">Многократное или грубое нарушение правил может привести к понижению или полному снятию донат-статуса.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 font-bold text-[11px]">
+              Снятие привилегии
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.11</span>
+                <span class="text-white font-semibold">Продажа за реальные деньги (RMT):</span>
+              </div>
+              <p class="text-gray-300">Продажа/передача аккаунтов, игровых ценностей, дюпов, читов за реальные деньги вне магазина.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-300 font-bold text-[11px]">
+              Перманентный бан
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.12</span>
+                <span class="text-white font-semibold">Взлом, скам, фишинг:</span>
+              </div>
+              <p class="text-gray-300">Взлом, выманивание паролей/данных, фишинг, деанон и распространение личной информации.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-300 font-bold text-[11px]">
+              Перманентный бан
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.13</span>
+                <span class="text-white font-semibold">Вредоносные механизмы и DDoS:</span>
+              </div>
+              <p class="text-gray-300">Лаг-машины, краш-механизмы, ботинг, DDoS-атаки и попытки нарушить стабильность сервера.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-700/30 border border-red-500 text-red-200 font-bold text-[11px]">
+              Перманентный IP-бан
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.14</span>
+                <span class="text-white font-semibold">Багоюз и дюпы:</span>
+              </div>
+              <p class="text-gray-300">Использование и распространение багов сервера, дюпа предметов и уязвимостей.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/40 text-red-300 font-bold text-[11px]">
+              Бан (Временный / Навсегда)
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.15</span>
+                <span class="text-white font-semibold">Краш-ловушки:</span>
+              </div>
+              <p class="text-gray-300">Зазывать игроков на постройки, вызывающие зависание, просадку FPS или вылет с сервера.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-300 font-bold text-[11px]">
+              Перманентный бан
+            </span>
+          </div>
+
+        </div>
+      </details>
+
+      <!-- SECTION 4: Администрация, проверки и читы -->
+      <details class="rule-section group bg-[#0e131f] border border-amber-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl transition-all" open>
+        <summary class="cursor-pointer flex items-center justify-between text-base sm:text-xl font-black font-brand text-amber-400 select-none">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-sm sm:text-base font-black">4.x</span>
+            <span>Взаимодействие с персоналом, проверки и читы</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-amber-400 group-open:rotate-180 transition-transform"></i>
+        </summary>
+
+        <div class="mt-5 space-y-3 pt-4 border-t border-gray-800/80 text-xs sm:text-sm leading-relaxed text-gray-300">
+          
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.16</span>
+                <span class="text-white font-semibold">Выдача себя за администрацию:</span>
+              </div>
+              <p class="text-gray-300">Выдавать себя за персонал, модерацию или ставить ники с явной отсылкой на администрацию.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/40 text-red-300 font-bold text-[11px]">
+              Бан на усмотрение
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.17</span>
+                <span class="text-white font-semibold">Обман администрации:</span>
+              </div>
+              <p class="text-gray-300">Введение администрации в заблуждение, подделка доказательств, скриншотов и документов.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-300 font-bold text-[11px]">
+              Перманентный бан
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.18</span>
+                <span class="text-white font-semibold">Оскорбление проекта/администрации:</span>
+              </div>
+              <p class="text-gray-300">Оскорбления, провокации и деструктивная критика в сторону проекта или администрации.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500/40 text-red-300 font-bold text-[11px]">
+              Бан на усмотрение
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.19</span>
+                <span class="text-white font-semibold">Запрещенное ПО (Читы, моды, макросы):</span>
+              </div>
+              <p class="text-gray-300">Использование любых читов, модов, программ или макросов, дающих несправедливое преимущество.</p>
+            </div>
+            <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500 text-red-200 font-bold text-[11px]">
+              Бан от 30 дней / Навсегда
+            </span>
+          </div>
+
+          <div class="rule-item p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-950/70 border border-gray-800 hover:border-amber-500/40 transition">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono font-bold text-amber-400 text-sm">4.20</span>
+                <span class="text-white font-semibold">Поведение при проверке на читы:</span>
+              </div>
+              <span class="shrink-0 self-start sm:self-center px-2.5 py-1 rounded-lg bg-red-600/20 border border-red-500 text-red-200 font-bold text-[11px]">
+                Бан от 30 дней / Навсегда
+              </span>
+            </div>
+            <p class="text-gray-300 mb-2">
+              Любые попытки помешать проверке, умышленное затягивание процесса, невыполнение требований проверяющего, а также неадекватное поведение (оскорбления, троллинг, попытки подкупа) приравниваются к отказу от проверки.
+            </p>
+            <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2">
+              <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+              <span>Смягчение: Добровольное признание в использовании запрещенных модификаций сокращает срок блокировки до 14 дней.</span>
+            </div>
+          </div>
+
+        </div>
+      </details>
+
+      <!-- SECTION 5: Реестр запрещенных модификаций -->
+      <details class="rule-section group bg-[#0e131f] border border-red-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl transition-all" open>
+        <summary class="cursor-pointer flex items-center justify-between text-base sm:text-xl font-black font-brand text-red-400 select-none">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 flex items-center justify-center text-sm sm:text-base font-black">🚫</span>
+            <span>Список запрещённых модификаций и чит-клиентов</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-red-400 group-open:rotate-180 transition-transform"></i>
+        </summary>
+
+        <div class="mt-5 space-y-4 pt-4 border-t border-gray-800/80 text-xs sm:text-sm text-gray-300 leading-relaxed">
+          <p class="text-gray-300">
+            Использование любого программного обеспечения из приведенного списка (или их функциональных аналогов) дает нечестное преимущество и карается блокировкой:
+          </p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5" id="cheatGrid">
+            
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Чит-клиенты (Nursultan, Catlavan, Delta...)
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>KillAura / Aura
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Velocity
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Reach
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>AntiKB
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>AutoArmor / AutoTotem
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>X-Ray
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>FreeCam
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Baritone
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Cave Finder / WorldScanner
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Schematica / Litematica
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Мини-карты с игроками/сундуками
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>ChestStealer
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>InventoryMove
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>ElytraAutoPilot
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Auto-Farm / Fish / Crafter
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Packet / Ping Spoofers
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>FastPlace / FastBreak
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>NoFall
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Flight / Fly
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>LiquidWalk / Jesus
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Spider
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>PlayerESP / EntityESP
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Tracers
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Griefing Tools
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>InvCleaner
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Auto-Walk
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Aimbot
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Nuker
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Criticals
+            </div>
+            <div class="cheat-badge p-2.5 rounded-xl bg-gray-950/80 border border-red-500/20 text-red-300 font-mono text-[11px] font-semibold flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Scaffold
+            </div>
+
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-amber-500/20 bg-[#06080e] py-8 relative z-20 w-full">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="FloryMine" class="w-9 h-9 rounded-full border border-amber-500/40 shadow">
+        <div>
+          <div class="font-brand font-extrabold text-sm text-white">FLORYMINE NETWORK</div>
+          <div class="text-[11px] text-gray-400 font-medium">Сервер Майнкрафт: <span class="font-mono text-amber-400">mc.florymine.fun</span></div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <a href="https://dsc.gg/florymine" target="_blank" class="p-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-amber-400 transition" title="Discord">
+          <i data-lucide="message-square" class="w-4 h-4"></i>
+        </a>
+        <a href="https://vk.com/florymine" target="_blank" class="p-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-blue-400 transition font-bold text-xs px-3" title="VK">
+          VK
+        </a>
+        <a href="https://t.me/florymine" target="_blank" class="p-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-cyan-400 transition" title="Telegram">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    function filterRules() {
+      const q = (document.getElementById('rulesSearch').value || '').toLowerCase().trim();
+      const items = document.querySelectorAll('.rule-item, .cheat-badge');
+      
+      items.forEach(el => {
+        const txt = el.innerText.toLowerCase();
+        if (!q || txt.includes(q)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      if (q) {
+        document.querySelectorAll('.rule-section').forEach(d => d.open = true);
+      }
+    }
+  </script>
+</body>
+</html>

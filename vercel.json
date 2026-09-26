@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/oferta", "destination": "/oferta.html" },
+    { "source": "/offer", "destination": "/oferta.html" },
+    { "source": "/rules", "destination": "/rules.html" },
+    { "source": "/requisites", "destination": "/requisites.html" },
+    { "source": "/terms", "destination": "/oferta.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin-manage", "destination": "/admin.html" },
+    { "source": "/control", "destination": "/admin.html" },
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/fail", "destination": "/fail.html" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
+}
