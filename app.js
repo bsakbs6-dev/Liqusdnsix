@@ -477,20 +477,40 @@ let productsData = {
 };
 
 // Switch Category
-function switchCategory(cat) {
-  activeCategory = cat;
-  playSound('click');
-  document.querySelectorAll('.cat-tab').forEach(el => {
-    el.className = "cat-tab px-3 sm:px-5 py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm text-gray-400 hover:text-white transition flex items-center gap-1.5 shrink-0";
-  });
-  const activeBtn = document.getElementById(`tab-${cat}`);
-  if (activeBtn) {
-    activeBtn.className = "cat-tab px-3 sm:px-5 py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.3)]";
+let searchQuery = '';
+
+function onSearchProducts(val) {
+  searchQuery = (val || '').trim().toLowerCase();
+  const clearBtn = document.getElementById('catalogSearchClearBtn');
+  if (clearBtn) {
+    clearBtn.classList.toggle('hidden', !searchQuery);
   }
   renderProducts();
 }
 
-// Render Products Grid
+function clearCatalogSearch() {
+  const input = document.getElementById('catalogSearchInput');
+  if (input) input.value = '';
+  searchQuery = '';
+  const clearBtn = document.getElementById('catalogSearchClearBtn');
+  if (clearBtn) clearBtn.classList.add('hidden');
+  renderProducts();
+}
+
+function switchCategory(cat) {
+  activeCategory = cat;
+  playSound('click');
+  document.querySelectorAll('.cat-tab').forEach(el => {
+    el.className = "cat-tab px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm text-gray-400 hover:text-white transition flex items-center gap-1.5 shrink-0 spring-click";
+  });
+  const activeBtn = document.getElementById(`tab-${cat}`);
+  if (activeBtn) {
+    activeBtn.className = "cat-tab px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.3)] spring-click";
+  }
+  renderProducts();
+}
+
+// Render Products Grid with 21st.dev & Skiper Motion Standards
 function renderProducts() {
   const container = document.getElementById('productsGrid');
   if (!container) return;
@@ -504,10 +524,42 @@ function renderProducts() {
     items = (productsData && productsData[activeCategory]) ? productsData[activeCategory] : [];
   }
   
+  // Instant Search filter
+  if (searchQuery) {
+    items = items.filter(item => {
+      const name = (item.name || '').toLowerCase();
+      const desc = (item.description || '').toLowerCase();
+      const perks = (Array.isArray(item.perks) ? item.perks.join(' ') : '').toLowerCase();
+      return name.includes(searchQuery) || desc.includes(searchQuery) || perks.includes(searchQuery);
+    });
+  }
+
+  // Active Count Badge
+  const countBadge = document.getElementById('catalogResultsCount');
+  if (countBadge) {
+    if (searchQuery) {
+      countBadge.innerHTML = `<iconify-icon icon="solar:magnifer-linear" class="text-amber-400"></iconify-icon> <span>Найдено товаров: <strong>${items.length}</strong> по запросу «${searchQuery}»</span>`;
+      countBadge.classList.remove('hidden');
+    } else {
+      countBadge.classList.add('hidden');
+    }
+  }
+  
   if (!items || items.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full py-12 text-center text-gray-500 text-sm font-medium">
-        В этой категории пока нет товаров.
+      <div class="col-span-full py-16 text-center modern-card rounded-2xl sm:rounded-3xl p-8 border border-white/[0.08] inner-top-glow">
+        <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+          <iconify-icon icon="solar:magnifer-broken" class="text-3xl"></iconify-icon>
+        </div>
+        <h3 class="font-display font-bold text-lg text-white mb-1">Ничего не найдено</h3>
+        <p class="text-gray-400 text-xs max-w-sm mx-auto mb-4 leading-relaxed">
+          ${searchQuery ? `По запросу «${searchQuery}» товаров не найдено. Попробуйте сбросить поиск или выбрать другую категорию.` : 'В этой категории пока нет товаров.'}
+        </p>
+        ${searchQuery ? `
+          <button onclick="clearCatalogSearch()" class="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-amber-400 text-xs font-bold transition spring-click">
+            Сбросить поиск
+          </button>
+        ` : ''}
       </div>
     `;
     return;
@@ -519,14 +571,14 @@ function renderProducts() {
       : ["Мгновенное начисление на сервере", "100% гарантия доставки", "Навсегда без сгорания"];
     
     return `
-    <div class="product-card group relative bg-gradient-to-b from-[#0e121d] to-[#080b12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/50 hover:shadow-[0_15px_35px_-10px_rgba(245,158,11,0.25)] transition-all duration-300">
+    <div class="product-card group relative bg-gradient-to-b from-[#0d121c] to-[#070a12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/50 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow">
       <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${item.color || 'from-amber-600 to-yellow-500'} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity pointer-events-none"></div>
       
       <div>
         <!-- Rounded Image Card Banner with Overlay Badges -->
         <div class="relative w-full aspect-[16/11] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 sm:mb-4 bg-zinc-950 border border-white/[0.08] group-hover:border-amber-500/40 transition-all shadow-inner">
           <img src="${item.image || 'images/vladyka.jpg'}" alt="${item.name}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" loading="lazy" />
-          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-black/10 to-black/40 pointer-events-none"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-black/15 to-black/40 pointer-events-none"></div>
           
           <!-- Badges Overlay -->
           <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
@@ -558,15 +610,15 @@ function renderProducts() {
           <div>
             <span class="text-xl sm:text-2xl font-black font-display text-white">${item.price} ₽</span>
           </div>
-          <span class="text-[10px] sm:text-[11px] text-amber-400 font-semibold">Навсегда</span>
+          <span class="text-[10px] sm:text-[11px] text-amber-400 font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">Навсегда</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="openDetailsModal('${item.id}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center active:scale-95 flex items-center justify-center gap-1">
-            <iconify-icon icon="solar:info-circle-linear" class="text-sm"></iconify-icon>
+          <button onclick="openDetailsModal('${item.id}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center spring-click flex items-center justify-center gap-1">
+            <iconify-icon icon="solar:info-circle-linear" class="text-sm text-gray-400"></iconify-icon>
             <span>Инфо</span>
           </button>
-          <button onclick="openCheckout('${item.id}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_15px_rgba(245,158,11,0.3)] active:scale-95 flex items-center justify-center gap-1">
+          <button onclick="openCheckout('${item.id}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_15px_rgba(245,158,11,0.3)] spring-click flex items-center justify-center gap-1">
             <iconify-icon icon="solar:bag-heart-bold-duotone" class="text-black text-sm"></iconify-icon>
             <span>Купить</span>
           </button>
@@ -1465,24 +1517,43 @@ async function processPayment() {
 // Live Purchases Ticker (Gliding Marquee)
 let recentPurchases = [];
 
+function formatTimeAgo(ts) {
+  if (!ts) return 'только что';
+  const diffMs = Math.max(0, Date.now() - ts);
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 1) return 'только что';
+  if (minutes < 60) return `${minutes} мин. назад`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} ч. назад`;
+  const days = Math.floor(hours / 24);
+  return `${days} дн. назад`;
+}
+
 function deduplicatePurchases(list) {
   if (!Array.isArray(list)) return [];
   const clean = [];
+  const seen = new Set();
   for (const item of list) {
     if (!item || !item.nick || !item.item) continue;
-    const last = clean[clean.length - 1];
-    if (!last || last.nick.toLowerCase() !== item.nick.toLowerCase() || last.item.toLowerCase() !== item.item.toLowerCase()) {
-      clean.push({
-        nick: String(item.nick).trim(),
-        item: String(item.item).trim(),
-        price: (item.price !== undefined && item.price !== null && item.price !== '') ? Number(item.price) : null,
-        promo: item.promo ? String(item.promo).trim().toUpperCase() : '',
-        time: item.time || 'только что',
-        timestamp: item.timestamp || Date.now(),
-        is_upgrade: item.is_upgrade === true || item.is_upgrade === 'true',
-        from_rank: item.from_rank || ''
-      });
-    }
+    const cleanNick = String(item.nick).trim();
+    const cleanItem = String(item.item).trim();
+    const orderKey = item.order_id ? String(item.order_id).trim() : '';
+    const key = orderKey ? `order_${orderKey}` : `${cleanNick.toLowerCase()}_${cleanItem.toLowerCase()}_${Math.floor((item.timestamp || 0) / 20000)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    const ts = item.timestamp || Date.now();
+    clean.push({
+      nick: cleanNick,
+      item: cleanItem,
+      price: (item.price !== undefined && item.price !== null && item.price !== '') ? Number(item.price) : null,
+      promo: item.promo ? String(item.promo).trim().toUpperCase() : '',
+      time: ts ? formatTimeAgo(ts) : (item.time || 'только что'),
+      timestamp: ts,
+      order_id: orderKey,
+      is_upgrade: item.is_upgrade === true || item.is_upgrade === 'true',
+      from_rank: item.from_rank || ''
+    });
   }
   return clean;
 }
@@ -1520,7 +1591,7 @@ function initPurchasesTicker() {
   ticker.style.paddingLeft = '';
 
   // Render each purchase strictly once without any duplication
-  ticker.innerHTML = recentPurchases.map(p => createTickerItemHTML(p.nick, p.item, p.time, p.is_upgrade, p.from_rank)).join('');
+  ticker.innerHTML = recentPurchases.map(p => createTickerItemHTML(p.nick, p.item, p.timestamp ? formatTimeAgo(p.timestamp) : (p.time || 'только что'), p.is_upgrade, p.from_rank)).join('');
 }
 
 function createTickerItemHTML(nick, item, time, isUpgrade, fromRank) {
@@ -1635,8 +1706,26 @@ async function fetchRecentPurchases() {
     if (res.ok) {
       const json = await res.json();
       if (json.purchases && Array.isArray(json.purchases)) {
-        recentPurchases = deduplicatePurchases(json.purchases);
-        try { localStorage.setItem('flory_recent_purchases', JSON.stringify(recentPurchases)); } catch (e) {}
+        if (json.purchases.length > 0) {
+          // Merge incoming purchases with local cache so purchases are never wiped
+          let cached = [];
+          try {
+            const rawCached = localStorage.getItem('flory_recent_purchases');
+            if (rawCached) cached = JSON.parse(rawCached);
+          } catch (e) {}
+          const merged = deduplicatePurchases([...json.purchases, ...(Array.isArray(cached) ? cached : [])]);
+          recentPurchases = merged.slice(0, 30);
+          try { localStorage.setItem('flory_recent_purchases', JSON.stringify(recentPurchases)); } catch (e) {}
+        } else {
+          // If server temporarily returned empty list (e.g. Vercel cold-start / wiped /tmp),
+          // DO NOT wipe localStorage! Restore from local cache instead!
+          if (!recentPurchases || recentPurchases.length === 0) {
+            try {
+              const rawCached = localStorage.getItem('flory_recent_purchases');
+              if (rawCached) recentPurchases = deduplicatePurchases(JSON.parse(rawCached));
+            } catch (e) {}
+          }
+        }
         initPurchasesTicker();
       }
       if (json.promoCodes && Array.isArray(json.promoCodes)) {
@@ -1694,22 +1783,40 @@ function copyServerIP() {
   });
 }
 
-// Toast Notifications
+// Sonner-Style Toast Notifications
 let toastTimer = null;
-function showToast(message, icon = "✓") {
+function showToast(message, iconOrType = "✓") {
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMessage');
-  const toastIco = document.getElementById('toastIcon');
+  const toastTitle = document.getElementById('toastTitle');
+  const toastIcon = document.getElementById('toastIcon');
+  const iconBox = document.getElementById('toastIconBox');
   if (!toast) return;
 
   if (toastMsg) toastMsg.innerText = message;
-  if (toastIco) toastIco.innerText = icon;
+
+  const isError = iconOrType === '✕' || iconOrType === 'error' || iconOrType === 'danger';
+  const isInfo = iconOrType === 'ℹ' || iconOrType === 'info';
+
+  if (isError) {
+    if (toastTitle) toastTitle.innerText = "Внимание";
+    if (toastIcon) toastIcon.innerText = "✕";
+    if (iconBox) iconBox.className = "w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 font-bold shrink-0";
+  } else if (isInfo) {
+    if (toastTitle) toastTitle.innerText = "Информация";
+    if (toastIcon) toastIcon.innerText = "ℹ";
+    if (iconBox) iconBox.className = "w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold shrink-0";
+  } else {
+    if (toastTitle) toastTitle.innerText = "Успешно";
+    if (toastIcon) toastIcon.innerText = (typeof iconOrType === 'string' && iconOrType !== 'success') ? iconOrType : "✓";
+    if (iconBox) iconBox.className = "w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold shrink-0";
+  }
 
   toast.classList.remove('opacity-0', 'translate-y-20');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toast.classList.add('opacity-0', 'translate-y-20');
-  }, 3500);
+  }, 4000);
 }
 
 // Legal Modals (Terms, Privacy, Rules)
@@ -1898,8 +2005,24 @@ if (document.readyState === 'loading') {
   initCursorSparkTrail();
 }
 
+// Skiper-style Card Spotlight on Mouse Move
+function initCardSpotlight() {
+  document.addEventListener('mousemove', (e) => {
+    const cards = document.querySelectorAll('.product-card, .modern-card');
+    for (const card of cards) {
+      const rect = card.getBoundingClientRect();
+      if (rect.bottom < -100 || rect.top > window.innerHeight + 100) continue;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  }, { passive: true });
+}
+
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
+  initCardSpotlight();
   renderProducts();
   initPurchasesTicker();
   fetchServerOnline();
