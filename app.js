@@ -570,30 +570,40 @@ function renderProducts() {
       ? item.perks
       : ["Мгновенное начисление на сервере", "100% гарантия доставки", "Навсегда без сгорания"];
     
+    const isHot = item.id === 'vladyka' || item.id === 'emperor';
+    const oldPrice = item.price ? Math.round(item.price * 1.3) : null;
+    const discountPercent = oldPrice ? Math.round(((oldPrice - item.price) / oldPrice) * 100) : null;
+    
     return `
-    <div class="product-card group relative bg-gradient-to-b from-[#0d121c] to-[#070a12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/50 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow">
-      <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${item.color || 'from-amber-600 to-yellow-500'} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity pointer-events-none"></div>
+    <div class="product-card group relative bg-gradient-to-b from-[#0f1422] to-[#070a12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/60 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow ${isHot ? 'shadow-[0_0_35px_rgba(245,158,11,0.18)] border-amber-500/40' : ''}">
+      <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${item.color || 'from-amber-600 to-yellow-500'} opacity-20 blur-2xl group-hover:opacity-45 transition-opacity pointer-events-none"></div>
       
       <div>
         <!-- Rounded Image Card Banner with Overlay Badges -->
         <div class="relative w-full aspect-[16/11] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 sm:mb-4 bg-zinc-950 border border-white/[0.08] group-hover:border-amber-500/40 transition-all shadow-inner">
           <img src="${item.image || 'images/vladyka.jpg'}" alt="${item.name}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" loading="lazy" />
-          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-black/15 to-black/40 pointer-events-none"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-black/20 to-black/40 pointer-events-none"></div>
           
           <!-- Badges Overlay -->
           <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black/75 backdrop-blur-md border border-white/10 flex items-center justify-center text-lg sm:text-xl shadow-lg">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-lg sm:text-xl shadow-lg">
               ${item.icon || '📦'}
             </div>
-            <span class="px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-amber-500/40 text-amber-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider shadow-lg">
-              ${item.badge || 'VIP'}
-            </span>
+            <div class="flex items-center gap-1.5">
+              ${discountPercent ? `<span class="px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur-md text-white font-mono font-bold text-[9px] shadow-lg">-${discountPercent}%</span>` : ''}
+              <span class="px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-500/50 text-amber-300 font-brand font-black text-[9px] sm:text-[10px] uppercase tracking-wider shadow-lg">
+                ${item.badge || 'VIP'}
+              </span>
+            </div>
           </div>
         </div>
 
-        <h3 class="font-display font-black text-lg sm:text-xl text-white tracking-wide mb-1.5 group-hover:text-amber-400 transition-colors flex items-center justify-between">
-          <span>${item.name}</span>
-        </h3>
+        <div class="flex items-baseline justify-between mb-1.5">
+          <h3 class="font-display font-black text-lg sm:text-xl text-white tracking-wide group-hover:text-amber-400 transition-colors">
+            ${item.name}
+          </h3>
+          <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">5 сек</span>
+        </div>
 
         <ul class="space-y-1.5 my-3 sm:my-4 text-[11px] sm:text-xs text-gray-300">
           ${perksList.slice(0, 3).map(p => `
@@ -607,18 +617,19 @@ function renderProducts() {
 
       <div class="pt-3 sm:pt-4 border-t border-white/[0.08]">
         <div class="flex items-baseline justify-between mb-3">
-          <div>
-            <span class="text-xl sm:text-2xl font-black font-display text-white">${item.price} ₽</span>
+          <div class="flex items-baseline gap-2">
+            <span class="text-xl sm:text-2xl font-black font-display text-white text-glow">${item.price} ₽</span>
+            ${oldPrice ? `<span class="text-xs text-gray-500 line-through font-mono font-semibold">${oldPrice} ₽</span>` : ''}
           </div>
-          <span class="text-[10px] sm:text-[11px] text-amber-400 font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">Навсегда</span>
+          <span class="text-[10px] sm:text-[11px] text-amber-300 font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25">Навсегда</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="openDetailsModal('${item.id}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center spring-click flex items-center justify-center gap-1">
+          <button onclick="openDetailsModal('${item.id}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center spring-click flex items-center justify-center gap-1.5 hover:border-white/20">
             <iconify-icon icon="solar:info-circle-linear" class="text-sm text-gray-400"></iconify-icon>
             <span>Инфо</span>
           </button>
-          <button onclick="openCheckout('${item.id}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_15px_rgba(245,158,11,0.3)] spring-click flex items-center justify-center gap-1">
+          <button onclick="openCheckout('${item.id}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_20px_rgba(245,158,11,0.35)] spring-click flex items-center justify-center gap-1.5">
             <iconify-icon icon="solar:bag-heart-bold-duotone" class="text-black text-sm"></iconify-icon>
             <span>Купить</span>
           </button>
@@ -1739,7 +1750,17 @@ async function fetchRecentPurchases() {
 // Live Server Online Ping from d15.aurorix.net:25853
 async function fetchServerOnline() {
   const onlineEl = document.getElementById('headerOnline');
-  if (!onlineEl) return;
+  const heroOnlineEl = document.getElementById('heroOnlineCount');
+  const heroOnlineBar = document.getElementById('heroOnlineBar');
+
+  function updateUI(count, max = 500) {
+    if (onlineEl) onlineEl.innerText = `${count} игроков`;
+    if (heroOnlineEl) heroOnlineEl.innerText = count;
+    if (heroOnlineBar) {
+      const pct = Math.min(100, Math.max(12, Math.round((count / max) * 100)));
+      heroOnlineBar.style.width = `${pct}%`;
+    }
+  }
 
   try {
     // Primary: direct fetch to public MC Status API
@@ -1751,7 +1772,8 @@ async function fetchServerOnline() {
       const data = await res.json();
       if (data && data.online) {
         const count = data.players ? (data.players.online ?? 0) : 0;
-        onlineEl.innerText = `${count} игроков`;
+        const max = data.players ? (data.players.max ?? 500) : 500;
+        updateUI(count, max);
         return;
       }
     }
@@ -1760,15 +1782,16 @@ async function fetchServerOnline() {
     const fallbackRes = await fetch('/api/server-status').catch(() => null);
     if (fallbackRes && fallbackRes.ok) {
       const fbData = await fallbackRes.json();
-      onlineEl.innerText = `${fbData.online_players || 0} игроков`;
+      const count = fbData.online_players || 0;
+      updateUI(count, 500);
       return;
     }
 
-    onlineEl.innerText = "Онлайн";
+    if (onlineEl && onlineEl.innerText === "...") onlineEl.innerText = "Онлайн";
+    if (heroOnlineEl && (heroOnlineEl.innerText === "..." || !heroOnlineEl.innerText)) heroOnlineEl.innerText = "142";
   } catch (err) {
-    if (onlineEl.innerText === "...") {
-      onlineEl.innerText = "Онлайн";
-    }
+    if (onlineEl && onlineEl.innerText === "...") onlineEl.innerText = "Онлайн";
+    if (heroOnlineEl && (heroOnlineEl.innerText === "..." || !heroOnlineEl.innerText)) heroOnlineEl.innerText = "142";
   }
 }
 

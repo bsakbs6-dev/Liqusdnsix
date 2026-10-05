@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=6.0">
+  <link rel="stylesheet" href="style.css?v=8.0">
   
   <script>
     tailwind.config = {
@@ -159,125 +159,241 @@
     </div>
   </div>
 
-  <!-- HERO SECTION (Bento Grid layout + 21st.dev style) -->
-  <section class="relative pt-4 sm:pt-10 pb-6 sm:pb-10 z-10 w-full overflow-hidden">
+  <!-- HERO BENTO GRID (21st.dev + Skiper Motion + shadcn Standard) -->
+  <section class="relative pt-3 sm:pt-8 pb-6 sm:pb-10 z-10 w-full overflow-hidden">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       
-      <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-950/60 via-zinc-950/95 to-orange-950/50 border border-amber-500/25 p-4 sm:p-10 mb-6 sm:mb-8 shadow-[0_0_50px_rgba(245,158,11,0.15)] backdrop-blur-xl">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center">
+      <!-- Top Bento Grid: 2 Primary Columns (lg:col-span-8 and lg:col-span-4) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6 mb-3.5 sm:mb-6">
+        
+        <!-- BENTO TILE 1: MAIN HERO DISPLAY (lg:col-span-8) -->
+        <div class="lg:col-span-8 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden bg-dot-matrix">
+          <!-- Ambient Glowing Gradient Orbs in Corners -->
+          <div class="absolute -top-24 -left-24 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
           
-          <!-- Left Hero Banner -->
-          <div class="lg:col-span-7 space-y-3.5 sm:space-y-6 text-center lg:text-left">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-inner">
-              <iconify-icon icon="solar:sparkles-bold-duotone" class="text-amber-400 text-sm animate-pulse"></iconify-icon>
-              <span>Официальный магазин сервера FloryMine</span>
+          <div class="relative z-10 space-y-4 sm:space-y-6">
+            <!-- Glowing Status Pill -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900/90 border border-amber-500/40 text-amber-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.2)] backdrop-blur-md">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Сервер онлайн • 20.0 TPS • Minecraft 1.21.x</span>
             </div>
-            
-            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-white leading-[1.12]">
-              Стань лидером на сервере <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400">FloryMine</span>
+
+            <!-- Massive Display Headline -->
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-[1.08]">
+              Стань лидером на сервере <br class="hidden sm:inline" />
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 text-glow">FloryMine</span>
             </h1>
 
-            <p class="text-gray-300 text-xs sm:text-sm sm:leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Моментальная выдача прав и предметов в игре через серверный сокет. Защищённая оплата через 
-              <strong class="text-amber-300">Robokassa</strong> по СБП и картам без скрытых комиссий.
+            <p class="text-gray-300 text-xs sm:text-sm sm:leading-relaxed max-w-xl font-medium">
+              Благодаря кастомным плагинам сервера, выдача доната занимает до 5 секунд прямо во время игры. Защищённая оплата через 
+              <strong class="text-amber-300 font-semibold">Robokassa</strong> по СБП и картам без скрытых комиссий.
             </p>
 
-            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 pt-1">
-              <a href="#store" class="shimmer-btn w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_25px_rgba(245,158,11,0.4)] transition active:scale-95 flex items-center justify-center gap-2">
-                <iconify-icon icon="solar:bolt-bold-duotone" class="text-black text-base"></iconify-icon>
-                <span>Выбрать донат</span>
+            <!-- Action CTAs -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+              <a href="#store" class="border-beam-box w-full sm:w-auto">
+                <div class="shimmer-btn px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_30px_rgba(245,158,11,0.5)] transition active:scale-95 flex items-center justify-center gap-2">
+                  <iconify-icon icon="solar:bolt-bold-duotone" class="text-black text-lg"></iconify-icon>
+                  <span>Выбрать привилегию</span>
+                </div>
               </a>
-              <a href="#privileges" class="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 text-gray-200 font-brand font-bold text-xs sm:text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2">
-                <iconify-icon icon="solar:shield-check-bold-duotone" class="text-amber-400 text-base"></iconify-icon>
+              <a href="#privileges" class="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 text-gray-200 font-brand font-bold text-xs sm:text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 hover:border-amber-500/40">
+                <iconify-icon icon="solar:shield-check-bold-duotone" class="text-amber-400 text-lg"></iconify-icon>
                 <span>Сравнение прав</span>
               </a>
             </div>
+          </div>
 
-            <!-- Micro Metrics Bar with 3D icons -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-3 sm:pt-4 border-t border-white/[0.08] text-left">
-              <div class="flex items-center gap-2 sm:gap-2.5">
-                <img src="images/3d-flash.png" alt="Flash" class="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
-                <div class="text-[10px] sm:text-xs">
-                  <div class="font-bold text-white leading-tight">Выдача 3-5с</div>
-                  <div class="text-gray-400 text-[9px] sm:text-[10px]">Автоматически</div>
-                </div>
+          <!-- Micro Metric Bar inside Hero Tile -->
+          <div class="relative z-10 grid grid-cols-3 gap-2 sm:gap-4 pt-5 mt-6 border-t border-white/[0.08]">
+            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/40 p-2 sm:p-2.5 rounded-xl border border-white/[0.04]">
+              <img src="images/3d-flash.png" alt="Flash" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
+              <div class="text-[10px] sm:text-xs">
+                <div class="font-bold text-white leading-tight">Выдача 3-5с</div>
+                <div class="text-gray-400 text-[9px] sm:text-[10px]">В игре без перезахода</div>
               </div>
-              <div class="flex items-center gap-2 sm:gap-2.5">
-                <img src="images/3d-lock.png" alt="Lock" class="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
-                <div class="text-[10px] sm:text-xs">
-                  <div class="font-bold text-white leading-tight">100% Защита</div>
-                  <div class="text-gray-400 text-[9px] sm:text-[10px]">Robokassa PCI DSS</div>
-                </div>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/40 p-2 sm:p-2.5 rounded-xl border border-white/[0.04]">
+              <img src="images/3d-lock.png" alt="Lock" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
+              <div class="text-[10px] sm:text-xs">
+                <div class="font-bold text-white leading-tight">Robokassa</div>
+                <div class="text-gray-400 text-[9px] sm:text-[10px]">PCI DSS • СБП 0%</div>
               </div>
-              <div class="flex items-center gap-2 sm:gap-2.5">
-                <img src="images/3d-trophy.png" alt="Trophy" class="w-6 h-6 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
-                <div class="text-[10px] sm:text-xs">
-                  <div class="font-bold text-white leading-tight">Навсегда</div>
-                  <div class="text-gray-400 text-[9px] sm:text-[10px]">Без сгорания прав</div>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/40 p-2 sm:p-2.5 rounded-xl border border-white/[0.04]">
+              <img src="images/3d-trophy.png" alt="Trophy" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0 drop-shadow">
+              <div class="text-[10px] sm:text-xs">
+                <div class="font-bold text-white leading-tight">Навсегда</div>
+                <div class="text-gray-400 text-[9px] sm:text-[10px]">Сохранение при вайпах</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BENTO TILE 2: LIVE SERVER RADAR & QUICK CONNECT (lg:col-span-4) -->
+        <div class="lg:col-span-4 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-44 h-44 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div>
+            <!-- Radar Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div class="flex items-center gap-2">
+                <div class="relative w-3 h-3 flex items-center justify-center">
+                  <span class="absolute w-6 h-6 rounded-full bg-emerald-400/30 radar-wave-1"></span>
+                  <span class="relative w-2 h-2 rounded-full bg-emerald-400"></span>
                 </div>
+                <span class="font-brand font-bold text-xs text-white uppercase tracking-wider">Серверный Радар</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[10px] font-bold">20.0 TPS</span>
+            </div>
+
+            <!-- Big Live Player Count -->
+            <div class="my-4 p-4 rounded-2xl bg-zinc-950/70 border border-white/[0.06] relative overflow-hidden">
+              <div class="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold text-gray-400 mb-1">Игроков в сети</div>
+              <div class="flex items-baseline gap-2">
+                <span id="heroOnlineCount" class="text-3xl sm:text-4xl font-black font-mono text-white text-glow-white">...</span>
+                <span class="text-xs sm:text-sm font-mono text-gray-400 font-semibold">/ 500 слотов</span>
+              </div>
+              <!-- Real-time progress bar -->
+              <div class="w-full h-2 rounded-full bg-zinc-800 mt-3 overflow-hidden">
+                <div id="heroOnlineBar" class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-orange-400 rounded-full transition-all duration-700" style="width: 28%;"></div>
               </div>
             </div>
 
+            <!-- Interactive 1-Click Copy IP Box -->
+            <div onclick="copyServerIP()" class="cursor-pointer group p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/30 hover:border-amber-400 transition-all shadow-[0_0_20px_rgba(245,158,11,0.15)] active:scale-95">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                    <iconify-icon icon="solar:copy-bold-duotone" class="text-lg"></iconify-icon>
+                  </div>
+                  <div>
+                    <div class="font-mono font-bold text-xs sm:text-sm text-white group-hover:text-amber-300 transition">mc.florymine.fun</div>
+                    <div class="text-[10px] text-gray-400">Нажмите, чтобы скопировать IP</div>
+                  </div>
+                </div>
+                <span class="text-[10px] font-mono text-amber-400 px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 font-bold group-hover:bg-amber-500/20">Скопировать</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Right: DAILY BONUS BENTO CARD with 3D Render & Dynamic Head Preview -->
-          <div id="bonus" class="lg:col-span-5">
-            <div class="modern-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_0_35px_rgba(245,158,11,0.18)] relative max-w-md mx-auto overflow-hidden">
-              
-              <div class="text-center pb-3 border-b border-white/[0.08]">
-                <span class="px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-brand text-[10px] sm:text-xs uppercase font-bold tracking-wider inline-flex items-center gap-1.5 shadow-sm">
-                  <iconify-icon icon="solar:gift-bold-duotone" class="text-yellow-400 text-sm"></iconify-icon>
-                  <span>Ежедневный Бонус</span>
-                </span>
-                <p class="text-[11px] sm:text-xs text-gray-300 mt-1.5 font-medium">Бесплатные награды в игре каждые 24 часа!</p>
+          <!-- Quick Specs List -->
+          <div class="pt-3.5 mt-3.5 border-t border-white/[0.08] flex items-center justify-between text-[10px] text-gray-400 font-medium">
+            <span class="flex items-center gap-1">
+              <iconify-icon icon="solar:shield-check-bold" class="text-emerald-400 text-sm"></iconify-icon>
+              <span>Java 1.21.x</span>
+            </span>
+            <span class="flex items-center gap-1">
+              <iconify-icon icon="solar:bolt-bold" class="text-amber-400 text-sm"></iconify-icon>
+              <span>Пинг &lt; 15ms</span>
+            </span>
+            <span class="text-gray-300 font-semibold">Лицензия & Пиратка</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Second Row Bento Grid: DAILY BONUS (lg:col-span-5) + WHY FLORYMINE HIGHLIGHTS (lg:col-span-7) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6">
+        
+        <!-- BENTO TILE 3: DAILY BONUS BOX (lg:col-span-5) -->
+        <div id="bonus" class="lg:col-span-5 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="text-center pb-3 border-b border-white/[0.08]">
+            <span class="px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-brand text-[10px] sm:text-xs uppercase font-bold tracking-wider inline-flex items-center gap-1.5 shadow-sm">
+              <iconify-icon icon="solar:gift-bold-duotone" class="text-yellow-400 text-sm"></iconify-icon>
+              <span>Ежедневный Бонус</span>
+            </span>
+            <p class="text-[11px] sm:text-xs text-gray-300 mt-1.5 font-medium">Бесплатные награды в игре каждые 24 часа!</p>
+          </div>
+
+          <!-- 3D Gift Visual Box with floating animation -->
+          <div class="my-4 flex flex-col items-center justify-center">
+            <div class="relative group cursor-pointer" onclick="document.getElementById('bonusNicknameInput').focus()">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-b from-amber-500/20 via-orange-500/10 to-transparent border border-amber-500/40 p-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+                <img src="images/3d-gift.png" alt="3D Gift Box" class="w-20 h-20 sm:w-24 sm:h-24 object-contain animate-float drop-shadow-[0_10px_20px_rgba(245,158,11,0.35)]">
               </div>
-
-              <!-- 3D Gift Visual Box with floating animation -->
-              <div class="my-4 flex flex-col items-center justify-center">
-                <div class="relative group cursor-pointer" onclick="document.getElementById('bonusNicknameInput').focus()">
-                  <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-b from-amber-500/20 via-orange-500/10 to-transparent border border-amber-500/40 p-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
-                    <img src="images/3d-gift.png" alt="3D Gift Box" class="w-20 h-20 sm:w-24 sm:h-24 object-contain animate-float drop-shadow-[0_10px_20px_rgba(245,158,11,0.35)]">
-                  </div>
-                  <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-black text-[9px] font-brand font-black uppercase shadow-lg tracking-wider whitespace-nowrap">
-                    БЕСПЛАТНО
-                  </div>
-                </div>
+              <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-black text-[9px] font-brand font-black uppercase shadow-lg tracking-wider whitespace-nowrap">
+                БЕСПЛАТНО
               </div>
+            </div>
+          </div>
 
-              <!-- Bonus Input & Live Minecraft Head Preview -->
-              <div class="space-y-2.5 pt-1">
-                <div class="relative">
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center">
-                    <img id="bonusAvatarHead" src="images/logo.png" alt="Skin Head" class="w-full h-full object-cover">
-                  </div>
-                  <input type="text" id="bonusNicknameInput" oninput="onBonusNicknameInput(this)" placeholder="Напишите свой игровой ник" 
-                    class="w-full pl-11 pr-3 py-2.5 sm:py-3 bg-zinc-950/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white text-xs sm:text-sm font-semibold outline-none transition placeholder:text-gray-500">
-                </div>
-                
-                <button onclick="claimDailyBonus()" id="claimBonusBtn" class="shimmer-btn w-full py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.35)] transition flex items-center justify-center gap-1.5 active:scale-95">
-                  <iconify-icon icon="solar:gift-bold-duotone" class="text-black text-base"></iconify-icon>
-                  <span>Получить бонус</span>
-                </button>
-
-                <div id="bonusStatusMsg" class="hidden text-[11px] sm:text-xs text-center p-2 rounded-xl font-medium leading-relaxed"></div>
-
-                <!-- Conditions note -->
-                <div class="pt-2 border-t border-white/[0.08] space-y-1 text-[10px] text-gray-400">
-                  <div class="flex items-center gap-1.5">
-                    <iconify-icon icon="solar:check-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
-                    <span>1 раз в 24 часа для 1 игрока (1 IP = 1 ник)</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 text-amber-300 font-semibold">
-                    <iconify-icon icon="solar:info-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
-                    <span>Вы должны быть онлайн на сервере!</span>
-                  </div>
-                </div>
+          <!-- Bonus Input & Live Minecraft Head Preview -->
+          <div class="space-y-2.5 pt-1">
+            <div class="relative">
+              <div class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center">
+                <img id="bonusAvatarHead" src="images/logo.png" alt="Skin Head" class="w-full h-full object-cover">
               </div>
+              <input type="text" id="bonusNicknameInput" oninput="onBonusNicknameInput(this)" placeholder="Напишите свой игровой ник" 
+                class="w-full pl-11 pr-3 py-2.5 sm:py-3 bg-zinc-950/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white text-xs sm:text-sm font-semibold outline-none transition placeholder:text-gray-500">
+            </div>
+            
+            <button onclick="claimDailyBonus()" id="claimBonusBtn" class="shimmer-btn w-full py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.35)] transition flex items-center justify-center gap-1.5 active:scale-95">
+              <iconify-icon icon="solar:gift-bold-duotone" class="text-black text-base"></iconify-icon>
+              <span>Получить бонус</span>
+            </button>
 
+            <div id="bonusStatusMsg" class="hidden text-[11px] sm:text-xs text-center p-2 rounded-xl font-medium leading-relaxed"></div>
+
+            <!-- Conditions note -->
+            <div class="pt-2 border-t border-white/[0.08] space-y-1 text-[10px] text-gray-400">
+              <div class="flex items-center gap-1.5">
+                <iconify-icon icon="solar:check-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
+                <span>1 раз в 24 часа для 1 игрока (1 IP = 1 ник)</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-amber-300 font-semibold">
+                <iconify-icon icon="solar:info-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
+                <span>Вы должны быть онлайн на сервере!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BENTO TILE 4: 2 CONNECTED FEATURE HIGHLIGHTS (lg:col-span-7) -->
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-6">
+          
+          <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <img src="images/3d-flash.png" alt="Speed" class="w-8 h-8 object-contain">
+              </div>
+              <div class="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider mb-1">Мгновенный сокет</div>
+              <h3 class="font-display font-black text-base sm:text-lg text-white mb-2">Выдача до 5 секунд</h3>
+              <p class="text-xs text-gray-400 leading-relaxed">
+                Благодаря кастомным плагинам сервера, выдача доната занимает до 5 секунд прямо во время игры. Никаких задержек и перезаходов — все команды исполняются на сервере моментально.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+              <span class="text-amber-400 font-bold">100% Автоматика</span>
+              <span class="text-gray-500">mc.florymine.fun</span>
+            </div>
+          </div>
+
+          <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <img src="images/3d-trophy.png" alt="Status" class="w-8 h-8 object-contain">
+              </div>
+              <div class="text-[10px] font-mono font-bold text-yellow-400 uppercase tracking-wider mb-1">Пожизненный статус</div>
+              <h3 class="font-display font-black text-base sm:text-lg text-white mb-2">Несгораемый донат</h3>
+              <p class="text-xs text-gray-400 leading-relaxed">
+                Все возможности и привилегии навсегда закрепляются за вашим ником. Никакие вайпы игрового мира, сезоны и обновления сервера не аннулируют ваш купленный ранг.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+              <span class="text-yellow-400 font-bold">Без сгорания</span>
+              <span class="text-gray-500">Навсегда</span>
             </div>
           </div>
 
         </div>
+
       </div>
 
     </div>
@@ -298,66 +414,70 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
       
       <!-- Bento Tile 1 -->
-      <div class="modern-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between group">
+      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
         <div>
-          <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <img src="images/3d-flash.png" alt="Speed" class="w-8 h-8 object-contain">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <img src="images/3d-coin.png" alt="Upgrade" class="w-8 h-8 object-contain">
           </div>
-          <h3 class="font-display font-bold text-base sm:text-lg text-white mb-1.5">Выдача до 5 секунд</h3>
+          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Умный докуп рангов</h3>
           <p class="text-xs text-gray-400 leading-relaxed">
-            Благодаря кастомным плагинам сервера, выдача доната занимает до 5 секунд прямо во время игры. Никаких задержек и перезаходов — всё активируется моментально.
+            У вас уже куплена привилегия? Вы можете повысить свой статус, оплатив только разницу в цене. Система автоматически рассчитывает скидку по вашему нику.
           </p>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-amber-400 flex items-center gap-1">
-          <span>Мгновенная доставка</span>
+        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-amber-400 flex items-center justify-between">
+          <span>Справедливый апгрейд</span>
+          <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
         </div>
       </div>
 
       <!-- Bento Tile 2 -->
-      <div class="modern-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between group">
+      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
         <div>
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <img src="images/3d-lock.png" alt="Security" class="w-8 h-8 object-contain">
           </div>
-          <h3 class="font-display font-bold text-base sm:text-lg text-white mb-1.5">Защита Robokassa</h3>
+          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Защита Robokassa</h3>
           <p class="text-xs text-gray-400 leading-relaxed">
-            Сертифицированный шлюз PCI DSS Level 1. Оплата по СБП, любым картам РФ, кошелькам и криптовалюте.
+            Сертифицированный платёжный шлюз стандарта PCI DSS Level 1. Моментальная оплата по СБП без комиссии, картами МИР/Visa/Mastercard и криптокошельками.
           </p>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-emerald-400 flex items-center gap-1">
-          <span>Безопасный эквайринг</span>
+        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-emerald-400 flex items-center justify-between">
+          <span>PCI DSS Level 1</span>
+          <iconify-icon icon="solar:shield-check-bold" class="text-base"></iconify-icon>
         </div>
       </div>
 
       <!-- Bento Tile 3 -->
-      <div class="modern-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between group">
+      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
         <div>
-          <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <img src="images/3d-trophy.png" alt="Trophy" class="w-8 h-8 object-contain">
+          <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <img src="images/3d-cube.png" alt="Stability" class="w-8 h-8 object-contain">
           </div>
-          <h3 class="font-display font-bold text-base sm:text-lg text-white mb-1.5">Несгораемый статус</h3>
+          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Стабильные 20.0 TPS</h3>
           <p class="text-xs text-gray-400 leading-relaxed">
-            Все возможности и привилегии навсегда закрепляются за вашим ником. Никакие вайпы игрового мира, сезоны и обновления сервера не аннулируют ваш донат.
+            Выделенные серверные мощности последнего поколения на базе высокочастотных процессоров. Никаких просадок тиков в PvP и комфортный пинг из любой точки.
           </p>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-yellow-400 flex items-center gap-1">
-          <span>Сохранение при вайпах</span>
+        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-yellow-400 flex items-center justify-between">
+          <span>Без лагов и фризов</span>
+          <iconify-icon icon="solar:bolt-bold" class="text-base"></iconify-icon>
         </div>
       </div>
 
       <!-- Bento Tile 4 -->
-      <div class="modern-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between group">
+      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
         <div>
-          <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <img src="images/3d-star.png" alt="Support" class="w-8 h-8 object-contain">
           </div>
-          <h3 class="font-display font-bold text-base sm:text-lg text-white mb-1.5">Поддержка 24/7</h3>
+          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Поддержка 24/7</h3>
           <p class="text-xs text-gray-400 leading-relaxed">
-            Отзывчивая администрация и тикет-система в Discord и Telegram. Любой вопрос решается за пару минут.
+            Отзывчивая администрация и быстрая тикет-система в Discord и Telegram. Любой вопрос по заказу или серверу решается за считанные минуты.
           </p>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-orange-400 flex items-center gap-1">
+        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-orange-400 flex items-center justify-between">
           <span>dsc.gg/florymine</span>
+          <iconify-icon icon="solar:chat-round-dots-bold" class="text-base"></iconify-icon>
         </div>
       </div>
 
@@ -800,7 +920,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=8.0"></script>
   <script>lucide.createIcons();</script>
 </body>
 </html>

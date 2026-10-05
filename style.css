@@ -98,9 +98,9 @@ body {
 }
 
 /* Modern Card with Interactive Cursor Spotlight (Skiper / 21st.dev Style) */
-.modern-card, .product-card {
+.modern-card, .product-card, .bento-card {
   position: relative;
-  background: rgba(11, 15, 23, 0.85);
+  background: rgba(11, 15, 23, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -109,14 +109,14 @@ body {
 }
 
 /* Dynamic Cursor Spotlight Overlay */
-.modern-card::after, .product-card::after {
+.modern-card::after, .product-card::after, .bento-card::after {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
   background: radial-gradient(
-    450px circle at var(--mouse-x, -1000px) var(--mouse-y, -1000px),
-    rgba(245, 158, 11, 0.12),
+    500px circle at var(--mouse-x, -1000px) var(--mouse-y, -1000px),
+    rgba(245, 158, 11, 0.14),
     transparent 40%
   );
   opacity: 0;
@@ -125,11 +125,11 @@ body {
   z-index: 1;
 }
 
-.modern-card:hover::after, .product-card:hover::after {
+.modern-card:hover::after, .product-card:hover::after, .bento-card:hover::after {
   opacity: 1;
 }
 
-.modern-card:hover {
+.modern-card:hover, .bento-card:hover {
   border-color: rgba(245, 158, 11, 0.35);
   box-shadow: 0 16px 40px -12px rgba(245, 158, 11, 0.18), 0 0 1px 1px rgba(245, 158, 11, 0.2);
   transform: translateY(-3px);
@@ -141,6 +141,68 @@ body {
     border-color: rgba(245, 158, 11, 0.45);
     box-shadow: 0 20px 45px -12px rgba(245, 158, 11, 0.25), 0 0 0 1px rgba(245, 158, 11, 0.3);
   }
+}
+
+/* 21st.dev Border Beam Animation */
+@keyframes border-beam-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.border-beam-box {
+  position: relative;
+  padding: 1px;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.border-beam-box::before {
+  content: '';
+  position: absolute;
+  inset: -200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 280deg,
+    rgba(245, 158, 11, 0.5) 320deg,
+    rgba(251, 191, 36, 1) 360deg
+  );
+  animation: border-beam-spin 4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.border-beam-box > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Text Glow & Dot Matrix */
+.text-glow {
+  text-shadow: 0 0 25px rgba(245, 158, 11, 0.5), 0 0 50px rgba(245, 158, 11, 0.2);
+}
+
+.text-glow-white {
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
+}
+
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(245, 158, 11, 0.14) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Radar Pulse Animations */
+@keyframes radarWave {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.radar-wave-1 {
+  animation: radarWave 2.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.radar-wave-2 {
+  animation: radarWave 2.8s cubic-bezier(0, 0, 0.2, 1) infinite 1.4s;
 }
 
 /* Tactile Spring Buttons */
