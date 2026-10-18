@@ -121,7 +121,7 @@ async function handleLogin(e) {
       playSound('click');
       if (errorMsg) {
         errorMsg.classList.remove('hidden');
-        errorMsg.innerText = data.error || 'Неверный пароль администратора (попробуйте: devildev)';
+        errorMsg.innerText = data.error || 'Неверный пароль администратора';
       }
     }
   } catch (err) {
@@ -837,6 +837,15 @@ async function loadRecentPurchases() {
   renderAdminPurchases(list);
 }
 
+function escapeAdminHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderAdminPurchases(list) {
   const tbody = document.getElementById('adminPurchasesTableBody');
   if (!tbody) return;
@@ -848,31 +857,36 @@ function renderAdminPurchases(list) {
 
   tbody.innerHTML = list.map((p, idx) => {
     const isUpgr = p.is_upgrade === true || p.is_upgrade === 'true' || (typeof p.item === 'string' && p.item.toLowerCase().startsWith('докуп'));
+    const safeNick = escapeAdminHtml(p.nick);
+    const safeItem = escapeAdminHtml(p.item);
+    const safeFrom = escapeAdminHtml(p.from_rank);
+    const safePromo = escapeAdminHtml(p.promo);
+    const safeTime = escapeAdminHtml(p.time || 'недавно');
     const itemLabel = isUpgr
       ? `<div class="flex items-center gap-1.5 flex-wrap">
           <span class="px-2 py-0.5 rounded bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 font-brand font-extrabold text-[10px] uppercase tracking-wider">ДОКУП</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 font-brand font-bold text-xs shadow-sm">Докуп: ${p.item}${p.from_rank ? ' (с ' + p.from_rank + ')' : ''}</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 font-brand font-bold text-xs shadow-sm">Докуп: ${safeItem}${safeFrom ? ' (с ' + safeFrom + ')' : ''}</span>
         </div>`
-      : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-brand font-bold text-xs shadow-sm">${p.item}</span>`;
+      : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-brand font-bold text-xs shadow-sm">${safeItem}</span>`;
 
     return `
       <tr class="hover:bg-gray-900/50 transition border-b border-gray-800/40">
         <td class="p-3.5 flex items-center gap-2.5">
           <span class="w-2.5 h-2.5 rounded-full ${isUpgr ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse"></span>
-          <span class="font-bold text-white font-sans">${p.nick}</span>
+          <span class="font-bold text-white font-sans">${safeNick}</span>
         </td>
         <td class="p-3.5">
           ${itemLabel}
         </td>
         <td class="p-3.5">
-          ${p.promo ? `<span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold text-[11px]">${p.promo}</span>` : `<span class="text-gray-600 font-mono text-[11px]">—</span>`}
+          ${safePromo ? `<span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold text-[11px]">${safePromo}</span>` : `<span class="text-gray-600 font-mono text-[11px]">—</span>`}
         </td>
         <td class="p-3.5">
-          ${(p.price !== undefined && p.price !== null && p.price !== '') ? `<span class="font-bold text-emerald-400 font-mono text-xs">${p.price} ₽</span>` : `<span class="text-gray-500 font-mono text-[11px]">—</span>`}
+          ${(p.price !== undefined && p.price !== null && p.price !== '') ? `<span class="font-bold text-emerald-400 font-mono text-xs">${Number(p.price)} ₽</span>` : `<span class="text-gray-500 font-mono text-[11px]">—</span>`}
         </td>
-        <td class="p-3.5 text-gray-400 font-mono text-[11px]">${p.time || 'недавно'}</td>
+        <td class="p-3.5 text-gray-400 font-mono text-[11px]">${safeTime}</td>
         <td class="p-3.5 text-right space-x-2">
-          <button onclick="reDispatchPurchase('${p.nick}', '${p.item}')" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
+          <button onclick="reDispatchPurchase('${safeNick}', '${safeItem}')" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
             Выдать заново
           </button>
           <button onclick="deletePurchaseItem(${idx})" class="px-2.5 py-1 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 font-bold text-[11px] transition">
@@ -889,7 +903,11 @@ async function deletePurchaseItem(index) {
   try {
     const res = await fetch('/api/purchases', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': adminToken,
+        'Authorization': `Bearer ${adminToken}`
+      },
       body: JSON.stringify({ action: 'delete', index })
     });
     if (res.ok) {
@@ -908,7 +926,11 @@ async function clearAllPurchases() {
   try {
     await fetch('/api/purchases', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': adminToken,
+        'Authorization': `Bearer ${adminToken}`
+      },
       body: JSON.stringify({ action: 'clear' })
     });
     localStorage.removeItem('flory_recent_purchases');
@@ -943,7 +965,11 @@ async function openAddPurchaseModal() {
   try {
     const res = await fetch('/api/purchases', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': adminToken,
+        'Authorization': `Bearer ${adminToken}`
+      },
       body: JSON.stringify(newEntry)
     });
     if (res.ok) {

@@ -1,0 +1,19 @@
+{
+  "name": "florymine-shop",
+  "version": "1.0.0",
+  "description": "FloryMine Official Minecraft Auto-Donate Shop",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "minecraft",
+    "donate",
+    "shop",
+    "florymine"
+  ],
+  "author": "FloryMine",
+  "license": "ISC"
+}

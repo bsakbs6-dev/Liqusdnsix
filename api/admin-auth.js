@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     const masterPassword = (process.env.ADMIN_PASSWORD || 'devildev').trim();
     const secretJwtKey = process.env.ADMIN_SECRET || 'florymine_super_admin_secret_2026';
 
-    const validPasswords = [masterPassword, 'devildev', 'devildev123', 'admin'];
+    const validPasswords = [masterPassword, 'devildev', 'devildev123'];
 
     // Strict timing-safe check
     if (!validPasswords.includes(cleanPass)) {

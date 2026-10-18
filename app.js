@@ -140,7 +140,7 @@ let productsData = {
         "Точки дома: 3 точки",
         "Количество приватов: 5 регионов",
         "Слотов на аукционе: 6 предметов",
-        "Кит-набор Берсерка (/kit Берсек)",
+        "Кит-набор Берсерка (/kit Берсерк)",
         "Кормление игроков (/feed ник)",
         "Установка и удаление варпов (/setwarp, /delwarp)",
         "Виртуальный Эндер-сундук и поза лежа (/ec, /lay)",
@@ -479,6 +479,15 @@ let productsData = {
 // Switch Category
 let searchQuery = '';
 
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function onSearchProducts(val) {
   searchQuery = (val || '').trim().toLowerCase();
   const clearBtn = document.getElementById('catalogSearchClearBtn');
@@ -534,11 +543,13 @@ function renderProducts() {
     });
   }
 
+  const safeSearchQuery = escapeHtml(searchQuery);
+
   // Active Count Badge
   const countBadge = document.getElementById('catalogResultsCount');
   if (countBadge) {
     if (searchQuery) {
-      countBadge.innerHTML = `<iconify-icon icon="solar:magnifer-linear" class="text-amber-400"></iconify-icon> <span>Найдено товаров: <strong>${items.length}</strong> по запросу «${searchQuery}»</span>`;
+      countBadge.innerHTML = `<iconify-icon icon="solar:magnifer-linear" class="text-amber-400"></iconify-icon> <span>Найдено товаров: <strong>${items.length}</strong> по запросу «${safeSearchQuery}»</span>`;
       countBadge.classList.remove('hidden');
     } else {
       countBadge.classList.add('hidden');
@@ -553,7 +564,7 @@ function renderProducts() {
         </div>
         <h3 class="font-display font-bold text-lg text-white mb-1">Ничего не найдено</h3>
         <p class="text-gray-400 text-xs max-w-sm mx-auto mb-4 leading-relaxed">
-          ${searchQuery ? `По запросу «${searchQuery}» товаров не найдено. Попробуйте сбросить поиск или выбрать другую категорию.` : 'В этой категории пока нет товаров.'}
+          ${searchQuery ? `По запросу «${safeSearchQuery}» товаров не найдено. Попробуйте сбросить поиск или выбрать другую категорию.` : 'В этой категории пока нет товаров.'}
         </p>
         ${searchQuery ? `
           <button onclick="clearCatalogSearch()" class="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-amber-400 text-xs font-bold transition spring-click">
@@ -1322,15 +1333,16 @@ async function checkPlayerPunishment(nick, itemId) {
     const res = await fetch(`/api/player?name=${encodeURIComponent(nick)}`);
     if (res.ok) {
       const data = await res.json();
+      const safeNick = escapeHtml(nick);
       if (itemId === 'srv_unban' && data.ban_is_permanent) {
         warningBox.className = 'block text-xs p-2.5 rounded-xl font-semibold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/40';
-        warningBox.innerHTML = `⚠️ У игрока <b>${nick}</b> перманентная (навсегда) блокировка! Разбан перманентно заблокированных игроков невозможен.`;
+        warningBox.innerHTML = `⚠️ У игрока <b>${safeNick}</b> перманентная (навсегда) блокировка! Разбан перманентно заблокированных игроков невозможен.`;
         if (payBtn) payBtn.disabled = true;
         return false;
       }
       if (itemId === 'srv_unmute' && data.mute_is_permanent) {
         warningBox.className = 'block text-xs p-2.5 rounded-xl font-semibold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/40';
-        warningBox.innerHTML = `⚠️ У игрока <b>${nick}</b> перманентный (навсегда) мут! Снятие вечной блокировки чата невозможно.`;
+        warningBox.innerHTML = `⚠️ У игрока <b>${safeNick}</b> перманентный (навсегда) мут! Снятие вечной блокировки чата невозможно.`;
         if (payBtn) payBtn.disabled = true;
         return false;
       }
@@ -1355,6 +1367,17 @@ async function claimDailyBonus() {
     if (statusMsg) {
       statusMsg.className = "block text-[11px] sm:text-xs text-center p-2.5 rounded-xl font-medium leading-relaxed bg-red-500/20 text-red-300 border border-red-500/40";
       statusMsg.innerText = "Пожалуйста, введите никнейм перед получением бонуса.";
+    }
+    if (input) input.focus();
+    return;
+  }
+
+  if (!/^[a-zA-Z0-9_]{3,16}$/.test(nick)) {
+    playSound('click');
+    showToast('Никнейм должен содержать 3–16 символов (латиница, цифры, _)!', '✕');
+    if (statusMsg) {
+      statusMsg.className = "block text-[11px] sm:text-xs text-center p-2.5 rounded-xl font-medium leading-relaxed bg-red-500/20 text-red-300 border border-red-500/40";
+      statusMsg.innerText = "Некорректный формат никнейма (3–16 символов: a-z, 0-9, _).";
     }
     if (input) input.focus();
     return;
@@ -1424,6 +1447,13 @@ async function processPayment() {
   if (!nick) {
     playSound('click');
     showToast('Пожалуйста, введите никнейм!', '✕');
+    const nickInput = document.getElementById('modalNicknameInput');
+    if (nickInput) nickInput.focus();
+    return;
+  }
+  if (!/^[a-zA-Z0-9_]{3,16}$/.test(nick)) {
+    playSound('click');
+    showToast('Никнейм должен быть от 3 до 16 символов (латиница, цифры, _)!', '✕');
     const nickInput = document.getElementById('modalNicknameInput');
     if (nickInput) nickInput.focus();
     return;
@@ -1607,26 +1637,29 @@ function initPurchasesTicker() {
 
 function createTickerItemHTML(nick, item, time, isUpgrade, fromRank) {
   const isUpgr = isUpgrade === true || isUpgrade === 'true' || (typeof item === 'string' && item.toLowerCase().startsWith('докуп'));
-  const actionText = isUpgr ? `Докупил ${item}` : `Купил ${item}`;
+  const safeNick = escapeHtml(nick);
+  const safeItem = escapeHtml(item);
+  const safeTime = escapeHtml(time || 'только что');
+  const actionText = isUpgr ? `Докупил ${safeItem}` : `Купил ${safeItem}`;
   
   if (isUpgr) {
     return `
       <div class="flex items-center gap-2 bg-gradient-to-r from-[#0d1e1c] via-[#0f2420] to-[#0c101a] border border-emerald-500/40 px-3 py-1.5 rounded-full shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.18)]">
-        <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${nick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
+        <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
         <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 font-brand font-extrabold text-[9px] uppercase tracking-wider">ДОКУП</span>
-        <span class="font-bold text-xs text-white tracking-wide font-sans">${nick}</span>
+        <span class="font-bold text-xs text-white tracking-wide font-sans">${safeNick}</span>
         <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 shadow-sm">${actionText}</span>
-        <span class="text-[10px] text-gray-400 font-medium">${time || 'только что'}</span>
+        <span class="text-[10px] text-gray-400 font-medium">${safeTime}</span>
       </div>
     `;
   }
 
   return `
     <div class="flex items-center gap-2 bg-gradient-to-r from-zinc-900/90 via-zinc-900/70 to-zinc-950 border border-white/[0.08] px-3 py-1.5 rounded-full shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.12)]">
-      <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${nick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
-      <span class="font-bold text-xs text-white tracking-wide font-sans">${nick}</span>
+      <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
+      <span class="font-bold text-xs text-white tracking-wide font-sans">${safeNick}</span>
       <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 shadow-sm">${actionText}</span>
-      <span class="text-[10px] text-gray-400 font-medium">${time || 'только что'}</span>
+      <span class="text-[10px] text-gray-400 font-medium">${safeTime}</span>
     </div>
   `;
 }
@@ -1782,8 +1815,8 @@ async function fetchServerOnline() {
     const fallbackRes = await fetch('/api/server-status').catch(() => null);
     if (fallbackRes && fallbackRes.ok) {
       const fbData = await fallbackRes.json();
-      const count = fbData.online_players || 0;
-      updateUI(count, 500);
+      const count = fbData.players_online ?? fbData.online_players ?? 0;
+      updateUI(count, fbData.players_max || 500);
       return;
     }
 
@@ -1863,13 +1896,14 @@ function openLegalModal(type) {
         
         <p class="font-bold text-white pt-2">2. Предмет соглашения и доставка</p>
         <p>2.1. Все товары на сайте являются цифровыми внутриигровыми привилегиями, правами и виртуальными предметами.</p>
-        <p>2.2. Доставка виртуальных товаров осуществляется в автоматическом режиме в течение 1–5 минут после подтверждения оплаты прямо на указанный никнейм на сервере FloryMine.</p>
+        <p>2.2. Доставка виртуальных товаров осуществляется в автоматическом режиме за 1–5 секунд после подтверждения оплаты прямо на указанный никнейм на сервере FloryMine.</p>
         
         <p class="font-bold text-white pt-2">3. Возврат и ответственность</p>
         <p>3.1. Цифровые внутриигровые услуги считаются оказанными в полном объеме с момента их активации на сервере.</p>
         <p>3.2. В случае нарушения правил сервера и последующей блокировки игрока, средства за приобретенные привилегии не возвращаются.</p>
         
-        <p class="font-bold text-white pt-2">4. Контакты</p>
+        <p class="font-bold text-white pt-2">4. Официальный документ и контакты</p>
+        <p>Полный текст публичной оферты: <a href="https://telegra.ph/PUBLICHNAYA-OFERTA-08-12-15" target="_blank" rel="noopener noreferrer" class="text-amber-400 underline font-bold">Открыть Пользовательское соглашение (Telegra.ph)</a></p>
         <p>По всем вопросам поддержки и доставки: <a href="mailto:support@florymine.fun" class="text-amber-400 underline">support@florymine.fun</a></p>
       `;
     }
@@ -1886,6 +1920,9 @@ function openLegalModal(type) {
         
         <p class="font-bold text-white pt-2">3. Использование файлов Cookie</p>
         <p>3.1. Сайт использует локальные файлы cookies и сессии исключительно для сохранения настроек громкости звука и привязанного никнейма.</p>
+
+        <p class="font-bold text-white pt-2">4. Официальный документ</p>
+        <p>Полный текст политики конфиденциальности: <a href="https://telegra.ph/POLITIKA-KONFIDENCIALNOSTI-08-12-99" target="_blank" rel="noopener noreferrer" class="text-amber-400 underline font-bold">Открыть Политику конфиденциальности (Telegra.ph)</a></p>
       `;
     }
   } else if (type === 'rules') {

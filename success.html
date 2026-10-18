@@ -165,8 +165,28 @@
     document.getElementById('detailPrice').textContent = displayPrice + ' ₽';
     document.getElementById('detailInv').textContent = '#' + (invId || 'Заказ');
 
-    // Record purchase to live ticker via relative POST
+    // Record purchase to live ticker via relative POST & client localStorage
     if (player && displayItem) {
+      try {
+        const cached = JSON.parse(localStorage.getItem('flory_recent_purchases') || '[]');
+        const newItem = {
+          nick: player,
+          item: displayItem,
+          price: Number(rawSum) || 0,
+          promo: promo,
+          order_id: orderId,
+          is_upgrade: isUpgr,
+          from_rank: upgrFrom,
+          time: 'только что',
+          timestamp: Date.now()
+        };
+        const exists = cached.some(p => p.order_id && p.order_id === orderId);
+        if (!exists) {
+          cached.unshift(newItem);
+          localStorage.setItem('flory_recent_purchases', JSON.stringify(cached.slice(0, 30)));
+        }
+      } catch (e) {}
+
       fetch('/api/purchases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

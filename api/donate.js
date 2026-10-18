@@ -1,4 +1,21 @@
 // Vercel Serverless Function: Bridge between FloryMine Web Shop & FloryAutoDonate Plugin
+import crypto from 'crypto';
+
+const SECRET_JWT_KEY = process.env.ADMIN_SECRET || 'florymine_super_admin_secret_2026';
+
+function verifyAdminToken(req) {
+  const token = req.headers['x-admin-token'] || (req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : '');
+  if (!token) return false;
+  try {
+    const [payloadB64, signature] = token.split('.');
+    if (!payloadB64 || !signature) return false;
+    const payload = Buffer.from(payloadB64, 'base64').toString('utf8');
+    const expectedSig = crypto.createHmac('sha256', SECRET_JWT_KEY).update(payload).digest('hex');
+    return signature === expectedSig;
+  } catch (e) {
+    return false;
+  }
+}
 
 export default async function handler(req, res) {
   // CORS Headers
@@ -7,7 +24,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Secret-Key'
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Secret-Key, X-Admin-Token, Authorization'
   );
 
   if (req.method === 'OPTIONS') {
@@ -17,13 +34,23 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     return res.status(200).json({
       status: 'online',
-      service: 'FloryMine Donate Bridge',
-      target: `${process.env.MINECRAFT_HOST || 'd15.aurorix.net'}:${process.env.MINECRAFT_PORT || '25933'}`
+      service: 'FloryMine Donate Bridge'
     });
   }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+  const providedSecret = req.headers['x-secret-key'];
+  const isAuthorized = verifyAdminToken(req) || (providedSecret && providedSecret === secretKey);
+
+  if (!isAuthorized) {
+    return res.status(401).json({
+      success: false,
+      error: 'Требуется авторизация администратора или платежного шлюза'
+    });
   }
 
   try {
@@ -33,9 +60,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Player nickname and item_id are required' });
     }
 
+    const cleanPlayer = String(player).trim();
+    if (!/^[a-zA-Z0-9_]{3,16}$/.test(cleanPlayer)) {
+      return res.status(400).json({ error: 'Некорректный формат игрового никнейма (3-16 символов a-z, 0-9, _)' });
+    }
+
     const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
     const port = process.env.MINECRAFT_PORT || '25933';
-    const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
     const transactionId = `FL-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
     // Command mapping for LuckPerms & Console commands
@@ -70,17 +101,28 @@ export default async function handler(req, res) {
       srv_unmute: ["unmute {player}"]
     };
 
-    const rawCommands = commandTemplates[item_id] || [`lp user {player} parent add ${item_id}`];
-    const commands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
+    const rawCommands = commandTemplates[item_id];
+    if (!rawCommands) {
+      return res.status(400).json({ error: `Неизвестный ID товара: ${item_id}` });
+    }
+
+    const qty = Math.max(1, Math.min(99, parseInt(quantity, 10) || 1));
+    const unitCommands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, cleanPlayer));
+    const isMultiUnit = String(item_id).startsWith('case_') || String(item_id).startsWith('tokens_');
+    const commands = [];
+    const repeatCount = isMultiUnit ? qty : 1;
+    for (let i = 0; i < repeatCount; i++) {
+      commands.push(...unitCommands);
+    }
 
     const payload = {
       transaction_id: transactionId,
-      player: player,
+      player: cleanPlayer,
       item_id: item_id,
       type: category === 'privileges' ? 'group' : (category || 'item'),
       group: category === 'privileges' ? item_id : undefined,
       item_name: item_name || item_id,
-      quantity: Math.max(1, Math.min(99, parseInt(quantity, 10) || 1)),
+      quantity: qty,
       require_online: false,
       commands: commands
     };
@@ -110,7 +152,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
           success: true,
           status: 'delivered',
-          message: `Донат [${item_name || item_id}] успешно выдан игроку ${player} на сервере!`,
+          message: `Донат [${item_name || item_id}] успешно выдан игроку ${cleanPlayer} на сервере!`,
           transaction_id: transactionId,
           server_response: result
         });
@@ -129,8 +171,8 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         status: 'queued_or_simulated',
-        notice: `Сервер ${host}:${port} пока не ответил (плагин FloryAutoDonate еще не запущен). Запрос сформирован корректно.`,
-        message: `Донат [${item_name || item_id}] оформлен для ${player}!`,
+        notice: `Сервер ${host}:${port} пока не ответил (плагин еще не запущен). Запрос сформирован корректно.`,
+        message: `Донат [${item_name || item_id}] оформлен для ${cleanPlayer}!`,
         transaction_id: transactionId,
         payload_sent: payload
       });

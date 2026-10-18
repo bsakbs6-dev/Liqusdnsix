@@ -1,5 +1,57 @@
 // Vercel Serverless Function: Robokassa ResultURL Webhook Handler -> FloryAutoDonate Plugin
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+
+const TMP_PATH = '/tmp/store-data.json';
+const LOCAL_PATH = path.join(process.cwd(), 'store-data.json');
+
+function isOrderAlreadyProcessed(keys) {
+  const paths = [TMP_PATH, LOCAL_PATH];
+  for (const p of paths) {
+    try {
+      if (fs.existsSync(p)) {
+        const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+        if (data && Array.isArray(data.processedOrders)) {
+          if (keys.some(k => k && data.processedOrders.includes(k))) {
+            return true;
+          }
+        }
+      }
+    } catch (e) {}
+  }
+  return false;
+}
+
+function markOrderProcessed(keys) {
+  const validKeys = keys.filter(Boolean);
+  if (validKeys.length === 0) return;
+  let store = null;
+  try {
+    if (fs.existsSync(TMP_PATH)) {
+      store = JSON.parse(fs.readFileSync(TMP_PATH, 'utf8'));
+    }
+  } catch (e) {}
+  if (!store) {
+    try {
+      if (fs.existsSync(LOCAL_PATH)) {
+        store = JSON.parse(fs.readFileSync(LOCAL_PATH, 'utf8'));
+      }
+    } catch (e) {}
+  }
+  if (!store) return;
+  if (!Array.isArray(store.processedOrders)) store.processedOrders = [];
+  for (const k of validKeys) {
+    if (!store.processedOrders.includes(k)) {
+      store.processedOrders.push(k);
+    }
+  }
+  if (store.processedOrders.length > 500) {
+    store.processedOrders = store.processedOrders.slice(-500);
+  }
+  try { fs.writeFileSync(TMP_PATH, JSON.stringify(store, null, 2), 'utf8'); } catch (e) {}
+  try { fs.writeFileSync(LOCAL_PATH, JSON.stringify(store, null, 2), 'utf8'); } catch (e) {}
+}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -39,6 +91,7 @@ export default async function handler(req, res) {
     }
 
     const password2 = process.env.ROBOKASSA_PASSWORD_2 || 'J7FRFzI8Mdg2k9Kiy6da';
+    const password1 = process.env.ROBOKASSA_PASSWORD_1 || 'Nm47TwghTc4jigSAd44T';
 
     // Collect all Shp_ parameters
     const shpParams = {};
@@ -52,34 +105,36 @@ export default async function handler(req, res) {
     const sortedShpKeys = Object.keys(shpParams).sort();
     const shpString = sortedShpKeys.map(k => `${k}=${shpParams[k]}`).join(':');
 
-    // Expected signature: OutSum:InvId:Password#2:Shp_...
-    const rawSignature = `${outSum}:${invId}:${password2}` + (shpString ? `:${shpString}` : '');
-    const calculatedSignature = crypto.createHash('md5').update(rawSignature).digest('hex');
+    // Expected signature: OutSum:InvId:Password#2:Shp_... (ResultURL webhook) or OutSum:InvId:Password#1:Shp_... (SuccessURL redirect)
+    const rawSig2 = `${outSum}:${invId}:${password2}` + (shpString ? `:${shpString}` : '');
+    const calcSig2 = crypto.createHash('md5').update(rawSig2).digest('hex').toLowerCase();
 
-    if (calculatedSignature.toLowerCase() !== String(signatureValue).toLowerCase()) {
+    const rawSig1 = `${outSum}:${invId}:${password1}` + (shpString ? `:${shpString}` : '');
+    const calcSig1 = crypto.createHash('md5').update(rawSig1).digest('hex').toLowerCase();
+
+    const receivedSig = String(signatureValue).toLowerCase();
+
+    if (receivedSig !== calcSig2 && receivedSig !== calcSig1) {
       console.error('[ROBOKASSA RESULT]: Signature mismatch!', {
         received: signatureValue,
-        calculated: calculatedSignature,
-        rawSignature
+        calculated2: calcSig2
       });
       return res.status(400).send('BAD SIGNATURE');
     }
 
     // Signature verified! Deliver donate to Minecraft server
-    const player = shpParams['Shp_player'] || params['Shp_player'];
-    const itemId = shpParams['Shp_item'] || params['Shp_item'] || 'warrior';
-    const quantity = Number(shpParams['Shp_qty'] || params['Shp_qty']) || 1;
+    const rawPlayer = shpParams['Shp_player'] || params['Shp_player'] || '';
+    const player = String(rawPlayer).trim();
+    const itemId = String(shpParams['Shp_item'] || params['Shp_item'] || 'warrior').trim();
+    const quantity = Math.max(1, Math.min(99, parseInt(shpParams['Shp_qty'] || params['Shp_qty'], 10) || 1));
     const amount = Number(outSum);
-    const promoCode = (shpParams['Shp_promo'] || params['Shp_promo'] || '').trim().toUpperCase();
-    const orderId = shpParams['Shp_order'] || params['Shp_order'] || `ROBO-${invId}`;
+    const promoCode = String(shpParams['Shp_promo'] || params['Shp_promo'] || '').trim().toUpperCase();
+    const orderId = String(shpParams['Shp_order'] || params['Shp_order'] || `ROBO-${invId}`).trim();
+    const roboTxId = `ROBO-${invId}`;
     const isUpgrade = (shpParams['Shp_upgr'] || params['Shp_upgr']) === '1';
-    const upgradeFrom = shpParams['Shp_upfrom'] || params['Shp_upfrom'] || '';
+    const upgradeFrom = String(shpParams['Shp_upfrom'] || params['Shp_upfrom'] || '').trim();
 
-    if (player) {
-      const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
-      const port = process.env.MINECRAFT_PORT || '25933';
-      const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
-
+    if (player && /^[a-zA-Z0-9_]{3,16}$/.test(player)) {
       const commandTemplates = {
         warrior: ["lp user {player} parent add voin"],
         berserk: ["lp user {player} parent add berserk"],
@@ -107,11 +162,34 @@ export default async function handler(req, res) {
         srv_unmute: ["unmute {player}"]
       };
 
-      const rawCommands = commandTemplates[itemId] || [`lp user {player} parent add ${itemId}`];
-      const commands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
+      const rawCommands = commandTemplates[itemId];
+      if (!rawCommands) {
+        console.error('[ROBOKASSA RESULT]: Disallowed itemId:', itemId);
+        return res.status(400).send('INVALID ITEM');
+      }
+
+      // Deduplicate order so webhook + success redirect never grant items twice
+      const alreadyDone = isOrderAlreadyProcessed([roboTxId, orderId]);
+      if (alreadyDone) {
+        console.log(`[ROBOKASSA RESULT]: Order ${orderId} (${roboTxId}) already processed, skipping duplicate dispatch.`);
+        return res.status(200).send(`OK${invId}`);
+      }
+      markOrderProcessed([roboTxId, orderId]);
+
+      const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
+      const port = process.env.MINECRAFT_PORT || '25933';
+      const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+
+      const unitCommands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
+      const isMultiUnit = itemId.startsWith('case_') || itemId.startsWith('tokens_');
+      const repeatCount = isMultiUnit ? quantity : 1;
+      const commands = [];
+      for (let i = 0; i < repeatCount; i++) {
+        commands.push(...unitCommands);
+      }
 
       const pluginPayload = {
-        transaction_id: `ROBO-${invId}`,
+        transaction_id: roboTxId,
         player: player,
         item_id: itemId,
         item_name: itemId,
@@ -171,7 +249,7 @@ export default async function handler(req, res) {
         srv_unban: "Разбан игрока",
         srv_unmute: "Размут игрока"
       };
-      const cleanItemName = itemNames[itemId] || itemId;
+      const cleanItemName = (itemNames[itemId] || itemId) + (quantity > 1 ? ` x${quantity}` : '');
 
       // Record to recent purchases live ticker (using florymine.fun without www to avoid 307 redirects)
       try {

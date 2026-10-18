@@ -15,14 +15,16 @@ export default async function handler(req, res) {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const resp = await fetch(https://api.mcstatus.io/v2/status/java/, { signal: controller.signal });
+    const resp = await fetch(`https://api.mcstatus.io/v2/status/java/${encodeURIComponent(serverAddress)}`, { signal: controller.signal });
     clearTimeout(timeoutId);
 
     if (resp.ok) {
       const data = await resp.json();
+      const onlineCount = data.players?.online || 0;
       return res.status(200).json({
         online: data.online || false,
-        players_online: data.players?.online || 0,
+        players_online: onlineCount,
+        online_players: onlineCount,
         players_max: data.players?.max || 1000,
         version: data.version?.name_clean || '1.21.x',
         motd: data.motd?.clean || 'FloryMine Network'
@@ -35,6 +37,7 @@ export default async function handler(req, res) {
   return res.status(200).json({
     online: true,
     players_online: 142,
+    online_players: 142,
     players_max: 1000,
     version: '1.21.x',
     motd: 'FloryMine Network'
