@@ -1916,7 +1916,7 @@ function openLegalModal(type) {
         <p>1.1. Для оформления заказа на сайте собираются только минимально необходимые данные: игровой никнейм и данные транзакции.</p>
         
         <p class="font-bold text-white pt-2">2. Безопасность данных</p>
-        <p>2.1. Мы не храним и не обрабатываем данные ваших банковских карт. Все платежные транзакции осуществляются через защищенные шлюзы официальных банков и платежных партнеров по стандарту PCI DSS.</p>
+        <p>2.1. Мы не храним и не обрабатываем данные ваших банковских карт. Все платежные транзакции осуществляются через защищенные шлюзы официальных платежных партнеров с шифрованием SSL/TLS.</p>
         
         <p class="font-bold text-white pt-2">3. Использование файлов Cookie</p>
         <p>3.1. Сайт использует локальные файлы cookies и сессии исключительно для сохранения настроек громкости звука и привязанного никнейма.</p>
@@ -2174,7 +2174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check URL params from Payment redirect (Robokassa & previous gateways)
+  // Check URL params from Payment redirect
   const urlParams = new URLSearchParams(window.location.search);
   const isPaymentCheck = urlParams.get('payment_check');
   const paymentStatus = urlParams.get('status') || urlParams.get('payment_status');
