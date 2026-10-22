@@ -81,12 +81,21 @@ const server = http.createServer(async (req, res) => {
   // Настройка базовых CORS заголовков
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Secret-Key, X-Admin-Token, Authorization, Range');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Secret-Key, X-Admin-Token, X-Signature, X-Timestamp, X-API-Key, Authorization, Range');
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
     res.end();
     return;
+  }
+
+  // Алиасы для платежных шлюзов (RollyPay /payments/callback)
+  if (pathname === '/payments/callback') {
+    pathname = '/api/rollypay-webhook';
+  } else if (pathname === '/payments/success' || pathname === '/success') {
+    pathname = '/success.html';
+  } else if (pathname === '/payments/fail' || pathname === '/fail') {
+    pathname = '/fail.html';
   }
 
   // --- ОБРАБОТКА VERCEL API ЭНДПОИНТОВ (/api/*) ---
@@ -110,6 +119,7 @@ const server = http.createServer(async (req, res) => {
       chunks.push(chunk);
     }
     const rawBody = Buffer.concat(chunks).toString('utf-8');
+    req.rawBody = rawBody;
     try {
       req.body = rawBody ? JSON.parse(rawBody) : {};
     } catch {

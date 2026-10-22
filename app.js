@@ -1535,7 +1535,7 @@ async function processPayment() {
       } catch (e) {}
 
       playSound('click');
-      showToast('Перенаправляем в Robokassa...', '💳');
+      showToast('Перенаправляем на оплату (СБП, Карты, Крипта)...', '💳');
       setTimeout(() => {
         window.location.href = data.payment_url;
       }, 600);

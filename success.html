@@ -146,18 +146,23 @@
       srv_unmute: "Размут игрока"
     };
 
-    // Parse URL params
+    // Parse URL params or fallback to last pending order in localStorage
     const params = new URLSearchParams(window.location.search);
-    const player = params.get('Shp_player') || 'Игрок';
-    const itemId = params.get('Shp_item') || '';
-    const rawSum = params.get('OutSum') || '0';
-    const invId = params.get('InvId') || '';
-    const orderId = params.get('Shp_order') || ('ROBO-' + invId);
-    const promo = params.get('Shp_promo') || '';
-    const isUpgr = params.get('Shp_upgr') === '1';
-    const upgrFrom = params.get('Shp_upfrom') || '';
+    let pendingOrder = null;
+    try {
+      pendingOrder = JSON.parse(localStorage.getItem('flory_last_pending_order') || 'null');
+    } catch (e) {}
 
-    const displayItem = itemNames[itemId] || itemId || 'Донат-услуга';
+    const player = params.get('Shp_player') || params.get('player') || pendingOrder?.player || 'Игрок';
+    const itemId = params.get('Shp_item') || params.get('item_id') || '';
+    const rawSum = params.get('OutSum') || params.get('amount') || (pendingOrder?.price ? String(pendingOrder.price) : '0');
+    const invId = params.get('InvId') || params.get('order_id') || pendingOrder?.order_id || '';
+    const orderId = params.get('Shp_order') || params.get('order_id') || pendingOrder?.order_id || ('ORDER-' + Date.now());
+    const promo = params.get('Shp_promo') || params.get('promo') || pendingOrder?.promo || '';
+    const isUpgr = params.get('Shp_upgr') === '1' || pendingOrder?.is_upgrade === true;
+    const upgrFrom = params.get('Shp_upfrom') || pendingOrder?.from_rank || '';
+
+    const displayItem = pendingOrder?.item || itemNames[itemId] || itemId || 'Донат-услуга';
     const displayPrice = parseFloat(rawSum) ? Math.round(parseFloat(rawSum)) : rawSum;
 
     document.getElementById('detailPlayer').textContent = player;

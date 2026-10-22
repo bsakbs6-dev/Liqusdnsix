@@ -14,6 +14,10 @@
     { "source": "/control", "destination": "/admin.html" },
     { "source": "/success", "destination": "/success.html" },
     { "source": "/fail", "destination": "/fail.html" },
+    { "source": "/payments/callback", "destination": "/api/rollypay-webhook" },
+    { "source": "/payments/success", "destination": "/success.html" },
+    { "source": "/payments/fail", "destination": "/fail.html" },
+    { "source": "/api/rollypay-callback", "destination": "/api/rollypay-webhook" },
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }

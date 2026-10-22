@@ -1,10 +1,30 @@
 {
   "categories": [
-    { "id": "all", "name": "Все товары", "icon": "sparkles" },
-    { "id": "privileges", "name": "Привилегии", "icon": "crown" },
-    { "id": "cases", "name": "Кейсы", "icon": "box" },
-    { "id": "currency", "name": "Валюта", "icon": "coins" },
-    { "id": "services", "name": "Услуги", "icon": "wrench" }
+    {
+      "id": "all",
+      "name": "Все товары",
+      "icon": "sparkles"
+    },
+    {
+      "id": "privileges",
+      "name": "Привилегии",
+      "icon": "crown"
+    },
+    {
+      "id": "cases",
+      "name": "Кейсы",
+      "icon": "box"
+    },
+    {
+      "id": "currency",
+      "name": "Валюта",
+      "icon": "coins"
+    },
+    {
+      "id": "services",
+      "name": "Услуги",
+      "icon": "wrench"
+    }
   ],
   "products": {
     "privileges": [
@@ -18,7 +38,9 @@
         "price": 79,
         "badge": "Старт",
         "category": "privileges",
-        "commands": ["lp user {player} parent add voin"],
+        "commands": [
+          "lp user {player} parent add voin"
+        ],
         "perks": [
           "Точки дома: 2 точки",
           "Количество приватов: 4 региона",
@@ -39,7 +61,9 @@
         "price": 159,
         "badge": "Огонь",
         "category": "privileges",
-        "commands": ["lp user {player} parent add berserk"],
+        "commands": [
+          "lp user {player} parent add berserk"
+        ],
         "perks": [
           "Точки дома: 3 точки",
           "Количество приватов: 5 регионов",
@@ -61,7 +85,9 @@
         "price": 359,
         "badge": "Защитник",
         "category": "privileges",
-        "commands": ["lp user {player} parent add spartanec"],
+        "commands": [
+          "lp user {player} parent add spartanec"
+        ],
         "perks": [
           "Точки дома: 4 точки",
           "Количество приватов: 6 регионов",
@@ -83,7 +109,9 @@
         "price": 579,
         "badge": "Топ выбор",
         "category": "privileges",
-        "commands": ["lp user {player} parent add rytsart"],
+        "commands": [
+          "lp user {player} parent add rytsart"
+        ],
         "perks": [
           "Точки дома: 5 точек",
           "Количество приватов: 7 регионов",
@@ -105,7 +133,9 @@
         "price": 899,
         "badge": "Элита",
         "category": "privileges",
-        "commands": ["lp user {player} parent add lord"],
+        "commands": [
+          "lp user {player} parent add lord"
+        ],
         "perks": [
           "Точки дома: 6 точек",
           "Количество приватов: 8 регионов",
@@ -129,7 +159,9 @@
         "price": 1249,
         "badge": "ХИТ ПРОДАЖ",
         "category": "privileges",
-        "commands": ["lp user {player} parent add vladika"],
+        "commands": [
+          "lp user {player} parent add vladika"
+        ],
         "perks": [
           "Точки дома: 8 точек",
           "Количество приватов: 10 регионов",
@@ -151,7 +183,9 @@
         "price": 1799,
         "badge": "МАКСИМУМ",
         "category": "privileges",
-        "commands": ["lp user {player} parent add imperator"],
+        "commands": [
+          "lp user {player} parent add imperator"
+        ],
         "perks": [
           "Точки дома: 10 точек",
           "Количество приватов: 12 регионов",
@@ -175,7 +209,9 @@
         "price": 119,
         "badge": "x1 Ключ",
         "category": "cases",
-        "commands": ["florycase give {player} 1 donate"],
+        "commands": [
+          "florycase give {player} 1 donate"
+        ],
         "perks": [
           "1 Ключ от Донат Кейса",
           "Дроп привилегий от Воина до Владыки",
@@ -193,7 +229,9 @@
         "price": 300,
         "badge": "x3 Выгода",
         "category": "cases",
-        "commands": ["florycase give {player} 3 donate"],
+        "commands": [
+          "florycase give {player} 3 donate"
+        ],
         "perks": [
           "3 Ключа от Донат Кейса со скидкой",
           "Дроп привилегий от Воина до Владыки",
@@ -211,7 +249,9 @@
         "price": 890,
         "badge": "x10 ОПТ",
         "category": "cases",
-        "commands": ["florycase give {player} 10 donate"],
+        "commands": [
+          "florycase give {player} 10 donate"
+        ],
         "perks": [
           "10 Ключей от Донат Кейса (Оптом)",
           "Дроп привилегий от Воина до Владыки",
@@ -229,7 +269,9 @@
         "price": 39,
         "badge": "x1 Ключ",
         "category": "cases",
-        "commands": ["florycase give {player} 1 tokens"],
+        "commands": [
+          "florycase give {player} 1 tokens"
+        ],
         "perks": [
           "1 Ключ от Кейса с Жетонами",
           "Дроп от 25 до 2 500 Жетонов",
@@ -247,7 +289,9 @@
         "price": 150,
         "badge": "x5 Выгода",
         "category": "cases",
-        "commands": ["florycase give {player} 5 tokens"],
+        "commands": [
+          "florycase give {player} 5 tokens"
+        ],
         "perks": [
           "5 Ключей от Кейса с Жетонами",
           "Экономия при покупке набором",
@@ -265,7 +309,9 @@
         "price": 375,
         "badge": "x15 МЕГА",
         "category": "cases",
-        "commands": ["florycase give {player} 15 tokens"],
+        "commands": [
+          "florycase give {player} 15 tokens"
+        ],
         "perks": [
           "15 Ключей от Кейса с Жетонами (Мега-пак)",
           "Максимальный шанс сорвать Джекпот",
@@ -285,7 +331,9 @@
         "price": 50,
         "badge": "50 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 50"],
+        "commands": [
+          "p give {player} 50"
+        ],
         "perks": [
           "50 Жетонов на игровой баланс",
           "Покупка уникальных товаров на спавне",
@@ -302,7 +350,9 @@
         "price": 89,
         "badge": "100 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 100"],
+        "commands": [
+          "p give {player} 100"
+        ],
         "perks": [
           "100 Жетонов на игровой баланс",
           "Стартовый пакет со скидкой",
@@ -319,7 +369,9 @@
         "price": 399,
         "badge": "500 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 500"],
+        "commands": [
+          "p give {player} 500"
+        ],
         "perks": [
           "500 Жетонов на игровой баланс",
           "Хватит на лучшую экипировку и ресурсы",
@@ -336,7 +388,9 @@
         "price": 849,
         "badge": "1000 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 1000"],
+        "commands": [
+          "p give {player} 1000"
+        ],
         "perks": [
           "1 000 Жетонов на игровой баланс",
           "Крупный пакет валюты по выгодной цене",
@@ -353,7 +407,9 @@
         "price": 4699,
         "badge": "5000 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 5000"],
+        "commands": [
+          "p give {player} 5000"
+        ],
         "perks": [
           "5 000 Жетонов на игровой баланс",
           "Премиальный запас для любого игрока",
@@ -370,7 +426,9 @@
         "price": 7500,
         "badge": "10000 Жетонов",
         "category": "currency",
-        "commands": ["p give {player} 10000"],
+        "commands": [
+          "p give {player} 10000"
+        ],
         "perks": [
           "10 000 Жетонов на игровой баланс",
           "Максимальный банк и статус миллионера",
@@ -389,7 +447,11 @@
         "price": 199,
         "badge": "Снятие бана",
         "category": "services",
-        "commands": ["unban {player}", "pardon {player}", "unbanip {player}"],
+        "commands": [
+          "unban {player}",
+          "pardon {player}",
+          "unbanip {player}"
+        ],
         "perks": [
           "Снятие блокировки на сервере FloryMine",
           "Снимает любые временные баны",
@@ -407,7 +469,9 @@
         "price": 59,
         "badge": "Снятие мута",
         "category": "services",
-        "commands": ["unmute {player}"],
+        "commands": [
+          "unmute {player}"
+        ],
         "perks": [
           "Снятие блокировки игрового чата",
           "Снимает любые временные муты",
