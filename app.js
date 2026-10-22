@@ -526,14 +526,12 @@ function renderProducts() {
   
   let items = [];
   if (activeCategory === 'all') {
-    // Collect all items across all registered categories
     const allCategories = Object.values(productsData || {});
     items = allCategories.flat().filter(Boolean);
   } else {
     items = (productsData && productsData[activeCategory]) ? productsData[activeCategory] : [];
   }
   
-  // Instant Search filter
   if (searchQuery) {
     items = items.filter(item => {
       const name = (item.name || '').toLowerCase();
@@ -545,7 +543,6 @@ function renderProducts() {
 
   const safeSearchQuery = escapeHtml(searchQuery);
 
-  // Active Count Badge
   const countBadge = document.getElementById('catalogResultsCount');
   if (countBadge) {
     if (searchQuery) {
@@ -575,39 +572,134 @@ function renderProducts() {
     `;
     return;
   }
-  
+
+  const rankThemes = {
+    warrior: {
+      grad: 'from-slate-800 via-zinc-900 to-[#0a0d14]',
+      border: 'border-slate-600/40',
+      iconBox: 'bg-slate-800 border-slate-500/50 text-slate-200',
+      textGrad: 'from-slate-200 via-white to-zinc-400',
+      glow: 'rgba(148,163,184,0.35)',
+      badgeBg: 'bg-slate-700 text-slate-100'
+    },
+    berserk: {
+      grad: 'from-orange-950/80 via-red-950/40 to-[#0a0d14]',
+      border: 'border-orange-500/50',
+      iconBox: 'bg-orange-900/60 border-orange-500/50 text-orange-300',
+      textGrad: 'from-orange-400 via-amber-300 to-red-400',
+      glow: 'rgba(249,115,22,0.45)',
+      badgeBg: 'bg-orange-600 text-white'
+    },
+    spartan: {
+      grad: 'from-emerald-950/80 via-teal-950/40 to-[#0a0d14]',
+      border: 'border-emerald-500/50',
+      iconBox: 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300',
+      textGrad: 'from-emerald-400 via-green-300 to-teal-300',
+      glow: 'rgba(16,185,129,0.45)',
+      badgeBg: 'bg-emerald-600 text-white'
+    },
+    knight: {
+      grad: 'from-cyan-950/80 via-sky-950/40 to-[#0a0d14]',
+      border: 'border-cyan-500/50',
+      iconBox: 'bg-cyan-900/60 border-cyan-500/50 text-cyan-300',
+      textGrad: 'from-cyan-400 via-sky-300 to-blue-400',
+      glow: 'rgba(6,182,212,0.45)',
+      badgeBg: 'bg-cyan-600 text-white'
+    },
+    lord: {
+      grad: 'from-purple-950/80 via-indigo-950/40 to-[#0a0d14]',
+      border: 'border-purple-500/50',
+      iconBox: 'bg-purple-900/60 border-purple-500/50 text-purple-300',
+      textGrad: 'from-purple-400 via-fuchsia-300 to-indigo-300',
+      glow: 'rgba(168,85,247,0.45)',
+      badgeBg: 'bg-purple-600 text-white'
+    },
+    vladyka: {
+      grad: 'from-amber-950/90 via-yellow-950/50 to-[#0a0d14]',
+      border: 'border-amber-500/60 shadow-[0_0_20px_rgba(245,158,11,0.2)]',
+      iconBox: 'bg-amber-900/60 border-amber-400/60 text-amber-300',
+      textGrad: 'from-amber-300 via-yellow-200 to-orange-400',
+      glow: 'rgba(245,158,11,0.55)',
+      badgeBg: 'bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black'
+    },
+    emperor: {
+      grad: 'from-rose-950/90 via-amber-950/50 to-[#0a0d14]',
+      border: 'border-yellow-400/70 shadow-[0_0_25px_rgba(234,179,8,0.25)]',
+      iconBox: 'bg-gradient-to-br from-yellow-500/30 to-amber-600/30 border border-yellow-400 text-yellow-200',
+      textGrad: 'from-yellow-300 via-amber-200 to-rose-400',
+      glow: 'rgba(234,179,8,0.55)',
+      badgeBg: 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-black'
+    }
+  };
+
   container.innerHTML = items.map(item => {
     const perksList = (Array.isArray(item.perks) && item.perks.length > 0)
       ? item.perks
       : ["Мгновенное начисление на сервере", "100% гарантия доставки", "Навсегда без сгорания"];
     
     const isHot = item.id === 'vladyka' || item.id === 'emperor';
-    const oldPrice = item.price ? Math.round(item.price * 1.3) : null;
-    const discountPercent = oldPrice ? Math.round(((oldPrice - item.price) / oldPrice) * 100) : null;
-    
+    const oldPrice = item.price ? Math.round(item.price * 1.35) : null;
+    const isPrivilege = (item.category === 'privileges') || (!item.category && item.commands && item.commands.some(c => c.includes('parent add')));
+    const theme = rankThemes[item.id] || rankThemes.warrior;
+
+    let visualBannerHtml = '';
+    if (isPrivilege) {
+      visualBannerHtml = `
+        <div class="relative w-full py-6 px-3 rounded-2xl overflow-hidden mb-3.5 bg-gradient-to-b ${theme.grad} border ${theme.border} flex flex-col items-center justify-center text-center shadow-inner group-hover:scale-[1.02] transition-transform duration-300">
+          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+            <span class="px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono text-gray-400">1.21.x</span>
+            <span class="px-2.5 py-0.5 rounded-full ${theme.badgeBg} text-[9px] font-brand font-black uppercase tracking-wider shadow">${item.badge || 'VIP'}</span>
+          </div>
+          <div class="my-2">
+            <div class="w-14 h-14 rounded-2xl ${theme.iconBox} border flex items-center justify-center text-2xl shadow-[0_0_20px_${theme.glow}] group-hover:scale-110 transition-transform">
+              ${item.icon || '⚔️'}
+            </div>
+          </div>
+          <div class="font-brand font-black text-xl tracking-wider uppercase text-transparent bg-clip-text ${theme.textGrad}">
+            ${item.name}
+          </div>
+          <div class="text-[10px] font-bold text-gray-400 tracking-wide mt-0.5">
+            ПРИВИЛЕГИЯ НАВСЕГДА
+          </div>
+        </div>
+      `;
+    } else if (item.category === 'cases') {
+      visualBannerHtml = `
+        <div class="relative w-full py-4 px-3 rounded-2xl overflow-hidden mb-3.5 bg-zinc-950/80 border border-white/10 flex flex-col items-center justify-center text-center shadow-inner group-hover:border-amber-500/40 transition-all">
+          <div class="absolute top-2.5 right-2.5">
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] font-brand font-bold uppercase">${item.badge || 'КЕЙС'}</span>
+          </div>
+          <img src="${item.image || 'images/case_donate.png'}" alt="${item.name}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_10px_20px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
+        </div>
+      `;
+    } else if (item.category === 'currency') {
+      visualBannerHtml = `
+        <div class="relative w-full py-4 px-3 rounded-2xl overflow-hidden mb-3.5 bg-zinc-950/80 border border-white/10 flex flex-col items-center justify-center text-center shadow-inner group-hover:border-yellow-500/40 transition-all">
+          <div class="absolute top-2.5 right-2.5">
+            <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[9px] font-brand font-bold uppercase">ВАЛЮТА</span>
+          </div>
+          <img src="${item.image || 'images/coins.png'}" alt="${item.name}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)] group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
+        </div>
+      `;
+    } else {
+      visualBannerHtml = `
+        <div class="relative w-full py-6 px-3 rounded-2xl overflow-hidden mb-3.5 bg-zinc-950/80 border border-white/10 flex flex-col items-center justify-center text-center shadow-inner group-hover:border-emerald-500/40 transition-all">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-3xl shadow-inner text-emerald-400 group-hover:scale-110 transition-transform">
+            ${item.id === 'srv_unban' || item.id === 'unban' ? '🛡️' : '🔊'}
+          </div>
+          <div class="font-brand font-black text-sm text-white mt-2 tracking-wide uppercase">${item.name}</div>
+        </div>
+      `;
+    }
+
     return `
     <div class="product-card group relative bg-gradient-to-b from-[#0f1422] to-[#070a12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/60 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow ${isHot ? 'shadow-[0_0_35px_rgba(245,158,11,0.18)] border-amber-500/40' : ''}">
       <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${item.color || 'from-amber-600 to-yellow-500'} opacity-20 blur-2xl group-hover:opacity-45 transition-opacity pointer-events-none"></div>
       
       <div>
-        <!-- Rounded Image Card Banner with Overlay Badges -->
-        <div class="relative w-full aspect-[16/11] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 sm:mb-4 bg-zinc-950 border border-white/[0.08] group-hover:border-amber-500/40 transition-all shadow-inner">
-          <img src="${item.image || 'images/vladyka.jpg'}" alt="${item.name}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out" loading="lazy" />
-          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-black/20 to-black/40 pointer-events-none"></div>
-          
-          <!-- Badges Overlay -->
-          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-lg sm:text-xl shadow-lg">
-              ${item.icon || '📦'}
-            </div>
-            <div class="flex items-center gap-1.5">
-              ${discountPercent ? `<span class="px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur-md text-white font-mono font-bold text-[9px] shadow-lg">-${discountPercent}%</span>` : ''}
-              <span class="px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-amber-500/50 text-amber-300 font-brand font-black text-[9px] sm:text-[10px] uppercase tracking-wider shadow-lg">
-                ${item.badge || 'VIP'}
-              </span>
-            </div>
-          </div>
-        </div>
+        ${visualBannerHtml}
 
         <div class="flex items-baseline justify-between mb-1.5">
           <h3 class="font-display font-black text-lg sm:text-xl text-white tracking-wide group-hover:text-amber-400 transition-colors">
@@ -673,7 +765,9 @@ function openDetailsModal(id) {
   
   const imgEl = document.getElementById('detailsImage');
   if (imgEl) {
-    if (item.image) {
+    if (item.category === 'privileges' || (!item.category && item.commands && item.commands.some(x => x.includes('parent add')))) {
+      imgEl.classList.add('hidden');
+    } else if (item.image) {
       imgEl.src = item.image;
       imgEl.classList.remove('hidden');
     } else {
@@ -737,70 +831,52 @@ function openCheckout(id) {
     rankAlert.innerHTML = "";
   }
 
-  // Set Top Image Banner
-  const modalImg = document.getElementById('modalProductImage');
-  if (modalImg) modalImg.src = item.image || 'images/vladyka.jpg';
-
   const modalBadge = document.getElementById('modalItemBadge');
   if (modalBadge) modalBadge.innerText = item.badge || 'VIP';
 
   const modalIcon = document.getElementById('modalItemIconBox');
-  if (modalIcon) modalIcon.innerHTML = item.icon;
+  if (modalIcon) modalIcon.innerHTML = item.icon || '📦';
 
   const modalTitle = document.getElementById('modalItemTitle');
-  if (modalTitle) modalTitle.innerText = `Товар: ${item.name.toUpperCase()}`;
+  if (modalTitle) modalTitle.innerText = item.name.toUpperCase();
 
-  // Default Nickname: leave empty with placeholder unless player already typed one
+  // Prefill nickname if exists
   const nickInput = document.getElementById('modalNicknameInput');
   if (nickInput) {
     nickInput.value = (currentNick && currentNick !== "Steve") ? currentNick : "";
-    const nickHead = document.getElementById('modalAvatarHead');
-    if (nickHead) {
-      nickHead.src = (nickInput.value.trim().length >= 3)
-        ? `https://mc-heads.net/avatar/${encodeURIComponent(nickInput.value.trim())}/32`
-        : 'images/logo.png';
-    }
+    updateAvatarHead(nickInput, 'modalAvatarHead');
   }
 
-  // Quantity Selector: Show for cases and currency, hide for privileges and services
+  // Quantity box
   const qtyContainer = document.getElementById('modalQuantityContainer');
   const qtyInput = document.getElementById('modalQuantityInput');
   if (qtyInput) qtyInput.value = "1";
-  
   const isMultiItem = id.startsWith('case_') || id.startsWith('tokens_') || id.startsWith('coins_');
   if (qtyContainer) {
-    if (isMultiItem) {
-      qtyContainer.classList.remove('hidden');
-    } else {
-      qtyContainer.classList.add('hidden');
-    }
+    qtyContainer.classList.toggle('hidden', !isMultiItem);
   }
 
-  // Warning for Services
-  const warningBox = document.getElementById('modalServiceWarning');
-  if (warningBox) warningBox.className = "hidden";
+  // Reset promo
+  const promoInp = document.getElementById('promoCodeInput');
+  if (promoInp) promoInp.value = "";
+  const promoMsg = document.getElementById('promoStatusMessage');
+  if (promoMsg) promoMsg.classList.add('hidden');
 
-  // Reset Payment Method to SBP default
+  // Select SBP default
   selectPaymentMethod('sbp');
 
-  // Reset Promo
-  const promoInput = document.getElementById('promoCodeInput');
-  if (promoInput) promoInput.value = "";
-  
-  const promoStatus = document.getElementById('promoStatusMessage');
-  if (promoStatus) promoStatus.className = "text-xs mt-1 hidden";
-  
+  // Recalculate price
   updateModalPrice();
 
+  // Show modal
   const modal = document.getElementById('checkoutModal');
-  modal.classList.remove('hidden');
-  setTimeout(() => {
-    modal.classList.remove('opacity-0');
-    lucide.createIcons();
-  }, 10);
+  if (modal) {
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+  }
 
   if (nickInput && nickInput.value.trim()) {
-    checkPlayerEligibility(nickInput.value.trim(), item);
+    schedulePlayerEligibilityCheck(nickInput.value.trim(), item, true);
   }
 }
 
@@ -808,8 +884,92 @@ let selectedPaymentMethod = "sbp";
 
 function selectPaymentMethod(method) {
   selectedPaymentMethod = method || "sbp";
-  const input = document.getElementById('paymentMethodSelect');
-  if (input) input.value = selectedPaymentMethod;
+  const hiddenInput = document.getElementById('paymentMethodSelect');
+  if (hiddenInput) hiddenInput.value = selectedPaymentMethod;
+
+  ['sbp', 'card', 'crypto'].forEach(m => {
+    const el = document.getElementById(`method-${m}`);
+    if (el) {
+      if (m === selectedPaymentMethod) {
+        el.className = "cursor-pointer p-3 rounded-xl border-2 border-amber-500 bg-amber-500/15 shadow-[0_0_15px_rgba(245,158,11,0.25)] transition-all flex flex-col justify-between active:scale-95";
+      } else {
+        el.className = "cursor-pointer p-3 rounded-xl border border-white/10 bg-zinc-950/80 hover:border-white/20 transition-all flex flex-col justify-between active:scale-95";
+      }
+    }
+  });
+
+  updateModalPrice();
+}
+
+// Quick Buy Controller for Hero section
+function initQuickBuy() {
+  const select = document.getElementById('quickProductSelect');
+  if (!select) return;
+  
+  const privs = (productsData && productsData.privileges) ? productsData.privileges : [];
+  const cases = (productsData && productsData.cases) ? productsData.cases : [];
+  
+  let html = '';
+  if (privs.length > 0) {
+    html += '<optgroup label="👑 Привилегии">';
+    privs.forEach(p => {
+      html += `<option value="${p.id}" ${p.id === 'vladyka' ? 'selected' : ''}>${p.name} — ${p.price} ₽</option>`;
+    });
+    html += '</optgroup>';
+  }
+  if (cases.length > 0) {
+    html += '<optgroup label="📦 Кейсы">';
+    cases.forEach(c => {
+      html += `<option value="${c.id}">${c.name} — ${c.price} ₽</option>`;
+    });
+    html += '</optgroup>';
+  }
+  
+  if (html) {
+    select.innerHTML = html;
+  }
+  onQuickProductChange();
+}
+
+function onQuickNickInput(el) {
+  const nick = (el && el.value) ? el.value.trim() : '';
+  const head = document.getElementById('quickNickHead');
+  if (head) {
+    head.src = (nick.length >= 3)
+      ? `https://mc-heads.net/avatar/${encodeURIComponent(nick)}/64`
+      : 'https://mc-heads.net/avatar/Steve/64';
+  }
+  currentNick = nick;
+}
+
+function onQuickProductChange() {
+  const select = document.getElementById('quickProductSelect');
+  const btnText = document.getElementById('quickBuyBtnText');
+  if (!select || !btnText) return;
+  const item = findProduct(select.value);
+  if (item) {
+    btnText.innerText = `Купить за ${item.price} ₽`;
+  }
+}
+
+function handleQuickBuy() {
+  const nickInp = document.getElementById('quickNicknameInput');
+  const select = document.getElementById('quickProductSelect');
+  const nick = nickInp ? nickInp.value.trim() : '';
+  const prodId = select ? select.value : 'vladyka';
+  
+  if (nick) {
+    currentNick = nick;
+  }
+  openCheckout(prodId);
+  if (nick) {
+    const modalNick = document.getElementById('modalNicknameInput');
+    if (modalNick) {
+      modalNick.value = nick;
+      updateAvatarHead(modalNick, 'modalAvatarHead');
+      schedulePlayerEligibilityCheck(nick, selectedProduct, true);
+    }
+  }
 }
 
 function closeCheckoutModal() {
@@ -881,24 +1041,27 @@ function updateModalPrice() {
   if (!selectedProduct) return;
   const oldPriceEl = document.getElementById('modalOldPrice');
   const totalPriceEl = document.getElementById('modalTotalPrice');
+  const payBtnText = document.getElementById('modalPayBtnText');
 
   if (isRankBlocked) {
     if (oldPriceEl) oldPriceEl.classList.add('hidden');
     if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
+    if (payBtnText) payBtnText.innerText = 'НЕДОСТУПНО';
     return;
   }
 
   const isMultiItem = selectedProduct.id.startsWith('case_') || selectedProduct.id.startsWith('tokens_') || selectedProduct.id.startsWith('coins_');
   const qty = isMultiItem ? selectedQuantity : 1;
   const effectiveBasePrice = isUpgrade ? (upgradeBasePrice * qty) : (selectedProduct.price * qty);
+  const finalPrice = currentDiscount > 0
+    ? Math.max(1, Math.round(effectiveBasePrice * (1 - currentDiscount)))
+    : effectiveBasePrice;
 
   if (currentDiscount > 0) {
-    const discounted = Math.max(1, Math.round(effectiveBasePrice * (1 - currentDiscount)));
     if (oldPriceEl) {
       oldPriceEl.classList.remove('hidden');
       oldPriceEl.innerText = `${effectiveBasePrice} ₽`;
     }
-    if (totalPriceEl) totalPriceEl.innerText = `${discounted} ₽`;
   } else {
     if (isUpgrade && selectedProduct.price > effectiveBasePrice) {
       if (oldPriceEl) {
@@ -908,26 +1071,17 @@ function updateModalPrice() {
     } else {
       if (oldPriceEl) oldPriceEl.classList.add('hidden');
     }
-    if (totalPriceEl) totalPriceEl.innerText = `${effectiveBasePrice} ₽`;
+  }
+
+  if (totalPriceEl) totalPriceEl.innerText = `${finalPrice} ₽`;
+
+  if (payBtnText) {
+    const methodNames = { sbp: 'СБП', card: 'КАРТУ', crypto: 'КРИПТУ' };
+    payBtnText.innerText = `ОПЛАТИТЬ ЧЕРЕЗ ${methodNames[selectedPaymentMethod] || 'СБП'} • ${finalPrice} ₽`;
   }
 }
 
-// Unified Eligibility & Rank Check for Modal
-let checkEligibilityTimer = null;
-let activeEligibilityToken = 0;
-
-function schedulePlayerEligibilityCheck(nick, item, immediate = false) {
-  if (checkEligibilityTimer) clearTimeout(checkEligibilityTimer);
-  if (immediate) {
-    checkPlayerEligibility(nick, item);
-  } else {
-    checkEligibilityTimer = setTimeout(() => {
-      checkPlayerEligibility(nick, item);
-    }, 200);
-  }
-}
-
-async function checkPlayerEligibility(nick, item) {
+function checkPlayerEligibility(nick, item) {
   if (!item) return;
   const currentToken = ++activeEligibilityToken;
   const cleanNick = (nick || "").trim();
@@ -1716,6 +1870,7 @@ async function fetchStoreCatalog() {
     if (cachedProds && (!productsData || Object.keys(productsData).length === 0)) {
       productsData = JSON.parse(cachedProds);
       renderProducts();
+      initQuickBuy();
     }
     const cachedPromos = localStorage.getItem('flory_promos_cache');
     if (cachedPromos && (!dynamicPromoCodes || dynamicPromoCodes.length === 0)) {
@@ -1957,113 +2112,8 @@ function closeLegalModal() {
   }, 300);
 }
 
-// Cursor Golden Amber Spark Particles Trail
-function initCursorSparkTrail() {
-  if (document.getElementById('cursorSparkCanvas')) return;
-
-  const canvas = document.createElement('canvas');
-  canvas.id = 'cursorSparkCanvas';
-  canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.pointerEvents = 'none';
-  canvas.style.zIndex = '999999';
-  canvas.style.display = 'block';
-  
-  if (document.body) {
-    document.body.appendChild(canvas);
-  } else {
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!document.getElementById('cursorSparkCanvas')) {
-        document.body.appendChild(canvas);
-      }
-    });
-  }
-
-  const ctx = canvas.getContext('2d');
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  const particles = [];
-  const colors = ['#f59e0b', '#fbbf24', '#f97316', '#fef08a', '#ffffff', '#eab308'];
-
-  function addSpark(x, y, count = 2) {
-    if (particles.length > 80) return;
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 2 + 0.5;
-      particles.push({
-        x: x + (Math.random() - 0.5) * 4,
-        y: y + (Math.random() - 0.5) * 4,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 0.6,
-        size: Math.random() * 2.8 + 1.2,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: 1,
-        decay: Math.random() * 0.025 + 0.018
-      });
-    }
-  }
-
-  window.addEventListener('mousemove', (e) => {
-    addSpark(e.clientX, e.clientY, 2);
-  }, { passive: true });
-
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches && e.touches[0]) {
-      addSpark(e.touches[0].clientX, e.touches[0].clientY, 2);
-    }
-  }, { passive: true });
-
-  window.addEventListener('click', (e) => {
-    addSpark(e.clientX, e.clientY, 8);
-  }, { passive: true });
-
-  function renderLoop() {
-    ctx.clearRect(0, 0, width, height);
-
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.alpha -= p.decay;
-      p.size = Math.max(0, p.size - 0.02);
-
-      if (p.alpha <= 0 || p.size <= 0) {
-        particles.splice(i, 1);
-        continue;
-      }
-
-      ctx.save();
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = p.color;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    requestAnimationFrame(renderLoop);
-  }
-
-  requestAnimationFrame(renderLoop);
-}
-
-// Immediate execution
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCursorSparkTrail);
-} else {
-  initCursorSparkTrail();
-}
+// Cursor particle trail disabled for clean obsidian gaming style
+function initCursorSparkTrail() {}
 
 // Skiper-style Card Spotlight on Mouse Move
 function initCardSpotlight() {

@@ -291,31 +291,9 @@ body {
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85);
 }
 
-/* Royal Floating Embers */
+/* Royal Floating Embers - removed for clean obsidian gaming style */
 .royal-embers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, #f59e0b, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 40px 70px, #fbbf24, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 50px 160px, #f97316, rgba(0,0,0,0)),
-    radial-gradient(2.5px 2.5px at 90px 40px, #ffd700, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 130px 80px, #f59e0b, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 160px 120px, #fbbf24, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 220px 220px;
-  animation: emberDrift 22s linear infinite;
-  opacity: 0.35;
-}
-
-@keyframes emberDrift {
-  0% {
-    background-position: 0px 0px;
-  }
-  100% {
-    background-position: 40px -440px;
-  }
+  display: none !important;
 }
 
 /* Tooltip & Popover */

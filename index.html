@@ -55,24 +55,13 @@
 </head>
 <body class="bg-[#07090e] text-gray-100 font-sans antialiased selection:bg-amber-500 selection:text-black min-h-screen flex flex-col relative w-full overflow-x-hidden">
 
-  <!-- Background decorative royal castle & glowing orbs -->
+  <!-- Background: Obsidian Dark Gaming Canvas with Ambient Spotlights -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden w-full h-full">
-    <!-- Royal Castle Wallpaper Layer -->
-    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.32] scale-100" style="background-image: url('images/bg-royal.jpg'); filter: saturate(1.2) brightness(0.85);"></div>
-    
-    <!-- Deep Royal Vignette & Atmosphere Overlays -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#07090e]/90 via-[#07090e]/80 to-[#07090e]/95"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_0%,rgba(245,158,11,0.18),transparent_70%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(249,115,22,0.06),transparent_65%)]"></div>
-
-    <!-- Glowing Royal Light Orbs (shadcn-inspired ambient spotlights) -->
-    <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[90vw] max-w-[750px] h-[420px] bg-gradient-to-b from-amber-500/20 via-orange-500/10 to-transparent blur-[130px] rounded-full"></div>
-    <div class="absolute top-[40%] right-[-10%] w-[80vw] max-w-[450px] h-[450px] bg-yellow-600/10 blur-[140px] rounded-full"></div>
-    <div class="absolute top-[75%] left-[-10%] w-[80vw] max-w-[450px] h-[450px] bg-amber-600/10 blur-[140px] rounded-full"></div>
-
-    <!-- Subtle Grid & Embers -->
-    <div class="bg-grid-pattern absolute inset-0 opacity-[0.035]"></div>
-    <div class="royal-embers absolute inset-0"></div>
+    <div class="absolute inset-0 bg-[#080a11]"></div>
+    <div class="bg-grid-pattern absolute inset-0 opacity-[0.04]"></div>
+    <div class="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[90vw] max-w-[900px] h-[550px] bg-gradient-to-b from-amber-500/18 via-orange-500/8 to-transparent blur-[140px] rounded-full"></div>
+    <div class="absolute top-[45%] right-[-10%] w-[600px] h-[600px] bg-amber-600/8 blur-[160px] rounded-full"></div>
+    <div class="absolute top-[75%] left-[-10%] w-[600px] h-[600px] bg-orange-600/8 blur-[160px] rounded-full"></div>
   </div>
 
   <!-- FLOATING GLASS HEADER (shadcn / 21st.dev style) -->
@@ -159,335 +148,241 @@
     </div>
   </div>
 
-  <!-- HERO BENTO GRID (21st.dev + Skiper Motion + shadcn Standard) -->
-  <section class="relative pt-3 sm:pt-8 pb-6 sm:pb-10 z-10 w-full overflow-hidden">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+  <!-- HERO SECTION (Authentic Minecraft Server Store Hero & Quick-Buy) -->
+  <section class="relative pt-6 sm:pt-12 pb-8 sm:pb-14 z-10 w-full overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       
-      <!-- Top Bento Grid: 2 Primary Columns (lg:col-span-8 and lg:col-span-4) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6 mb-3.5 sm:mb-6">
-        
-        <!-- BENTO TILE 1: MAIN HERO DISPLAY (lg:col-span-8) -->
-        <div class="lg:col-span-8 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden bg-dot-matrix">
-          <!-- Ambient Glowing Gradient Orbs in Corners -->
-          <div class="absolute -top-24 -left-24 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div class="relative z-10 space-y-4 sm:space-y-6">
-            <!-- Glowing Status Pill -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900/90 border border-amber-500/40 text-amber-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.2)] backdrop-blur-md">
-              <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>Сервер онлайн • 20.0 TPS • Minecraft 1.21.x</span>
-            </div>
-
-            <!-- Massive Display Headline -->
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-[1.08]">
-              Стань лидером на сервере <br class="hidden sm:inline" />
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 text-glow">FloryMine</span>
-            </h1>
-
-            <p class="text-gray-300 text-xs sm:text-sm sm:leading-relaxed max-w-xl font-medium">
-              Благодаря кастомным плагинам сервера, выдача доната занимает до 5 секунд прямо во время игры. Моментальная оплата по 
-              <strong class="text-amber-300 font-semibold">СБП, картам и криптовалюте</strong> без скрытых комиссий.
-            </p>
-
-            <!-- Action CTAs -->
-            <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
-              <a href="#store" class="border-beam-box w-full sm:w-auto">
-                <div class="shimmer-btn px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_30px_rgba(245,158,11,0.5)] transition active:scale-95 flex items-center justify-center gap-2">
-                  <iconify-icon icon="solar:bolt-bold-duotone" class="text-black text-lg"></iconify-icon>
-                  <span>Выбрать привилегию</span>
-                </div>
-              </a>
-              <a href="#privileges" class="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 text-gray-200 font-brand font-bold text-xs sm:text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 hover:border-amber-500/40">
-                <iconify-icon icon="solar:shield-check-bold-duotone" class="text-amber-400 text-lg"></iconify-icon>
-                <span>Сравнение прав</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Micro Metric Bar inside Hero Tile -->
-          <div class="relative z-10 grid grid-cols-3 gap-2 sm:gap-4 pt-5 mt-6 border-t border-white/[0.08]">
-            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/60 p-2 sm:p-2.5 rounded-xl border border-white/[0.06] backdrop-blur-md">
-              <div class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
-                <iconify-icon icon="solar:bolt-bold-duotone" class="text-amber-400 text-lg"></iconify-icon>
-              </div>
-              <div class="text-[10px] sm:text-xs">
-                <div class="font-bold text-white leading-tight">Выдача 3–5с</div>
-                <div class="text-gray-400 text-[9px] sm:text-[10px]">В игре без перезахода</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/60 p-2 sm:p-2.5 rounded-xl border border-white/[0.06] backdrop-blur-md">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                <iconify-icon icon="solar:card-send-bold-duotone" class="text-emerald-400 text-lg"></iconify-icon>
-              </div>
-              <div class="text-[10px] sm:text-xs">
-                <div class="font-bold text-white leading-tight">СБП и Карты</div>
-                <div class="text-gray-400 text-[9px] sm:text-[10px]">0% комиссия • Крипта</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 sm:gap-3 bg-zinc-950/60 p-2 sm:p-2.5 rounded-xl border border-white/[0.06] backdrop-blur-md">
-              <div class="w-8 h-8 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center shrink-0">
-                <iconify-icon icon="solar:infinity-bold-duotone" class="text-purple-400 text-lg"></iconify-icon>
-              </div>
-              <div class="text-[10px] sm:text-xs">
-                <div class="font-bold text-white leading-tight">Навсегда</div>
-                <div class="text-gray-400 text-[9px] sm:text-[10px]">Сохранение при вайпах</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- BENTO TILE 2: LIVE SERVER RADAR & QUICK CONNECT (lg:col-span-4) -->
-        <div class="lg:col-span-4 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden">
-          <div class="absolute -top-10 -right-10 w-44 h-44 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
-          <div>
-            <!-- Radar Header -->
-            <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <div class="flex items-center gap-2">
-                <div class="relative w-3 h-3 flex items-center justify-center">
-                  <span class="absolute w-6 h-6 rounded-full bg-emerald-400/30 radar-wave-1"></span>
-                  <span class="relative w-2 h-2 rounded-full bg-emerald-400"></span>
-                </div>
-                <span class="font-brand font-bold text-xs text-white uppercase tracking-wider">Серверный Радар</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[10px] font-bold">20.0 TPS</span>
-            </div>
-
-            <!-- Big Live Player Count -->
-            <div class="my-4 p-4 rounded-2xl bg-zinc-950/70 border border-white/[0.06] relative overflow-hidden">
-              <div class="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold text-gray-400 mb-1">Игроков в сети</div>
-              <div class="flex items-baseline gap-2">
-                <span id="heroOnlineCount" class="text-3xl sm:text-4xl font-black font-mono text-white text-glow-white">...</span>
-                <span class="text-xs sm:text-sm font-mono text-gray-400 font-semibold">/ 500 слотов</span>
-              </div>
-              <!-- Real-time progress bar -->
-              <div class="w-full h-2 rounded-full bg-zinc-800 mt-3 overflow-hidden">
-                <div id="heroOnlineBar" class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-orange-400 rounded-full transition-all duration-700" style="width: 28%;"></div>
-              </div>
-            </div>
-
-            <!-- Interactive 1-Click Copy IP Box -->
-            <div onclick="copyServerIP()" class="cursor-pointer group p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800/90 border border-amber-500/30 hover:border-amber-400 transition-all shadow-[0_0_20px_rgba(245,158,11,0.15)] active:scale-95">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-                    <iconify-icon icon="solar:copy-bold-duotone" class="text-lg"></iconify-icon>
-                  </div>
-                  <div>
-                    <div class="font-mono font-bold text-xs sm:text-sm text-white group-hover:text-amber-300 transition">mc.florymine.fun</div>
-                    <div class="text-[10px] text-gray-400">Нажмите, чтобы скопировать IP</div>
-                  </div>
-                </div>
-                <span class="text-[10px] font-mono text-amber-400 px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 font-bold group-hover:bg-amber-500/20">Скопировать</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Specs List -->
-          <div class="pt-3.5 mt-3.5 border-t border-white/[0.08] flex items-center justify-between text-[10px] text-gray-400 font-medium">
-            <span class="flex items-center gap-1">
-              <iconify-icon icon="solar:shield-check-bold" class="text-emerald-400 text-sm"></iconify-icon>
-              <span>Java 1.21.x</span>
-            </span>
-            <span class="flex items-center gap-1">
-              <iconify-icon icon="solar:bolt-bold" class="text-amber-400 text-sm"></iconify-icon>
-              <span>Пинг &lt; 15ms</span>
-            </span>
-            <span class="text-gray-300 font-semibold">Лицензия & Пиратка</span>
-          </div>
-        </div>
-
+      <!-- Live Server Season Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/90 border border-amber-500/40 text-amber-300 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.25)] backdrop-blur-md mb-4 sm:mb-6">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+        </span>
+        <span>Анархия 1.21.x • Новый Сезон • Мгновенная Выдача</span>
       </div>
 
-      <!-- Second Row Bento Grid: DAILY BONUS (lg:col-span-5) + WHY FLORYMINE HIGHLIGHTS (lg:col-span-7) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6">
-        
-        <!-- BENTO TILE 3: DAILY BONUS BOX (lg:col-span-5) -->
-        <div id="bonus" class="lg:col-span-5 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between">
-          <div class="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <!-- Main Bold Heading -->
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-tight max-w-4xl mx-auto">
+        ОФИЦИАЛЬНЫЙ МАГАЗИН СЕРВЕРА <br class="hidden sm:inline" />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 text-glow">FLORYMINE</span>
+      </h1>
 
-          <div class="text-center pb-3 border-b border-white/[0.08]">
-            <span class="px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-brand text-[10px] sm:text-xs uppercase font-bold tracking-wider inline-flex items-center gap-1.5 shadow-sm">
-              <iconify-icon icon="solar:gift-bold-duotone" class="text-yellow-400 text-sm"></iconify-icon>
-              <span>Ежедневный Бонус</span>
-            </span>
-            <p class="text-[11px] sm:text-xs text-gray-300 mt-1.5 font-medium">Бесплатные награды в игре каждые 24 часа!</p>
+      <p class="text-gray-300 text-xs sm:text-sm sm:leading-relaxed max-w-2xl mx-auto font-medium mt-3.5 mb-2">
+        Выбирайте привилегии, кейсы и валюту с автоматической выдачей прямо в игре за 3–5 секунд.
+        Оплата без комиссий через СБП, банковские карты РФ и криптовалюту.
+      </p>
+
+      <!-- CENTRAL QUICK-BUY WIDGET (FunTime & HolyWorld Standard) -->
+      <div class="max-w-3xl mx-auto mt-6 sm:mt-8 p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-zinc-950/85 border border-amber-500/35 shadow-[0_0_45px_rgba(245,158,11,0.18)] backdrop-blur-xl relative inner-top-glow text-left">
+        <div class="flex items-center justify-between pb-3 mb-3.5 border-b border-white/[0.08]">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-brand font-bold text-xs uppercase tracking-wider text-white">Быстрая покупка в 1 клик</span>
+          </div>
+          <span class="text-[10px] font-mono text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Автовыдача за 5 сек</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+          <!-- Nickname Input with Live Avatar Head -->
+          <div class="sm:col-span-5 relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+              <img id="quickNickHead" src="https://mc-heads.net/avatar/Steve/32" alt="Skin" class="w-full h-full object-cover">
+            </div>
+            <input type="text" id="quickNicknameInput" oninput="onQuickNickInput(this)" placeholder="Игровой никнейм"
+              class="w-full pl-12 pr-3 py-3 bg-zinc-900/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-bold text-xs sm:text-sm outline-none transition placeholder:text-gray-500">
           </div>
 
-          <!-- 3D Gift Visual Box with floating animation -->
-          <div class="my-4 flex flex-col items-center justify-center">
-            <div class="relative group cursor-pointer" onclick="document.getElementById('bonusNicknameInput').focus()">
-              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-b from-amber-500/20 via-orange-500/10 to-transparent border border-amber-500/40 p-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
-                <img src="images/3d-gift.png" alt="3D Gift Box" class="w-20 h-20 sm:w-24 sm:h-24 object-contain animate-float drop-shadow-[0_10px_20px_rgba(245,158,11,0.35)]">
-              </div>
-              <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-black text-[9px] font-brand font-black uppercase shadow-lg tracking-wider whitespace-nowrap">
-                БЕСПЛАТНО
-              </div>
-            </div>
+          <!-- Product Selector -->
+          <div class="sm:col-span-4 relative">
+            <select id="quickProductSelect" onchange="onQuickProductChange()"
+              class="w-full px-3 py-3 bg-zinc-900/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-bold text-xs sm:text-sm outline-none transition cursor-pointer appearance-none">
+              <option value="vladyka" selected>Владыка — 1 249 ₽ (ХИТ)</option>
+              <option value="warrior">Воин — 79 ₽</option>
+              <option value="berserk">Берсерк — 159 ₽</option>
+              <option value="spartan">Спартанец — 359 ₽</option>
+              <option value="knight">Рыцарь — 579 ₽</option>
+              <option value="lord">Лорд — 899 ₽</option>
+              <option value="emperor">Император — 1 799 ₽</option>
+              <option value="case_donate_1">Донат Кейс x1 — 119 ₽</option>
+              <option value="case_donate_3">Донат Кейс x3 — 300 ₽</option>
+              <option value="case_donate_10">Донат Кейс x10 — 890 ₽</option>
+            </select>
+            <iconify-icon icon="solar:alt-arrow-down-linear" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none"></iconify-icon>
           </div>
 
-          <!-- Bonus Input & Live Minecraft Head Preview -->
-          <div class="space-y-2.5 pt-1">
-            <div class="relative">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center">
-                <img id="bonusAvatarHead" src="images/logo.png" alt="Skin Head" class="w-full h-full object-cover">
-              </div>
-              <input type="text" id="bonusNicknameInput" oninput="onBonusNicknameInput(this)" placeholder="Напишите свой игровой ник" 
-                class="w-full pl-11 pr-3 py-2.5 sm:py-3 bg-zinc-950/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white text-xs sm:text-sm font-semibold outline-none transition placeholder:text-gray-500">
-            </div>
-            
-            <button onclick="claimDailyBonus()" id="claimBonusBtn" class="shimmer-btn w-full py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.35)] transition flex items-center justify-center gap-1.5 active:scale-95">
-              <iconify-icon icon="solar:gift-bold-duotone" class="text-black text-base"></iconify-icon>
-              <span>Получить бонус</span>
+          <!-- Action Button -->
+          <div class="sm:col-span-3">
+            <button onclick="handleQuickBuy()" class="shimmer-btn w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.35)] transition active:scale-95 flex items-center justify-center gap-1.5">
+              <iconify-icon icon="solar:bag-heart-bold-duotone" class="text-base text-black"></iconify-icon>
+              <span id="quickBuyBtnText">Купить за 1 249 ₽</span>
             </button>
-
-            <div id="bonusStatusMsg" class="hidden text-[11px] sm:text-xs text-center p-2 rounded-xl font-medium leading-relaxed"></div>
-
-            <!-- Conditions note -->
-            <div class="pt-2 border-t border-white/[0.08] space-y-1 text-[10px] text-gray-400">
-              <div class="flex items-center gap-1.5">
-                <iconify-icon icon="solar:check-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
-                <span>1 раз в 24 часа для 1 игрока (1 IP = 1 ник)</span>
-              </div>
-              <div class="flex items-center gap-1.5 text-amber-300 font-semibold">
-                <iconify-icon icon="solar:info-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
-                <span>Вы должны быть онлайн на сервере!</span>
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- BENTO TILE 4: 2 CONNECTED FEATURE HIGHLIGHTS (lg:col-span-7) -->
-        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-6">
-          
-          <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
-            <div>
-              <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-2xl text-amber-400"></iconify-icon>
-              </div>
-              <div class="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider mb-1">Мгновенный сокет</div>
-              <h3 class="font-display font-black text-base sm:text-lg text-white mb-2">Выдача до 5 секунд</h3>
-              <p class="text-xs text-gray-400 leading-relaxed">
-                Благодаря кастомным плагинам сервера, выдача доната занимает до 5 секунд прямо во время игры. Никаких задержек и перезаходов — все команды исполняются на сервере моментально.
-              </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
-              <span class="text-amber-400 font-bold">100% Автоматика</span>
-              <span class="text-gray-500">mc.florymine.fun</span>
-            </div>
-          </div>
-
-          <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
-            <div>
-              <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <iconify-icon icon="solar:crown-star-bold-duotone" class="text-2xl text-yellow-400"></iconify-icon>
-              </div>
-              <div class="text-[10px] font-mono font-bold text-yellow-400 uppercase tracking-wider mb-1">Пожизненный статус</div>
-              <h3 class="font-display font-black text-base sm:text-lg text-white mb-2">Несгораемый донат</h3>
-              <p class="text-xs text-gray-400 leading-relaxed">
-                Все возможности и привилегии навсегда закрепляются за вашим ником. Никакие вайпы игрового мира, сезоны и обновления сервера не аннулируют ваш купленный ранг.
-              </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
-              <span class="text-yellow-400 font-bold">Без сгорания</span>
-              <span class="text-gray-500">Навсегда</span>
-            </div>
-          </div>
-
+        <!-- Micro Trust Badges -->
+        <div class="mt-4 pt-3 border-t border-white/[0.06] grid grid-cols-1 sm:grid-cols-3 gap-2 text-center sm:text-left text-[11px] text-gray-400 font-medium">
+          <span class="flex items-center justify-center sm:justify-start gap-1.5">
+            <iconify-icon icon="solar:bolt-bold-duotone" class="text-amber-400 text-sm"></iconify-icon>
+            <span>Выдача 3–5 сек в игре</span>
+          </span>
+          <span class="flex items-center justify-center sm:justify-start gap-1.5">
+            <iconify-icon icon="solar:card-send-bold-duotone" class="text-emerald-400 text-sm"></iconify-icon>
+            <span>СБП, Карты РФ, Криптовалюта</span>
+          </span>
+          <span class="flex items-center justify-center sm:justify-start gap-1.5">
+            <iconify-icon icon="solar:infinity-bold-duotone" class="text-purple-400 text-sm"></iconify-icon>
+            <span>Навсегда (сохранение при вайпе)</span>
+          </span>
         </div>
+      </div>
 
+      <!-- Quick Action Buttons Row -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
+        <div onclick="copyServerIP()" class="cursor-pointer group flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 border border-amber-500/30 hover:border-amber-400/70 px-4 py-2.5 rounded-xl transition shadow active:scale-95">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="font-mono text-xs font-bold text-white group-hover:text-amber-300">mc.florymine.fun</span>
+          <span class="text-[10px] text-gray-400 font-medium">(Кликни, чтобы скопировать)</span>
+        </div>
+        <a href="#store" class="px-5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-amber-500/40 text-gray-200 hover:text-white font-brand text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
+          <iconify-icon icon="solar:bag-heart-bold-duotone" class="text-amber-400 text-sm"></iconify-icon>
+          <span>Каталог товаров ↓</span>
+        </a>
+        <a href="#privileges" class="px-5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 hover:border-amber-500/40 text-gray-200 hover:text-white font-brand text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
+          <iconify-icon icon="solar:shield-check-bold-duotone" class="text-orange-400 text-sm"></iconify-icon>
+          <span>Таблица прав</span>
+        </a>
       </div>
 
     </div>
   </section>
 
-  <!-- FEATURES BENTO GRID (Inspired by 21st.dev & shadcn/ui) -->
-  <section id="why-us" class="py-6 sm:py-10 relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full overflow-hidden">
-    <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2">
-        <iconify-icon icon="solar:verified-check-bold" class="text-amber-400 text-sm"></iconify-icon>
-        <span>Надёжность и качество</span>
-      </div>
-      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-white tracking-tight">
-        Почему игроки выбирают FloryMine
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+  <!-- DAILY BONUS & SERVER HIGHLIGHTS GRID -->
+  <section class="pb-6 sm:pb-10 relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
       
-      <!-- Bento Tile 1 -->
-      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
+      <!-- DAILY BONUS TILE (lg:col-span-5) -->
+      <div id="bonus" class="lg:col-span-5 bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
         <div>
-          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <iconify-icon icon="solar:wallet-money-bold-duotone" class="text-2xl text-amber-400"></iconify-icon>
+          <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <span class="px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-brand text-[10px] sm:text-xs uppercase font-bold tracking-wider inline-flex items-center gap-1.5 shadow-sm">
+              <iconify-icon icon="solar:gift-bold-duotone" class="text-yellow-400 text-sm"></iconify-icon>
+              <span>Ежедневный Бонус</span>
+            </span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">Бесплатно каждые 24ч</span>
           </div>
-          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Умный докуп рангов</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">
-            У вас уже куплена привилегия? Вы можете повысить свой статус, оплатив только разницу в цене. Система автоматически рассчитывает скидку по вашему нику.
-          </p>
+
+          <div class="my-4 flex items-center gap-4 bg-zinc-950/60 p-4 rounded-2xl border border-white/[0.06]">
+            <div class="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-3xl shrink-0 shadow-inner">
+              🎁
+            </div>
+            <div>
+              <div class="font-display font-bold text-sm text-white">Бесплатные награды в игре</div>
+              <p class="text-[11px] text-gray-400 mt-0.5 leading-relaxed">
+                Получайте кейсы, валюту и ресурсы прямо в инвентарь раз в сутки!
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="relative">
+              <div class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center">
+                <img id="bonusAvatarHead" src="https://mc-heads.net/avatar/Steve/32" alt="Skin Head" class="w-full h-full object-cover">
+              </div>
+              <input type="text" id="bonusNicknameInput" oninput="onBonusNicknameInput(this)" placeholder="Ваш игровой никнейм" 
+                class="w-full pl-11 pr-3 py-2.5 sm:py-3 bg-zinc-950/90 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white text-xs sm:text-sm font-semibold outline-none transition placeholder:text-gray-500">
+            </div>
+            
+            <button onclick="claimDailyBonus()" id="claimBonusBtn" class="shimmer-btn w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.35)] transition flex items-center justify-center gap-1.5 active:scale-95">
+              <iconify-icon icon="solar:gift-bold-duotone" class="text-black text-base"></iconify-icon>
+              <span>Забрать бонус</span>
+            </button>
+
+            <div id="bonusStatusMsg" class="hidden text-xs text-center p-2 rounded-xl font-medium leading-relaxed"></div>
+          </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-amber-400 flex items-center justify-between">
-          <span>Справедливый апгрейд</span>
-          <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
+
+        <div class="pt-3 mt-3 border-t border-white/[0.08] flex items-center justify-between text-[10px] text-gray-400 font-medium">
+          <span class="flex items-center gap-1">
+            <iconify-icon icon="solar:check-circle-bold-duotone" class="text-amber-400 text-sm"></iconify-icon>
+            <span>1 IP = 1 ник раз в 24ч</span>
+          </span>
+          <span class="text-amber-300 font-semibold">Нужно быть онлайн на сервере</span>
         </div>
       </div>
 
-      <!-- Bento Tile 2 -->
-      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
-        <div>
-          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <iconify-icon icon="solar:card-send-bold-duotone" class="text-2xl text-emerald-400"></iconify-icon>
+      <!-- SERVER FEATURES HIGHLIGHTS (lg:col-span-7) -->
+      <div id="why-us" class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <div class="bento-card rounded-2xl sm:rounded-3xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-xl text-amber-400"></iconify-icon>
+            </div>
+            <div class="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider mb-1">Мгновенный сокет</div>
+            <h3 class="font-display font-black text-base text-white mb-1.5">Выдача до 5 секунд</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+              Выдача доната происходит прямо во время игры. Никаких задержек и перезаходов — все команды исполняются сервером моментально.
+            </p>
           </div>
-          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Удобная оплата</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">
-            Моментальная оплата через СБП, любые банковские карты (МИР, Visa, Mastercard), T-Pay, Сбер и криптовалюту (USDT, TON, xrocket). Донат активируется на сервере сразу после оплаты.
-          </p>
+          <div class="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+            <span class="text-amber-400 font-bold">100% Автоматика</span>
+            <span class="text-gray-500">mc.florymine.fun</span>
+          </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-emerald-400 flex items-center justify-between">
-          <span>СБП • Карты • Крипта • 0%</span>
-          <iconify-icon icon="solar:shield-check-bold" class="text-base"></iconify-icon>
-        </div>
-      </div>
 
-      <!-- Bento Tile 3 -->
-      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
-        <div>
-          <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <iconify-icon icon="solar:cpu-bolt-bold-duotone" class="text-2xl text-cyan-400"></iconify-icon>
+        <div class="bento-card rounded-2xl sm:rounded-3xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <iconify-icon icon="solar:crown-star-bold-duotone" class="text-xl text-yellow-400"></iconify-icon>
+            </div>
+            <div class="text-[10px] font-mono font-bold text-yellow-400 uppercase tracking-wider mb-1">Пожизненный статус</div>
+            <h3 class="font-display font-black text-base text-white mb-1.5">Несгораемый донат</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+              Все возможности и привилегии навсегда закрепляются за вашим ником. Вайпы и обновления сервера не аннулируют купленный ранг.
+            </p>
           </div>
-          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Стабильные 20.0 TPS</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">
-            Выделенные серверные мощности последнего поколения на базе высокочастотных процессоров. Никаких просадок тиков в PvP и комфортный пинг из любой точки.
-          </p>
+          <div class="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+            <span class="text-yellow-400 font-bold">Без сгорания</span>
+            <span class="text-gray-500">Навсегда</span>
+          </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-cyan-400 flex items-center justify-between">
-          <span>Без лагов и фризов</span>
-          <iconify-icon icon="solar:bolt-bold" class="text-base"></iconify-icon>
-        </div>
-      </div>
 
-      <!-- Bento Tile 4 -->
-      <div class="bento-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between group">
-        <div>
-          <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <iconify-icon icon="solar:chat-round-dots-bold-duotone" class="text-2xl text-orange-400"></iconify-icon>
+        <div class="bento-card rounded-2xl sm:rounded-3xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <iconify-icon icon="solar:wallet-money-bold-duotone" class="text-xl text-emerald-400"></iconify-icon>
+            </div>
+            <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider mb-1">Честный докуп</div>
+            <h3 class="font-display font-black text-base text-white mb-1.5">Доплата разницы</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+              Уже есть привилегия? При повышении статуса вы платите только разницу в стоимости — система автоматически учитывает ваш текущий ранг.
+            </p>
           </div>
-          <h3 class="font-display font-black text-base sm:text-lg text-white mb-1.5">Поддержка 24/7</h3>
-          <p class="text-xs text-gray-400 leading-relaxed">
-            Отзывчивая администрация и быстрая тикет-система в Discord и Telegram. Любой вопрос по заказу или серверу решается за считанные минуты.
-          </p>
+          <div class="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+            <span class="text-emerald-400 font-bold">Справедливый апгрейд</span>
+            <span class="text-gray-500">Авторасчет</span>
+          </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-white/[0.06] text-[11px] font-mono font-bold text-orange-400 flex items-center justify-between">
-          <span>dsc.gg/florymine</span>
-          <iconify-icon icon="solar:chat-round-dots-bold" class="text-base"></iconify-icon>
+
+        <div class="bento-card rounded-2xl sm:rounded-3xl p-5 flex flex-col justify-between group">
+          <div>
+            <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <iconify-icon icon="solar:cpu-bolt-bold-duotone" class="text-xl text-cyan-400"></iconify-icon>
+            </div>
+            <div class="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">Стабильность</div>
+            <h3 class="font-display font-black text-base text-white mb-1.5">20.0 TPS без лагов</h3>
+            <p class="text-xs text-gray-400 leading-relaxed">
+              Мощные высокочастотные серверные процессоры. Никаких просадок тиков в PvP замесах и комфортный пинг для игроков со всего мира.
+            </p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] font-mono">
+            <span class="text-cyan-400 font-bold">Без лагов</span>
+            <span class="text-gray-500">20.0 TPS</span>
+          </div>
         </div>
-      </div>
-          <iconify-icon icon="solar:chat-round-dots-bold" class="text-base"></iconify-icon>
-        </div>
+
       </div>
 
     </div>
@@ -766,41 +661,46 @@
     </a>
   </div>
 
-  <!-- CHECKOUT MODAL (shadcn Dialog Redesign) -->
-  <div id="checkoutModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-3 hidden opacity-0 transition-opacity duration-300">
-    <div class="bg-[#0b0e17] border border-amber-500/40 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-7 shadow-[0_0_50px_rgba(245,158,11,0.25)] relative max-h-[92vh] overflow-y-auto">
-      <button onclick="closeCheckoutModal()" class="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-zinc-900 border border-white/10 text-gray-400 hover:text-white transition">
+  <!-- CHECKOUT MODAL (Modern Minecraft Store Checkout) -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-50 flex items-center justify-center p-3 sm:p-5 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0b0e17] border border-amber-500/40 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 shadow-[0_0_60px_rgba(0,0,0,0.85)] relative max-h-[92vh] overflow-y-auto ring-1 ring-inset ring-white/[0.08]">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 rounded-xl bg-zinc-900 border border-white/10 text-gray-400 hover:text-white transition">
         <iconify-icon icon="solar:close-circle-bold-duotone" class="text-xl"></iconify-icon>
       </button>
 
-      <!-- Top Rank Image Banner -->
-      <div class="mb-3.5">
-        <div class="relative w-full h-32 sm:h-40 rounded-2xl overflow-hidden bg-zinc-950 border border-amber-500/30 shadow-md">
-          <img id="modalProductImage" src="images/vladyka.jpg" alt="Rank preview" class="w-full h-full object-cover object-center">
-          <div class="absolute inset-0 bg-gradient-to-t from-[#0b0e17] via-transparent to-black/30 pointer-events-none"></div>
-          
-          <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-            <div id="modalItemIconBox" class="w-9 h-9 rounded-xl bg-black/75 backdrop-blur-md border border-white/10 flex items-center justify-center text-xl shadow">👑</div>
-            <span id="modalItemBadge" class="px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-amber-500/40 text-amber-400 font-bold text-[10px] uppercase tracking-wider shadow">ХИТ</span>
+      <!-- Top Item Header Banner -->
+      <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-950/90 border border-white/[0.08] mb-4">
+        <div id="modalItemIconBox" class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500/20 to-orange-500/10 border border-amber-500/30 flex items-center justify-center text-2xl shadow-inner shrink-0">
+          👑
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span id="modalItemBadge" class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-brand text-[9px] font-bold uppercase tracking-wider">ХИТ</span>
+            <span class="text-[11px] text-gray-400 font-medium">Навсегда на сервере</span>
           </div>
-
-          <div class="absolute bottom-2.5 left-3">
-            <div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Оформление заказа</div>
-            <h3 id="modalItemTitle" class="text-lg sm:text-xl font-black font-display text-white">Привилегия ВЛАДЫКА</h3>
+          <h3 id="modalItemTitle" class="text-lg sm:text-xl font-black font-display text-white truncate">ВЛАДЫКА</h3>
+        </div>
+        <div class="text-right shrink-0">
+          <div id="modalTotalPrice" class="text-xl sm:text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">
+            1 249 ₽
           </div>
+          <div id="modalOldPrice" class="text-[11px] text-gray-500 line-through font-mono hidden">1 890 ₽</div>
         </div>
       </div>
 
-      <div class="space-y-3 py-1">
+      <div class="space-y-3.5 py-1">
         <!-- Nickname with Dynamic Minecraft Skin Avatar -->
         <div>
-          <label class="block text-[10px] sm:text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Игровой никнейм</label>
-          <div class="relative">
-            <div class="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center">
-              <img id="modalAvatarHead" src="images/logo.png" alt="Skin Head" class="w-full h-full object-cover">
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+            <span>Игровой никнейм на сервере</span>
+            <span class="text-[10px] text-gray-400 normal-case font-normal">Скин загрузится автоматически</span>
+          </label>
+          <div class="relative flex items-center">
+            <div class="absolute left-3 w-7 h-7 rounded-lg bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+              <img id="modalAvatarHead" src="https://mc-heads.net/avatar/Steve/32" alt="Skin Head" class="w-full h-full object-cover">
             </div>
-            <input type="text" id="modalNicknameInput" oninput="onModalNicknameInput(this)" placeholder="Напишите свой игровой ник" 
-              class="w-full pl-11 pr-3 py-2.5 bg-zinc-950 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-semibold text-xs sm:text-sm outline-none transition placeholder:text-gray-500">
+            <input type="text" id="modalNicknameInput" oninput="onModalNicknameInput(this)" placeholder="Введите ник (например: Steve)" 
+              class="w-full pl-12 pr-3 py-2.5 sm:py-3 bg-zinc-950 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-bold text-xs sm:text-sm outline-none transition placeholder:text-gray-500">
           </div>
           <!-- Rank Upgrade & Restriction Status Alert -->
           <div id="modalRankAlert" class="hidden mt-2 text-xs p-2.5 rounded-xl font-semibold leading-relaxed border transition-all"></div>
@@ -808,20 +708,20 @@
 
         <!-- Promo Code -->
         <div>
-          <label class="block text-[10px] sm:text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Промокод на скидку</label>
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5">Промокод на скидку (если есть)</label>
           <div class="flex gap-2">
-            <input type="text" id="promoCodeInput" placeholder="Введите промокод" 
-              class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-mono text-xs sm:text-sm uppercase outline-none transition placeholder:text-gray-500">
-            <button onclick="applyPromoCode()" class="px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-amber-400 font-bold text-xs tracking-wider transition shrink-0 border border-zinc-700">
+            <input type="text" id="promoCodeInput" placeholder="Введите промокод (например: FLORY)" 
+              class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700/80 focus:border-amber-400 rounded-xl text-white font-mono text-xs sm:text-sm uppercase outline-none transition placeholder:text-gray-500">
+            <button onclick="applyPromoCode()" class="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-amber-400 font-bold text-xs tracking-wider transition shrink-0 border border-zinc-700 active:scale-95">
               Применить
             </button>
           </div>
           <p id="promoStatusMessage" class="text-xs mt-1 hidden"></p>
         </div>
 
-        <!-- Quantity Selector (for cases, currency, etc.) -->
+        <!-- Quantity Selector (for cases, currency) -->
         <div id="modalQuantityContainer" class="hidden">
-          <label class="block text-[10px] sm:text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Желаемое количество</label>
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5">Желаемое количество</label>
           <div class="flex items-center gap-2">
             <button type="button" onclick="changeQuantity(-1)" class="w-10 h-10 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-base flex items-center justify-center border border-zinc-700 active:scale-95 transition">
               -
@@ -836,47 +736,66 @@
 
         <!-- Warning / Error status for Services -->
         <div id="modalServiceWarning" class="hidden text-xs p-2.5 rounded-xl font-medium leading-relaxed"></div>
-        <input type="hidden" id="paymentMethodSelect" value="sbp">
 
-        <!-- Price display (shadcn card style) -->
-        <div class="bg-zinc-950/90 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/[0.08] flex items-center justify-between shadow-inner">
-          <div>
-            <span class="text-[10px] sm:text-[11px] text-gray-400 uppercase font-semibold tracking-wider">Итого к оплате:</span>
-            <div id="modalOldPrice" class="text-[10px] sm:text-[11px] text-gray-500 line-through hidden">399 ₽</div>
+        <!-- Payment Method Selector (PROMINENT TABS) -->
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5">Способ оплаты</label>
+          <div class="grid grid-cols-3 gap-2">
+            <div onclick="selectPaymentMethod('sbp')" id="method-sbp" class="cursor-pointer p-2.5 rounded-xl border-2 border-amber-500 bg-amber-500/15 shadow-[0_0_15px_rgba(245,158,11,0.25)] transition-all flex flex-col justify-between active:scale-95">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-white">СБП</span>
+                <span class="text-[9px] font-bold px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400">0%</span>
+              </div>
+              <div class="text-[10px] text-gray-400">QR-код • Любой банк</div>
+            </div>
+
+            <div onclick="selectPaymentMethod('card')" id="method-card" class="cursor-pointer p-2.5 rounded-xl border border-white/10 bg-zinc-950 hover:border-white/20 transition-all flex flex-col justify-between active:scale-95">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-gray-300">Карты</span>
+                <span class="text-[9px] font-bold text-gray-400">РФ / Мир</span>
+              </div>
+              <div class="text-[10px] text-gray-400">МИР, Visa, Mastercard</div>
+            </div>
+
+            <div onclick="selectPaymentMethod('crypto')" id="method-crypto" class="cursor-pointer p-2.5 rounded-xl border border-white/10 bg-zinc-950 hover:border-white/20 transition-all flex flex-col justify-between active:scale-95">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-gray-300">Крипта</span>
+                <span class="text-[9px] font-bold text-gray-400">Web3</span>
+              </div>
+              <div class="text-[10px] text-gray-400">USDT, TON, TRX</div>
+            </div>
           </div>
-          <div id="modalTotalPrice" class="text-xl sm:text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">
-            299 ₽
-          </div>
+          <input type="hidden" id="paymentMethodSelect" value="sbp">
         </div>
       </div>
 
-      <!-- Glowing Shimmer Checkout Button (21st.dev style) -->
-      <button onclick="processPayment()" class="shimmer-btn w-full mt-3.5 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 hover:from-amber-400 hover:via-orange-400 hover:to-yellow-400 text-black font-brand font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] transition-all transform active:scale-95 flex items-center justify-center gap-2 group">
+      <!-- Glowing Shimmer Checkout Button -->
+      <button onclick="processPayment()" id="modalPayBtn" class="shimmer-btn w-full mt-4 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 hover:from-amber-400 hover:via-orange-400 hover:to-yellow-400 text-black font-brand font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(245,158,11,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] transition-all transform active:scale-95 flex items-center justify-center gap-2 group">
         <iconify-icon icon="solar:shield-check-bold-duotone" class="text-black text-lg"></iconify-icon>
-        <span>Перейти к оплате</span>
+        <span id="modalPayBtnText">ОПЛАТИТЬ ЧЕРЕЗ СБП • 1 249 ₽</span>
         <iconify-icon icon="solar:arrow-right-linear" class="text-black text-base group-hover:translate-x-1 transition-transform"></iconify-icon>
       </button>
 
-      <!-- Legal consent line for payment processors -->
+      <!-- Legal consent line -->
       <p class="mt-2.5 text-center text-[10px] sm:text-[11px] text-gray-400 leading-relaxed">
-        Нажимая кнопку, вы соглашаетесь с <a href="https://telegra.ph/PUBLICHNAYA-OFERTA-08-12-15" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-medium">Пользовательским соглашением</a> и <a href="https://telegra.ph/POLITIKA-KONFIDENCIALNOSTI-08-12-99" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-medium">Политикой конфиденциальности</a>.
+        Нажимая кнопку, вы принимаете <a href="https://telegra.ph/PUBLICHNAYA-OFERTA-08-12-15" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-medium">Договор оферты</a> и <a href="https://telegra.ph/POLITIKA-KONFIDENCIALNOSTI-08-12-99" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-medium">Политику конфиденциальности</a>.
       </p>
 
       <!-- Trust Badges Under Button -->
-      <div class="mt-2.5 flex items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-[11px] text-gray-400">
-        <span class="flex items-center gap-1">
-          <iconify-icon icon="solar:shield-check-bold-duotone" class="text-emerald-400 text-sm"></iconify-icon>
-          <span>Безопасная оплата • СБП, Карты, Крипта</span>
-        </span>
-        <span>•</span>
+      <div class="mt-3 pt-3 border-t border-white/[0.08] flex items-center justify-center gap-3 sm:gap-4 text-[10px] text-gray-400">
         <span class="flex items-center gap-1">
           <iconify-icon icon="solar:bolt-bold-duotone" class="text-amber-400 text-sm"></iconify-icon>
-          <span>Выдача 3-5 сек</span>
+          <span>Выдача 3–5 сек</span>
         </span>
         <span>•</span>
         <span class="flex items-center gap-1">
-          <iconify-icon icon="solar:server-bold-duotone" class="text-blue-400 text-sm"></iconify-icon>
-          <span>24/7 Онлайн</span>
+          <iconify-icon icon="solar:shield-check-bold-duotone" class="text-emerald-400 text-sm"></iconify-icon>
+          <span>Сохранение при вайпе</span>
+        </span>
+        <span>•</span>
+        <span class="flex items-center gap-1">
+          <iconify-icon icon="solar:chat-round-dots-bold-duotone" class="text-blue-400 text-sm"></iconify-icon>
+          <span>Поддержка 24/7</span>
         </span>
       </div>
     </div>
