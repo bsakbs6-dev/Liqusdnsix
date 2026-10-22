@@ -811,6 +811,58 @@ function closeDetailsModal() {
 }
 
 // Checkout Modal
+
+// Global Avatar & Nickname helpers
+function updateAvatarHead(inputEl, avatarId) {
+  const headEl = document.getElementById(avatarId);
+  if (!headEl) return;
+  const rawNick = (typeof inputEl === 'string') ? inputEl : (inputEl ? inputEl.value : '');
+  const nick = (rawNick || '').trim();
+  if (nick.length >= 3 && /^[a-zA-Z0-9_]{3,16}$/.test(nick)) {
+    headEl.src = `https://minotar.net/helm/${encodeURIComponent(nick)}/32`;
+  } else {
+    headEl.src = 'https://minotar.net/helm/Steve/32';
+  }
+}
+window.updateAvatarHead = updateAvatarHead;
+
+function onQuickNickInput(el) {
+  updateAvatarHead(el, 'quickNickHead');
+  if (el) {
+    el.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+  }
+  const clean = (el ? el.value : '').trim();
+  if (clean) {
+    currentNick = clean;
+  }
+}
+window.onQuickNickInput = onQuickNickInput;
+
+function onBonusNicknameInput(el) {
+  updateAvatarHead(el, 'bonusAvatarHead');
+  if (el) {
+    el.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+  }
+}
+window.onBonusNicknameInput = onBonusNicknameInput;
+
+function onModalNicknameInput(el) {
+  updateAvatarHead(el, 'modalAvatarHead');
+  if (el) {
+    el.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+  }
+  const nickErr = document.getElementById('modalNickError');
+  if (nickErr) nickErr.classList.add('hidden');
+  const clean = (el ? el.value : '').trim();
+  if (clean) {
+    currentNick = clean;
+    if (selectedProduct) {
+      schedulePlayerEligibilityCheck(clean, selectedProduct, false);
+    }
+  }
+}
+window.onModalNicknameInput = onModalNicknameInput;
+
 function openCheckout(id) {
   const item = findProduct(id);
   if (!item) return;
@@ -938,16 +990,7 @@ function initQuickBuy() {
   onQuickProductChange();
 }
 
-function onQuickNickInput(el) {
-  const nick = (el && el.value) ? el.value.trim() : '';
-  const head = document.getElementById('quickNickHead');
-  if (head) {
-    head.src = (nick.length >= 3)
-      ? `https://minotar.net/helm/${encodeURIComponent(nick)}/64`
-      : 'https://minotar.net/helm/Steve/64';
-  }
-  currentNick = nick;
-}
+// onQuickNickInput defined in global helpers above
 
 function onQuickProductChange() {
   const select = document.getElementById('quickProductSelect');
