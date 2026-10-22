@@ -692,8 +692,8 @@
   <!-- CHECKOUT MODAL (ReallyWorld / HolyWorld Form Popup Standard) -->
   <div id="checkoutModal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-50 flex items-center justify-center p-3 sm:p-5 hidden opacity-0 transition-opacity duration-300">
     <div class="bg-[#11141c] border border-[#1d2333] rounded-2xl max-w-xl w-full p-5 sm:p-7 shadow-[0_0_60px_rgba(0,0,0,0.9)] relative max-h-[92vh] overflow-y-auto">
-      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 rounded-xl bg-[#0a0c10] border border-[#1d2333] text-gray-400 hover:text-white transition">
-        <iconify-icon icon="solar:close-circle-bold" class="text-xl"></iconify-icon>
+      <button onclick="closeCheckoutModal()" aria-label="Закрыть" class="absolute top-0 right-0 w-12 h-12 sm:w-14 sm:h-14 rounded-tr-2xl rounded-bl-2xl bg-[#0a0c10] hover:bg-[#1d2333] active:bg-[#f39513]/20 border-l border-b border-[#1d2333] flex items-center justify-center text-gray-400 hover:text-white transition group z-30 cursor-pointer">
+        <iconify-icon icon="solar:close-circle-bold" class="text-2xl sm:text-3xl text-gray-400 group-hover:text-white group-hover:scale-110 transition-transform"></iconify-icon>
       </button>
 
       <!-- Top Item Header -->
@@ -729,6 +729,10 @@
             </div>
             <input type="text" id="modalNicknameInput" oninput="onModalNicknameInput(this)" placeholder="Введите ник (например: Steve)" 
               class="w-full pl-12 pr-3 py-2.5 sm:py-3 bg-[#0a0c10] border border-[#1d2333] focus:border-[#f39513] rounded-xl text-white font-bold text-xs sm:text-sm outline-none transition placeholder:text-gray-500">
+          </div>
+          <div id="modalNickError" class="hidden mt-2 p-2.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-bold flex items-center gap-2">
+            <iconify-icon icon="solar:danger-triangle-bold" class="text-red-400 text-base shrink-0"></iconify-icon>
+            <span id="modalNickErrorText">Пожалуйста, введите ваш никнейм на сервере!</span>
           </div>
           <div id="modalRankAlert" class="hidden mt-2 text-xs p-2.5 rounded-xl font-semibold leading-relaxed border transition-all"></div>
         </div>
@@ -797,11 +801,12 @@
       </div>
 
       <!-- Action Button -->
-      <button onclick="processPayment()" id="modalPayBtn" class="btn-primary w-full mt-4 py-3.5 sm:py-4 rounded-xl bg-[#f39513] hover:bg-[#eb8a02] text-white font-extrabold text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(243,149,19,0.4)] transition-all transform active:scale-95 flex items-center justify-center gap-2 group">
-        <iconify-icon icon="solar:shield-check-bold" class="text-white text-lg"></iconify-icon>
+      <button onclick="processPayment()" id="modalPayBtn" class="btn-primary w-full mt-4 py-3.5 sm:py-4 rounded-xl bg-[#f39513] hover:bg-[#eb8a02] text-white font-extrabold text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(243,149,19,0.4)] transition-all transform active:scale-95 flex items-center justify-center gap-2 group cursor-pointer">
+        <iconify-icon id="modalPayBtnIcon" icon="solar:shield-check-bold" class="text-white text-lg"></iconify-icon>
         <span id="modalPayBtnText">ОПЛАТИТЬ ЧЕРЕЗ СБП • 1 249 ₽</span>
-        <iconify-icon icon="solar:arrow-right-linear" class="text-white text-base group-hover:translate-x-1 transition-transform"></iconify-icon>
+        <iconify-icon id="modalPayBtnArrow" icon="solar:arrow-right-linear" class="text-white text-base group-hover:translate-x-1 transition-transform"></iconify-icon>
       </button>
+      <div id="modalPaymentStatus" class="hidden mt-3 p-3 rounded-xl text-xs font-bold text-center leading-relaxed"></div>
 
       <!-- Legal consent line -->
       <p class="mt-2.5 text-center text-[10px] sm:text-[11px] text-gray-400 leading-relaxed">
@@ -831,8 +836,8 @@
   <!-- PRIVILEGE DETAILS MODAL -->
   <div id="detailsModal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-50 flex items-center justify-center p-3 hidden opacity-0 transition-opacity duration-300">
     <div class="bg-[#11141c] border border-[#1d2333] rounded-2xl max-w-lg w-full p-5 sm:p-7 shadow-[0_0_50px_rgba(0,0,0,0.9)] relative max-h-[90vh] overflow-y-auto">
-      <button onclick="closeDetailsModal()" class="absolute top-3.5 right-3.5 p-1.5 rounded-xl bg-[#0a0c10] border border-[#1d2333] text-gray-400 hover:text-white transition">
-        <iconify-icon icon="solar:close-circle-bold" class="text-xl"></iconify-icon>
+      <button onclick="closeDetailsModal()" aria-label="Закрыть" class="absolute top-0 right-0 w-12 h-12 sm:w-14 sm:h-14 rounded-tr-2xl rounded-bl-2xl bg-[#0a0c10] hover:bg-[#1d2333] active:bg-[#f39513]/20 border-l border-b border-[#1d2333] flex items-center justify-center text-gray-400 hover:text-white transition group z-30 cursor-pointer">
+        <iconify-icon icon="solar:close-circle-bold" class="text-2xl sm:text-3xl text-gray-400 group-hover:text-white group-hover:scale-110 transition-transform"></iconify-icon>
       </button>
       <div class="flex items-center gap-3 pb-3 border-b border-[#1d2333]">
         <div id="detailsIconBox" class="w-12 h-12 rounded-xl bg-[#f39513]/15 border border-[#f39513]/30 flex items-center justify-center text-2xl text-[#f39513] shadow">👑</div>

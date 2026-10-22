@@ -101,7 +101,7 @@ function toggleAudio() {
     if (icon) icon.setAttribute('data-lucide', 'volume-x');
     showToast('Звуки выключены', '✕');
   }
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
 }
 
 // Products Database with EXACT DeluxeMenus & Server Ranks (Dynamic & Fallback)
@@ -742,7 +742,7 @@ function renderProducts() {
     `;
   }).join('');
 
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
 }
 
 function findProduct(id) {
@@ -799,7 +799,7 @@ function openDetailsModal(id) {
   setTimeout(() => {
     modal.classList.remove('opacity-0');
   }, 10);
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
 }
 
 function closeDetailsModal() {
@@ -830,6 +830,10 @@ function openCheckout(id) {
     rankAlert.className = "hidden";
     rankAlert.innerHTML = "";
   }
+  const nickErr = document.getElementById('modalNickError');
+  if (nickErr) nickErr.classList.add('hidden');
+  const statusBox = document.getElementById('modalPaymentStatus');
+  if (statusBox) statusBox.classList.add('hidden');
 
   const modalBadge = document.getElementById('modalItemBadge');
   if (modalBadge) modalBadge.innerText = item.badge || 'VIP';
@@ -838,12 +842,15 @@ function openCheckout(id) {
   if (modalIcon) modalIcon.innerHTML = item.icon || '📦';
 
   const modalTitle = document.getElementById('modalItemTitle');
-  if (modalTitle) modalTitle.innerText = item.name.toUpperCase();
+  if (modalTitle) modalTitle.innerText = (item.name || '').toUpperCase();
 
-  // Prefill nickname if exists
+  // Prefill nickname if exists anywhere (quick buy input or currentNick)
+  const heroNick = document.getElementById('quickNicknameInput')?.value?.trim() || '';
+  const activeNick = (currentNick && currentNick !== "Steve") ? currentNick : heroNick;
   const nickInput = document.getElementById('modalNicknameInput');
   if (nickInput) {
-    nickInput.value = (currentNick && currentNick !== "Steve") ? currentNick : "";
+    nickInput.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+    nickInput.value = activeNick;
     updateAvatarHead(nickInput, 'modalAvatarHead');
   }
 
@@ -875,8 +882,8 @@ function openCheckout(id) {
     requestAnimationFrame(() => modal.classList.remove('opacity-0'));
   }
 
-  if (nickInput && nickInput.value.trim()) {
-    schedulePlayerEligibilityCheck(nickInput.value.trim(), item, true);
+  if (activeNick) {
+    schedulePlayerEligibilityCheck(activeNick, item, true);
   }
 }
 
@@ -957,18 +964,37 @@ function handleQuickBuy() {
   const select = document.getElementById('quickProductSelect');
   const nick = nickInp ? nickInp.value.trim() : '';
   const prodId = select ? select.value : 'vladyka';
-  
-  if (nick) {
-    currentNick = nick;
-  }
-  openCheckout(prodId);
-  if (nick) {
-    const modalNick = document.getElementById('modalNicknameInput');
-    if (modalNick) {
-      modalNick.value = nick;
-      updateAvatarHead(modalNick, 'modalAvatarHead');
-      schedulePlayerEligibilityCheck(nick, selectedProduct, true);
+
+  if (!nick) {
+    if (nickInp) {
+      nickInp.classList.add('border-red-500', 'ring-2', 'ring-red-500/40');
+      nickInp.focus();
+      setTimeout(() => {
+        nickInp.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+      }, 3000);
     }
+    showToast('Введите ваш никнейм перед покупкой!', '✕');
+    // Open checkout modal and focus nickname input
+    openCheckout(prodId);
+    setTimeout(() => {
+      const modalNick = document.getElementById('modalNicknameInput');
+      const nickErr = document.getElementById('modalNickError');
+      if (modalNick) {
+        modalNick.focus();
+        modalNick.classList.add('border-red-500', 'ring-2', 'ring-red-500/40');
+      }
+      if (nickErr) nickErr.classList.remove('hidden');
+    }, 100);
+    return;
+  }
+
+  currentNick = nick;
+  openCheckout(prodId);
+  const modalNick = document.getElementById('modalNicknameInput');
+  if (modalNick) {
+    modalNick.value = nick;
+    updateAvatarHead(modalNick, 'modalAvatarHead');
+    schedulePlayerEligibilityCheck(nick, selectedProduct, true);
   }
 }
 
@@ -1125,14 +1151,15 @@ function checkPlayerEligibility(nick, item) {
       <span>Перейти к оплате</span>
       <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
     `;
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
   }
   updateModalPrice();
 }
 
 async function checkPlayerRankEligibility(nick, product, token = 0) {
   const alertBox = document.getElementById('modalRankAlert');
-  const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
+  const payBtn = document.getElementById('modalPayBtn');
+  const payBtnText = document.getElementById('modalPayBtnText');
   const oldPriceEl = document.getElementById('modalOldPrice');
   const totalPriceEl = document.getElementById('modalTotalPrice');
 
@@ -1146,67 +1173,66 @@ async function checkPlayerRankEligibility(nick, product, token = 0) {
     upgradeBasePrice = 0;
     alertBox.className = 'hidden';
     alertBox.innerHTML = '';
-    if (payBtn) {
-      payBtn.disabled = false;
-      payBtn.innerHTML = `
-        <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
-        <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black"></i>
-        <span>Перейти к оплате</span>
-        <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
-      `;
-      lucide.createIcons();
-    }
+    if (payBtn) payBtn.disabled = false;
+    updateModalPrice();
+    return;
+  }
+
+  // Only rank privileges are subject to rank upgrades/blocks.
+  // Cases, currency, and unbans are NEVER blocked by player rank!
+  const isPrivilege = (product.category === 'privileges') || (!product.category && product.commands && product.commands.some(c => c.includes('parent add')));
+  if (!isPrivilege) {
+    isRankBlocked = false;
+    isUpgrade = false;
+    upgradeFromRank = null;
+    upgradeBasePrice = 0;
+    alertBox.className = 'hidden';
+    alertBox.innerHTML = '';
+    if (payBtn) payBtn.disabled = false;
     updateModalPrice();
     return;
   }
 
   // Show subtle checking status
-  alertBox.className = 'block text-xs p-2.5 rounded-xl font-semibold leading-relaxed bg-gray-900/80 text-gray-300 border border-gray-700/60';
-  alertBox.innerHTML = '<span class="inline-block animate-spin mr-1.5">⏳</span> Проверяем текущую привилегию игрока...';
+  alertBox.className = 'block text-xs p-2.5 rounded-xl font-semibold leading-relaxed bg-[#0a0c10] text-gray-300 border border-[#1d2333]';
+  alertBox.innerHTML = '<span class="inline-block animate-spin mr-1.5">⏳</span> Проверяем текущий статус игрока на сервере...';
 
   try {
     let data = playerRankCache[cleanNick.toLowerCase()];
     if (!data) {
       const res = await fetch(`/api/player?name=${encodeURIComponent(cleanNick)}`);
-      if (token && token !== activeEligibilityToken) return; // Stale request
+      if (token && token !== activeEligibilityToken) return;
       if (res.ok) {
         data = await res.json();
         playerRankCache[cleanNick.toLowerCase()] = data;
       }
     }
 
-    if (token && token !== activeEligibilityToken) return; // Stale request
+    if (token && token !== activeEligibilityToken) return;
 
     const currentRank = getRankInfoByGroupOrId(data?.group_id || data?.group || 'default');
     const targetRank = getRankInfoByGroupOrId(product.id);
 
-    // CASE 0: Player has status above Emperor (Staff, Admin, Media, Owner with level > 7)
+    // CASE 0: Player has status above Emperor (Staff, Admin, Owner)
     if (currentRank.level > 7) {
       isRankBlocked = true;
       isUpgrade = false;
       upgradeFromRank = null;
       upgradeBasePrice = 0;
 
-      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/50 shadow-sm';
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/15 text-red-300 border border-red-500/40';
       alertBox.innerHTML = `
         <div class="flex items-start gap-2">
           <span class="text-base text-red-400 shrink-0">🚫</span>
           <div>
-            <div>У вас статус <span class="text-white font-extrabold font-brand underline">${currentRank.name}</span>!</div>
-            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка любых донат-привилегий для вашего статуса заблокирована.</div>
+            <div>У вас статус <span class="text-white font-extrabold underline">${currentRank.name}</span>!</div>
+            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка донат-привилегий для персонала заблокирована.</div>
           </div>
         </div>
       `;
 
-      if (payBtn) {
-        payBtn.disabled = true;
-        payBtn.innerHTML = `
-          <i data-lucide="lock" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"></i>
-          <span>Привилегии недоступны</span>
-        `;
-        lucide.createIcons();
-      }
-
+      if (payBtn) payBtn.disabled = true;
+      if (payBtnText) payBtnText.innerText = 'НЕДОСТУПНО ДЛЯ ВАШЕГО СТАТУСА';
       if (oldPriceEl) oldPriceEl.classList.add('hidden');
       if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
       return;
@@ -1219,32 +1245,25 @@ async function checkPlayerRankEligibility(nick, product, token = 0) {
       upgradeFromRank = null;
       upgradeBasePrice = 0;
 
-      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/20 text-red-300 border border-red-500/50 shadow-sm';
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-red-500/15 text-red-300 border border-red-500/40';
       alertBox.innerHTML = `
         <div class="flex items-start gap-2">
           <span class="text-base text-red-400 shrink-0">🚫</span>
           <div>
-            <div>У вас уже есть привилегия <span class="text-white font-extrabold font-brand underline">${currentRank.name}</span>!</div>
-            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка равной или более низкой привилегии («${targetRank.name}») заблокирована.</div>
+            <div>У вас уже есть привилегия <span class="text-white font-extrabold underline">${currentRank.name}</span>!</div>
+            <div class="text-[11px] text-red-300/80 font-normal mt-0.5">Покупка равной или более низкой привилегии («${targetRank.name}») не требуется.</div>
           </div>
         </div>
       `;
 
-      if (payBtn) {
-        payBtn.disabled = true;
-        payBtn.innerHTML = `
-          <i data-lucide="lock" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"></i>
-          <span>Привилегия уже приобретена</span>
-        `;
-        lucide.createIcons();
-      }
-
+      if (payBtn) payBtn.disabled = true;
+      if (payBtnText) payBtnText.innerText = 'ПРИВИЛЕГИЯ УЖЕ КУПЛЕНА';
       if (oldPriceEl) oldPriceEl.classList.add('hidden');
       if (totalPriceEl) totalPriceEl.innerText = 'Недоступно';
       return;
     }
 
-    // CASE 2: Lower privilege -> Surcharge / Upgrade (ДОКУП)
+    // CASE 2: Lower privilege -> Surcharge / Upgrade (ДОКУПКА)
     if (currentRank.level > 0 && currentRank.level < targetRank.level && targetRank.level <= 7) {
       isRankBlocked = false;
       isUpgrade = true;
@@ -1253,34 +1272,24 @@ async function checkPlayerRankEligibility(nick, product, token = 0) {
       const priceDiff = Math.max(1, targetRank.price - currentRank.price);
       upgradeBasePrice = priceDiff;
 
-      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-amber-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]';
+      alertBox.className = 'block text-xs p-3 rounded-xl font-bold leading-relaxed bg-emerald-500/15 text-emerald-300 border border-emerald-500/40';
       alertBox.innerHTML = `
         <div class="flex items-start gap-2">
-          <span class="text-base text-amber-400 shrink-0">⚡</span>
+          <span class="text-base text-[#f39513] shrink-0">⚡</span>
           <div>
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-brand font-black uppercase tracking-wider">ДОКУП</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-200 text-[10px] font-black uppercase tracking-wider">ДОКУПКА</span>
               <span>С «${currentRank.name}» до «${targetRank.name}»</span>
             </div>
             <div class="text-[11px] text-gray-300 font-medium mt-1">
-              Стоимость: <b class="text-amber-300 font-brand">${targetRank.price} ₽</b> - <b class="text-emerald-400 font-brand">${currentRank.price} ₽</b> = <b class="text-white font-brand text-sm">${priceDiff} ₽</b>
-              <span class="text-emerald-400 ml-1">(Ваша экономия: ${currentRank.price} ₽)</span>
+              Доплата: <b class="text-[#f39513]">${targetRank.price} ₽</b> - <b class="text-emerald-400">${currentRank.price} ₽</b> = <b class="text-white text-sm">${priceDiff} ₽</b>
+              <span class="text-emerald-400 ml-1">(Экономия: ${currentRank.price} ₽)</span>
             </div>
           </div>
         </div>
       `;
 
-      if (payBtn) {
-        payBtn.disabled = false;
-        payBtn.innerHTML = `
-          <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
-          <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-black fill-current"></i>
-          <span>Докупить привилегию</span>
-          <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
-        `;
-        lucide.createIcons();
-      }
-
+      if (payBtn) payBtn.disabled = false;
       updateModalPrice();
       return;
     }
@@ -1292,22 +1301,12 @@ async function checkPlayerRankEligibility(nick, product, token = 0) {
     upgradeBasePrice = 0;
     alertBox.className = 'hidden';
     alertBox.innerHTML = '';
-
-    if (payBtn) {
-      payBtn.disabled = false;
-      payBtn.innerHTML = `
-        <span class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></span>
-        <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black"></i>
-        <span>Перейти к оплате</span>
-        <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 text-black group-hover:translate-x-1 transition-transform"></i>
-      `;
-      lucide.createIcons();
-    }
-
+    if (payBtn) payBtn.disabled = false;
     updateModalPrice();
   } catch (err) {
     alertBox.className = 'hidden';
     alertBox.innerHTML = '';
+    if (payBtn) payBtn.disabled = false;
     updateModalPrice();
   }
 }
@@ -1565,7 +1564,7 @@ async function claimDailyBonus() {
         btn.disabled = true;
         btn.classList.add('opacity-60', 'cursor-not-allowed');
         btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-1"></i> Бонус получен!';
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
       }
     } else {
       playSound('click');
@@ -1597,26 +1596,57 @@ async function claimDailyBonus() {
 
 // Payment Processing
 async function processPayment() {
-  const nick = (document.getElementById('modalNicknameInput').value || "").trim();
+  const nickInput = document.getElementById('modalNicknameInput');
+  const nickErr = document.getElementById('modalNickError');
+  const nickErrText = document.getElementById('modalNickErrorText');
+  const statusBox = document.getElementById('modalPaymentStatus');
+  const payBtn = document.getElementById('modalPayBtn');
+  const payBtnText = document.getElementById('modalPayBtnText');
+
+  // Reset errors
+  if (nickErr) nickErr.classList.add('hidden');
+  if (statusBox) statusBox.classList.add('hidden');
+  if (nickInput) nickInput.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+
+  const nick = (nickInput ? nickInput.value : "").trim();
   if (!nick) {
     playSound('click');
+    if (nickInput) {
+      nickInput.classList.add('border-red-500', 'ring-2', 'ring-red-500/40');
+      nickInput.focus();
+    }
+    if (nickErr && nickErrText) {
+      nickErrText.innerText = "Пожалуйста, введите ваш никнейм на сервере!";
+      nickErr.classList.remove('hidden');
+    }
     showToast('Пожалуйста, введите никнейм!', '✕');
-    const nickInput = document.getElementById('modalNicknameInput');
-    if (nickInput) nickInput.focus();
     return;
   }
+
   if (!/^[a-zA-Z0-9_]{3,16}$/.test(nick)) {
     playSound('click');
-    showToast('Никнейм должен быть от 3 до 16 символов (латиница, цифры, _)!', '✕');
-    const nickInput = document.getElementById('modalNicknameInput');
-    if (nickInput) nickInput.focus();
+    if (nickInput) {
+      nickInput.classList.add('border-red-500', 'ring-2', 'ring-red-500/40');
+      nickInput.focus();
+    }
+    if (nickErr && nickErrText) {
+      nickErrText.innerText = "Никнейм должен содержать 3-16 символов (только латиница, цифры и _)!";
+      nickErr.classList.remove('hidden');
+    }
+    showToast('Некорректный никнейм (3-16 симв: A-Z, 0-9, _)', '✕');
     return;
   }
+
   currentNick = nick;
 
   if (isRankBlocked) {
     playSound('click');
     showToast('У вас уже приобретена эта или более высокая привилегия!', '🚫');
+    if (statusBox) {
+      statusBox.className = 'mt-3 p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs text-center font-bold';
+      statusBox.innerText = 'Покупка заблокирована: у вас уже есть эта или более высокая привилегия.';
+      statusBox.classList.remove('hidden');
+    }
     return;
   }
 
@@ -1642,15 +1672,13 @@ async function processPayment() {
   const basePrice = isUpgrade ? (upgradeBasePrice * qty) : (selectedProduct.price * qty);
   const discountedPrice = Math.max(1, Math.round(basePrice * (1 - currentDiscount)));
 
-  const payBtn = document.querySelector('#checkoutModal button[onclick="processPayment()"]');
-  const originalBtnText = payBtn ? payBtn.innerHTML : '';
+  const originalBtnContent = payBtn ? payBtn.innerHTML : '';
   if (payBtn) {
     payBtn.disabled = true;
-    payBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Переход к оплате...';
+    payBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Создание платежа...';
   }
 
   try {
-    // Create signed invoice for payment
     const response = await fetch('/api/create-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1660,8 +1688,8 @@ async function processPayment() {
         item_name: selectedProduct.name,
         price: discountedPrice,
         quantity: qty,
-        promo: appliedPromo,
-        category: activeCategory,
+        promo: appliedPromo || '',
+        category: activeCategory || '',
         method: paymentMethod,
         is_upgrade: isUpgrade,
         upgrade_from: upgradeFromRank ? upgradeFromRank.name : '',
@@ -1672,39 +1700,45 @@ async function processPayment() {
     const data = await response.json().catch(() => null);
 
     if (data && data.payment_url) {
-      const generatedOrderId = data.idempotence_key || data.order_id || `ORD-${Date.now()}`;
-      const yooId = data.order_id || '';
-      try {
-        localStorage.setItem('flory_last_pending_order', JSON.stringify({
-          order_id: generatedOrderId,
-          yoo_id: yooId,
-          player: nick,
-          item: selectedProduct.name,
-          price: discountedPrice,
-          promo: appliedPromo || '',
-          is_upgrade: isUpgrade,
-          from_rank: upgradeFromRank ? upgradeFromRank.name : '',
-          time: Date.now()
-        }));
-      } catch (e) {}
-
-      playSound('click');
-      showToast('Перенаправляем на оплату (СБП, Карты, Крипта)...', '💳');
-      setTimeout(() => {
-        window.location.href = data.payment_url;
-      }, 600);
+      playSound('success');
+      showToast('Счет создан! Переход к оплате...', '💳');
+      if (payBtn) {
+        payBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⚡</span> Перенаправление в шлюз...';
+      }
+      if (statusBox) {
+        statusBox.className = 'mt-3 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-xs text-center font-bold';
+        statusBox.innerHTML = `Платёж создан! Если переход не произошел автоматически, <a href="${data.payment_url}" class="text-white underline font-extrabold hover:text-[#f39513]">нажмите здесь для оплаты</a>.`;
+        statusBox.classList.remove('hidden');
+      }
+      // Instant redirect
+      window.location.href = data.payment_url;
       return;
     }
 
+    // If failed
     playSound('click');
-    showToast(data?.error || 'Не удалось создать платёж', '✕');
-  } catch (e) {
-    playSound('click');
-    showToast('Ошибка создания счета на оплату', '✕');
-  } finally {
+    const errMsg = data?.error || 'Не удалось создать платёж. Попробуйте еще раз.';
+    showToast(errMsg, '✕');
+    if (statusBox) {
+      statusBox.className = 'mt-3 p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs text-center font-bold';
+      statusBox.innerText = `Ошибка: ${errMsg}`;
+      statusBox.classList.remove('hidden');
+    }
     if (payBtn) {
       payBtn.disabled = false;
-      payBtn.innerHTML = originalBtnText;
+      payBtn.innerHTML = originalBtnContent;
+    }
+  } catch (e) {
+    playSound('click');
+    showToast('Ошибка сети при создании платежа', '✕');
+    if (statusBox) {
+      statusBox.className = 'mt-3 p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs text-center font-bold';
+      statusBox.innerText = 'Ошибка соединения с сервером платежей. Пожалуйста, проверьте интернет.';
+      statusBox.classList.remove('hidden');
+    }
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.innerHTML = originalBtnContent;
     }
   }
 }
@@ -1777,7 +1811,7 @@ function initPurchasesTicker() {
         <span>Покупок еще нету, но будем рады вашей!</span>
       </div>
     `;
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
     return;
   }
 
@@ -2100,7 +2134,7 @@ function openLegalModal(type) {
   setTimeout(() => {
     modal.classList.remove('opacity-0');
   }, 10);
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e){} };
 }
 
 function closeLegalModal() {
@@ -2161,6 +2195,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.onModalNicknameInput = function(el) {
     updateAvatarHead(el, 'modalAvatarHead');
+    el.classList.remove('border-red-500', 'ring-2', 'ring-red-500/40');
+    const nickErr = document.getElementById('modalNickError');
+    if (nickErr) nickErr.classList.add('hidden');
+    const clean = el.value.trim();
+    if (clean) {
+      currentNick = clean;
+      if (selectedProduct) {
+        schedulePlayerEligibilityCheck(clean, selectedProduct, true);
+      }
+    }
   };
 
   // Bind Enter & Input key on Bonus Input
