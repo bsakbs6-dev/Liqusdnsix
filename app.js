@@ -669,7 +669,7 @@ function renderProducts() {
           <div class="absolute top-2.5 right-2.5">
             <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] font-brand font-bold uppercase">${item.badge || 'КЕЙС'}</span>
           </div>
-          <img src="${item.image || 'images/case_donate.png'}" alt="${item.name}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_10px_20px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          <img src="${item.image || 'images/case_donate.png'}" alt="${item.name}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_10px_20px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-300"  />
           <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
         </div>
       `;
@@ -679,7 +679,7 @@ function renderProducts() {
           <div class="absolute top-2.5 right-2.5">
             <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[9px] font-brand font-bold uppercase">ВАЛЮТА</span>
           </div>
-          <img src="${item.image || 'images/coins.png'}" alt="${item.name}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)] group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          <img src="${item.image || 'images/coins.png'}" alt="${item.name}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)] group-hover:scale-105 transition-transform duration-300"  />
           <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
         </div>
       `;
@@ -936,8 +936,8 @@ function onQuickNickInput(el) {
   const head = document.getElementById('quickNickHead');
   if (head) {
     head.src = (nick.length >= 3)
-      ? `https://mc-heads.net/avatar/${encodeURIComponent(nick)}/64`
-      : 'https://mc-heads.net/avatar/Steve/64';
+      ? `https://minotar.net/helm/${encodeURIComponent(nick)}/64`
+      : 'https://minotar.net/helm/Steve/64';
   }
   currentNick = nick;
 }
@@ -1799,7 +1799,7 @@ function createTickerItemHTML(nick, item, time, isUpgrade, fromRank) {
   if (isUpgr) {
     return `
       <div class="flex items-center gap-2 bg-gradient-to-r from-[#0d1e1c] via-[#0f2420] to-[#0c101a] border border-emerald-500/40 px-3 py-1.5 rounded-full shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.18)]">
-        <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
+        <img src="https://minotar.net/helm/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" >
         <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 font-brand font-extrabold text-[9px] uppercase tracking-wider">ДОКУП</span>
         <span class="font-bold text-xs text-white tracking-wide font-sans">${safeNick}</span>
         <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 shadow-sm">${actionText}</span>
@@ -1810,7 +1810,7 @@ function createTickerItemHTML(nick, item, time, isUpgrade, fromRank) {
 
   return `
     <div class="flex items-center gap-2 bg-gradient-to-r from-zinc-900/90 via-zinc-900/70 to-zinc-950 border border-white/[0.08] px-3 py-1.5 rounded-full shrink-0 shadow-[0_0_12px_rgba(245,158,11,0.12)]">
-      <img src="https://mc-heads.net/avatar/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" loading="lazy">
+      <img src="https://minotar.net/helm/${encodeURIComponent(nick)}/20" alt="${safeNick}" class="w-4 h-4 rounded-sm object-cover bg-zinc-900" >
       <span class="font-bold text-xs text-white tracking-wide font-sans">${safeNick}</span>
       <span class="text-[11px] font-brand font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/40 shadow-sm">${actionText}</span>
       <span class="text-[10px] text-gray-400 font-medium">${safeTime}</span>
@@ -2151,7 +2151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!headEl) return;
     const nick = (inputEl.value || '').trim();
     if (nick.length >= 3) {
-      headEl.src = `https://mc-heads.net/avatar/${encodeURIComponent(nick)}/32`;
+      headEl.src = `https://minotar.net/helm/${encodeURIComponent(nick)}/32`;
     } else {
       headEl.src = 'images/logo.png';
     }
