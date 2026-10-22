@@ -208,14 +208,7 @@
       }).catch(() => {});
     }
 
-    // Also trigger Robokassa result endpoint in background to ensure delivery
-    if (invId && rawSum) {
-      fetch('/api/robokassa-result', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(params.entries()))
-      }).catch(() => {});
-    }
+
 
     // Auto-redirect countdown
     let seconds = 8;
