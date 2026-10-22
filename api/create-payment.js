@@ -157,63 +157,75 @@ export default async function handler(req, res) {
       : `Покупка ${itemName}${qty > 1 ? ' (x' + qty + ')' : ''} для ${cleanPlayer}`;
     description = description.substring(0, 100);
 
-    // 1. Primary Gateway: RollyPay (СБП, Карты, Криптовалюта, xrocket)
+    // Primary Gateway: RollyPay (СБП, Карты, Криптовалюта, xrocket)
     const rollyTerminalId = process.env.ROLLYPAY_TERMINAL_ID || '1ecd2e72-0287-4430-90ac-3f72b336c495';
     const rollyApiKey = process.env.ROLLYPAY_API_KEY || 'uXPh603dgcneP4lZ6lQcdiICifPJ4wyYx1OCCHhbFI8';
 
-    try {
-      const rollyPayload = {
-        terminal_id: rollyTerminalId,
-        amount: formattedAmount,
-        payment_currency: 'RUB',
-        order_id: orderId,
-        description: description,
-        customer_id: cleanPlayer,
-        success_redirect_url: 'https://florymine.fun/success.html',
-        fail_redirect_url: 'https://florymine.fun/?payment=fail',
-        metadata: {
-          player: cleanPlayer,
-          item_id: cleanItemId,
-          item_name: itemName,
-          price: amount,
-          quantity: qty,
-          promo: cleanPromo,
-          is_upgrade: isUpgr,
-          upgrade_from: upgrFrom
-        }
-      };
+    // Allow Robokassa only if explicitly specified
+    const requestedGateway = String(req.body?.gateway || '').toLowerCase();
+    if (requestedGateway !== 'robokassa') {
+      try {
+        const rollyPayload = {
+          terminal_id: rollyTerminalId,
+          amount: formattedAmount,
+          payment_currency: 'RUB',
+          order_id: orderId,
+          description: description,
+          customer_id: cleanPlayer,
+          success_redirect_url: 'https://florymine.fun/success.html',
+          fail_redirect_url: 'https://florymine.fun/?payment=fail',
+          metadata: {
+            player: cleanPlayer,
+            item_id: cleanItemId,
+            item_name: itemName,
+            price: amount,
+            quantity: qty,
+            promo: cleanPromo,
+            is_upgrade: isUpgr,
+            upgrade_from: upgrFrom
+          }
+        };
 
-      const rollyResp = await fetch('https://api.rollypay.io/api/v1/payments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': rollyApiKey
-        },
-        body: JSON.stringify(rollyPayload)
-      });
+        const rollyResp = await fetch('https://api.rollypay.io/api/v1/payments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': rollyApiKey
+          },
+          body: JSON.stringify(rollyPayload)
+        });
 
-      if (rollyResp.ok) {
-        const rollyData = await rollyResp.json();
-        if (rollyData && rollyData.pay_url) {
-          console.log(`[ROLLYPAY PAYMENT CREATED]: Order=${orderId}, PaymentId=${rollyData.payment_id}`);
-          return res.status(200).json({
-            success: true,
-            provider: 'rollypay',
-            order_id: orderId,
-            payment_id: rollyData.payment_id,
-            amount: amount,
-            payment_url: rollyData.pay_url
-          });
+        if (rollyResp.ok) {
+          const rollyData = await rollyResp.json();
+          if (rollyData && rollyData.pay_url) {
+            console.log(`[ROLLYPAY PAYMENT CREATED]: Order=${orderId}, PaymentId=${rollyData.payment_id}`);
+            return res.status(200).json({
+              success: true,
+              provider: 'rollypay',
+              order_id: orderId,
+              payment_id: rollyData.payment_id,
+              amount: amount,
+              payment_url: rollyData.pay_url
+            });
+          }
         }
-      } else {
+
         const errText = await rollyResp.text();
-        console.warn('[ROLLYPAY CREATE NON-OK, FALLING BACK]:', rollyResp.status, errText);
+        console.error('[ROLLYPAY CREATE FAILED]:', rollyResp.status, errText);
+        return res.status(502).json({
+          success: false,
+          error: `Ошибка платежной системы RollyPay (${rollyResp.status}): ${errText}`
+        });
+      } catch (rollyErr) {
+        console.error('[ROLLYPAY CREATE NETWORK ERROR]:', rollyErr.message);
+        return res.status(502).json({
+          success: false,
+          error: `Сетевая ошибка связи с RollyPay: ${rollyErr.message}`
+        });
       }
-    } catch (rollyErr) {
-      console.warn('[ROLLYPAY CREATE NETWORK ERROR]:', rollyErr.message);
     }
 
-    // 2. Secondary Gateway Fallback: Robokassa
+    // Secondary Gateway: Robokassa (only if gateway=robokassa was explicitly requested)
     const merchantLogin = process.env.ROBOKASSA_LOGIN || 'florymine';
     const password1 = process.env.ROBOKASSA_PASSWORD_1 || 'Nm47TwghTc4jigSAd44T';
     const isTest = process.env.ROBOKASSA_IS_TEST !== 'false';

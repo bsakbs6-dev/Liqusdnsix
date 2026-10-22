@@ -3,13 +3,6 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-// Disable default Vercel bodyParser so we can access raw body for HMAC-SHA256 signature verification
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 const TMP_PATH = '/tmp/store-data.json';
 const LOCAL_PATH = path.join(process.cwd(), 'store-data.json');
 
@@ -65,14 +58,50 @@ async function getRawBody(req) {
   if (typeof req.body === 'string') return req.body;
   if (Buffer.isBuffer(req.body)) return req.body.toString('utf8');
 
-  const chunks = [];
-  for await (const chunk of req) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  if (chunks.length === 0 && req.body && typeof req.body === 'object') {
+  try {
+    const chunks = [];
+    for await (const chunk of req) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    }
+    if (chunks.length > 0) {
+      return Buffer.concat(chunks).toString('utf8');
+    }
+  } catch (e) {}
+
+  if (req.body && typeof req.body === 'object') {
     return JSON.stringify(req.body);
   }
-  return Buffer.concat(chunks).toString('utf8');
+  return '';
+}
+
+function verifySignature(rawBody, bodyObj, signingSecret, signatureHeader, timestampHeader) {
+  if (!signatureHeader || !timestampHeader) return false;
+
+  const candidates = [];
+  if (rawBody && typeof rawBody === 'string') {
+    candidates.push(rawBody);
+    candidates.push(rawBody.trim());
+  }
+  if (bodyObj && typeof bodyObj === 'object') {
+    try {
+      candidates.push(JSON.stringify(bodyObj));
+    } catch (e) {}
+  }
+
+  const cleanSig = String(signatureHeader).trim().toLowerCase();
+
+  for (const c of candidates) {
+    if (!c) continue;
+    const computed = crypto
+      .createHmac('sha256', signingSecret)
+      .update(`${timestampHeader}.${c}`)
+      .digest('hex')
+      .toLowerCase();
+    if (computed === cleanSig) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export default async function handler(req, res) {
@@ -104,35 +133,26 @@ export default async function handler(req, res) {
     const signingSecret = process.env.ROLLYPAY_SIGNING_SECRET || '4SKTgwc3_ghT6pD9NPpDU6UCxSjOl0YNq8aDpQKC5YA';
     const apiKey = process.env.ROLLYPAY_API_KEY || 'uXPh603dgcneP4lZ6lQcdiICifPJ4wyYx1OCCHhbFI8';
 
+    // Parse payload
+    let payload = {};
+    if (req.body && typeof req.body === 'object') {
+      payload = req.body;
+    } else if (rawBody) {
+      try {
+        payload = JSON.parse(rawBody);
+      } catch (e) {
+        return res.status(400).send('INVALID JSON BODY');
+      }
+    }
+
     console.log('[ROLLYPAY WEBHOOK RECEIVED]:', {
       timestamp: timestampHeader,
       signature: signatureHeader ? `${signatureHeader.slice(0, 10)}...` : 'NONE',
-      bodyLength: rawBody.length
+      hasPayload: Boolean(payload)
     });
 
-    // 1. Verify HMAC-SHA256 Signature: hash(signingSecret, `${timestamp}.${rawBody}`)
-    let isSigValid = false;
-    if (signatureHeader && timestampHeader) {
-      const payloadToSign = `${timestampHeader}.${rawBody}`;
-      const calculatedSig = crypto
-        .createHmac('sha256', signingSecret)
-        .update(payloadToSign)
-        .digest('hex');
-
-      if (calculatedSig.toLowerCase() === signatureHeader.toLowerCase()) {
-        isSigValid = true;
-      } else {
-        // Fallback: in case body had extra outer whitespace
-        const trimmedPayload = `${timestampHeader}.${rawBody.trim()}`;
-        const trimmedSig = crypto
-          .createHmac('sha256', signingSecret)
-          .update(trimmedPayload)
-          .digest('hex');
-        if (trimmedSig.toLowerCase() === signatureHeader.toLowerCase()) {
-          isSigValid = true;
-        }
-      }
-    }
+    // 1. Verify HMAC-SHA256 Signature
+    const isSigValid = verifySignature(rawBody, payload, signingSecret, signatureHeader, timestampHeader);
 
     if (!isSigValid) {
       console.warn('[ROLLYPAY WEBHOOK]: Signature mismatch or missing headers', {
@@ -140,14 +160,6 @@ export default async function handler(req, res) {
         timestamp: timestampHeader
       });
       return res.status(400).send('BAD SIGNATURE');
-    }
-
-    // 2. Parse payload safely
-    let payload = {};
-    try {
-      payload = JSON.parse(rawBody);
-    } catch (e) {
-      return res.status(400).send('INVALID JSON BODY');
     }
 
     const eventType = payload.event_type || payload.event || '';
@@ -165,18 +177,18 @@ export default async function handler(req, res) {
     );
 
     if (!isPaid) {
-      console.log(`[ROLLYPAY WEBHOOK]: Ignoring non-paid event: ${eventType || status}`);
+      console.log(`[ROLLYPAY WEBHOOK]: Acknowledging non-paid event: ${eventType || status}`);
       return res.status(200).json({ status: 'acknowledged', event: eventType || status });
     }
 
-    // 3. Deduplicate to ensure 100% idempotent delivery (never grant items twice)
+    // 2. Deduplicate to ensure 100% idempotent delivery (never grant items twice)
     const orderKeys = [orderId, paymentId, `ROLLY-${orderId}`, `ROLLY-${paymentId}`].filter(Boolean);
     if (isOrderAlreadyProcessed(orderKeys)) {
       console.log(`[ROLLYPAY WEBHOOK]: Order ${orderId} (${paymentId}) already processed. Skipping duplicate execution.`);
       return res.status(200).json({ status: 'already_processed', order_id: orderId });
     }
 
-    // 4. Extract metadata (either directly from payload or fetch from RollyPay API)
+    // 3. Extract metadata (either directly from payload or fetch from RollyPay API)
     let meta = payload.metadata || payload.data?.metadata || payload.payment?.metadata || {};
 
     if ((!meta || !meta.player) && paymentId) {

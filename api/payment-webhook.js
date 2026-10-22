@@ -2,12 +2,6 @@
 import rollypayHandler from './rollypay-webhook.js';
 import robokassaHandler from './robokassa-result.js';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async function handler(req, res) {
   // If request contains RollyPay signature headers, route to RollyPay handler
   if (req.headers['x-signature'] || req.headers['X-Signature']) {
