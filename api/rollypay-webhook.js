@@ -50,7 +50,7 @@ function markOrderProcessed(keys) {
     store.processedOrders = store.processedOrders.slice(-500);
   }
   try { fs.writeFileSync(TMP_PATH, JSON.stringify(store, null, 2), 'utf8'); } catch (e) {}
-  try { fs.writeFileSync(LOCAL_PATH, JSON.stringify(store, null, 2), 'utf8'); } catch (e) {}
+  if (!process.env.VERCEL) { try { fs.writeFileSync(LOCAL_PATH, JSON.stringify(store, null, 2), 'utf8'); } catch (e) {} }
 }
 
 function verifySignature(payload, signingSecret, signatureHeader, timestampHeader) {

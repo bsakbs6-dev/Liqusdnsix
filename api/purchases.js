@@ -90,9 +90,7 @@ function saveStoreData(data) {
   try {
     fs.writeFileSync(TMP_PATH, JSON.stringify(reconciled, null, 2), 'utf8');
   } catch (e) {}
-  try {
-    fs.writeFileSync(LOCAL_PATH, JSON.stringify(reconciled, null, 2), 'utf8');
-  } catch (e) {}
+  if (!process.env.VERCEL) { try { fs.writeFileSync(LOCAL_PATH, JSON.stringify(reconciled, null, 2), 'utf8'); } catch (e) {} }
 }
 
 let lastRemoteFetchTime = 0;

@@ -766,7 +766,7 @@ function openDetailsModal(id) {
   if (!item) return;
   playSound('click');
 
-  document.getElementById('detailsIconBox').innerHTML = item.icon || '📦';
+  document.getElementById('detailsIconBox').textContent = item.icon || '📦';
   document.getElementById('detailsTitle').innerText = item.name;
   document.getElementById('detailsPrice').innerText = `${item.price} ₽`;
   
@@ -898,7 +898,7 @@ function openCheckout(id) {
   if (modalBadge) modalBadge.innerText = item.badge || 'VIP';
 
   const modalIcon = document.getElementById('modalItemIconBox');
-  if (modalIcon) modalIcon.innerHTML = item.icon || '📦';
+  if (modalIcon) modalIcon.textContent = item.icon || '📦';
 
   const modalTitle = document.getElementById('modalItemTitle');
   if (modalTitle) modalTitle.innerText = (item.name || '').toUpperCase();
@@ -1558,7 +1558,11 @@ async function checkPlayerPunishment(nick, itemId) {
 }
 
 // Claim Daily Bonus Functionality (1 claim / 24h / IP, online check)
+let isClaimingBonus = false;
 async function claimDailyBonus() {
+  if (isClaimingBonus) return;
+  isClaimingBonus = true;
+  try {
   const input = document.getElementById('bonusNicknameInput');
   const btn = document.getElementById('claimBonusBtn');
   const statusMsg = document.getElementById('bonusStatusMsg');
@@ -1642,10 +1646,17 @@ async function claimDailyBonus() {
       btn.innerHTML = originalBtnHTML;
     }
   }
+  } finally {
+    isClaimingBonus = false;
+  }
 }
 
 // Payment Processing
+let isProcessingPayment = false;
 async function processPayment() {
+  if (isProcessingPayment) return;
+  isProcessingPayment = true;
+  try {
   const nickInput = document.getElementById('modalNicknameInput');
   const nickErr = document.getElementById('modalNickError');
   const nickErrText = document.getElementById('modalNickErrorText');
@@ -1791,6 +1802,9 @@ async function processPayment() {
       payBtn.disabled = false;
       payBtn.innerHTML = originalBtnContent;
     }
+  }
+  } finally {
+    isProcessingPayment = false;
   }
 }
 

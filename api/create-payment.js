@@ -158,12 +158,19 @@ export default async function handler(req, res) {
     description = description.substring(0, 100);
 
     // Primary Gateway: RollyPay (СБП, Карты, Криптовалюта, xrocket)
-    const rollyTerminalId = process.env.ROLLYPAY_TERMINAL_ID || '1ecd2e72-0287-4430-90ac-3f72b336c495';
-    const rollyApiKey = process.env.ROLLYPAY_API_KEY || 'uXPh603dgcneP4lZ6lQcdiICifPJ4wyYx1OCCHhbFI8';
+    const rollyTerminalId = (process.env.ROLLYPAY_TERMINAL_ID || '').trim();
+    const rollyApiKey = (process.env.ROLLYPAY_API_KEY || '').trim();
 
     // Allow Robokassa only if explicitly specified
     const requestedGateway = String(req.body?.gateway || '').toLowerCase();
     if (requestedGateway !== 'robokassa') {
+      if (!rollyTerminalId || !rollyApiKey) {
+        console.error('[ROLLYPAY CONFIG ERROR]: Missing ROLLYPAY_TERMINAL_ID or ROLLYPAY_API_KEY in environment');
+        return res.status(503).json({
+          success: false,
+          error: 'Платежный шлюз временно недоступен (ошибка конфигурации терминала)'
+        });
+      }
       try {
         const rollyPayload = {
           terminal_id: rollyTerminalId,
@@ -226,8 +233,16 @@ export default async function handler(req, res) {
     }
 
     // Secondary Gateway: Robokassa (only if gateway=robokassa was explicitly requested)
-    const merchantLogin = process.env.ROBOKASSA_LOGIN || 'florymine';
-    const password1 = process.env.ROBOKASSA_PASSWORD_1 || 'Nm47TwghTc4jigSAd44T';
+    const merchantLogin = (process.env.ROBOKASSA_LOGIN || '').trim();
+    const password1 = (process.env.ROBOKASSA_PASSWORD_1 || '').trim();
+
+    if (!merchantLogin || !password1) {
+      console.error('[ROBOKASSA CONFIG ERROR]: Missing ROBOKASSA_LOGIN or ROBOKASSA_PASSWORD_1 in environment');
+      return res.status(503).json({
+        success: false,
+        error: 'Платежный шлюз Robokassa временно недоступен (ошибка конфигурации)'
+      });
+    }
     const isTest = process.env.ROBOKASSA_IS_TEST !== 'false';
     const invId = Math.floor(Date.now() / 1000) % 2147483647;
 
