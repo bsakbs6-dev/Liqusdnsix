@@ -1,17 +1,35 @@
 // Vercel Serverless Function: Bridge between FloryMine Web Shop & FloryAutoDonate Plugin
 import crypto from 'crypto';
 
-const SECRET_JWT_KEY = process.env.ADMIN_SECRET || 'florymine_super_admin_secret_2026';
-
 function verifyAdminToken(req) {
   const token = req.headers['x-admin-token'] || (req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : '');
   if (!token) return false;
+
+  const secretJwtKey = (process.env.ADMIN_SECRET || '').trim();
+  if (!secretJwtKey) return false;
+
   try {
     const [payloadB64, signature] = token.split('.');
     if (!payloadB64 || !signature) return false;
+
     const payload = Buffer.from(payloadB64, 'base64').toString('utf8');
-    const expectedSig = crypto.createHmac('sha256', SECRET_JWT_KEY).update(payload).digest('hex');
-    return signature === expectedSig;
+    const expectedSig = crypto.createHmac('sha256', secretJwtKey).update(payload).digest('hex');
+
+    const sigBuf = Buffer.from(signature, 'hex');
+    const expBuf = Buffer.from(expectedSig, 'hex');
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+      return false;
+    }
+
+    const parts = payload.split(':');
+    if (parts.length >= 3) {
+      const expiresAt = parseInt(parts[1], 10);
+      if (isNaN(expiresAt) || Date.now() > expiresAt) {
+        return false;
+      }
+    }
+
+    return true;
   } catch (e) {
     return false;
   }
@@ -42,9 +60,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+  const secretKey = (process.env.DONATE_SECRET_KEY || '').trim();
   const providedSecret = req.headers['x-secret-key'];
-  const isAuthorized = verifyAdminToken(req) || (providedSecret && providedSecret === secretKey);
+  const isAuthorized = verifyAdminToken(req) || (secretKey && providedSecret && providedSecret === secretKey);
 
   if (!isAuthorized) {
     return res.status(401).json({

@@ -350,46 +350,52 @@ function renderAdminProducts() {
     return;
   }
 
-  container.innerHTML = allList.map(item => `
+  container.innerHTML = allList.map(item => {
+    const safeName = escapeAdminHtml(item.name);
+    const safeId = escapeAdminHtml(item.id);
+    const safeBadge = escapeAdminHtml(item.badge || item.categoryKey);
+    const safeImage = escapeAdminHtml(item.image || 'images/vladyka.jpg');
+    const safeCmd = escapeAdminHtml((item.commands || [])[0] || 'нет команд');
+    return `
     <div class="p-4 rounded-2xl bg-[#0e1320] border border-gray-800 hover:border-amber-500/40 transition-all flex flex-col justify-between group shadow-sm">
       <div>
         <div class="flex items-center justify-between gap-2 mb-3">
           <div class="flex items-center gap-2.5">
-            <span class="text-2xl">${item.icon || '📦'}</span>
+            <span class="text-2xl">${item.icon ? escapeAdminHtml(item.icon) : '📦'}</span>
             <div>
-              <h4 class="font-brand font-bold text-white text-sm">${item.name}</h4>
-              <span class="text-[10px] font-mono text-gray-400">ID: ${item.id}</span>
+              <h4 class="font-brand font-bold text-white text-sm">${safeName}</h4>
+              <span class="text-[10px] font-mono text-gray-400">ID: ${safeId}</span>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase">${item.badge || item.categoryKey}</span>
+          <span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase">${safeBadge}</span>
         </div>
 
         <div class="relative w-full h-24 rounded-xl overflow-hidden bg-gray-950 mb-3 border border-gray-800">
-          <img src="${item.image || 'images/vladyka.jpg'}" alt="${item.name}" class="w-full h-full object-cover">
+          <img src="${safeImage}" alt="${safeName}" class="w-full h-full object-cover">
         </div>
 
         <div class="flex items-center justify-between text-xs py-1 border-t border-gray-800/80">
           <span class="text-gray-400">Цена:</span>
-          <span class="font-black font-brand text-amber-400 text-sm">${item.price} ₽</span>
+          <span class="font-black font-brand text-amber-400 text-sm">${Number(item.price) || 0} ₽</span>
         </div>
 
         <div class="text-[11px] text-gray-400 py-1">
           <span class="font-semibold text-gray-300">Команды (${(item.commands || []).length}):</span>
-          <div class="font-mono text-[10px] text-emerald-400 truncate mt-0.5">${(item.commands || [])[0] || 'нет команд'}</div>
+          <div class="font-mono text-[10px] text-emerald-400 truncate mt-0.5">${safeCmd}</div>
         </div>
       </div>
 
       <div class="pt-3 border-t border-gray-800/80 flex items-center justify-end gap-2 mt-2">
-        <button onclick="openProductEditModal('${item.id}')" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-xs flex items-center gap-1 transition">
+        <button onclick="openProductEditModal('${safeId}')" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-xs flex items-center gap-1 transition">
           <i data-lucide="edit" class="w-3.5 h-3.5"></i> Изменить
         </button>
-        <button onclick="deleteProduct('${item.id}')" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-xs flex items-center gap-1 transition">
+        <button onclick="deleteProduct('${safeId}')" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-xs flex items-center gap-1 transition">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
         </button>
       </div>
     </div>
-  `).join('');
-
+  `;
+}).join('');
   lucide.createIcons();
 }
 
@@ -398,67 +404,76 @@ function filterProductsDisplay() {
 }
 
 // Product Modal
-function openProductEditModal(id) {
+function openProductEditModal(prodId) {
   playSound('click');
   const modal = document.getElementById('productModal');
-  const title = document.getElementById('productModalTitle');
   if (!modal) return;
 
-  // Populate category options
+  const titleEl = document.getElementById('productModalTitle');
+  const origIdInput = document.getElementById('modalProductOriginalId');
   const catSelect = document.getElementById('modalProductCategory');
-  if (catSelect && storeData.categories) {
+  const idInput = document.getElementById('modalProductId');
+  const nameInput = document.getElementById('modalProductName');
+  const iconInput = document.getElementById('modalProductIcon');
+  const priceInput = document.getElementById('modalProductPrice');
+  const badgeInput = document.getElementById('modalProductBadge');
+  const imageInput = document.getElementById('modalProductImage');
+  const cmdsInput = document.getElementById('modalProductCommands');
+  const perksInput = document.getElementById('modalProductPerks');
+
+  if (catSelect && storeData && Array.isArray(storeData.categories)) {
     catSelect.innerHTML = storeData.categories
       .filter(c => c.id !== 'all')
       .map(c => `<option value="${c.id}">${c.name}</option>`)
       .join('');
   }
 
-  if (id) {
-    // Edit existing
+  if (prodId) {
     let found = null;
     let foundCat = 'privileges';
-    Object.entries(storeData.products || {}).forEach(([catKey, list]) => {
-      const match = (list || []).find(x => x.id === id);
-      if (match) {
-        found = match;
-        foundCat = catKey;
+    if (storeData && storeData.products) {
+      for (const [catKey, list] of Object.entries(storeData.products)) {
+        if (Array.isArray(list)) {
+          const item = list.find(p => p.id === prodId);
+          if (item) {
+            found = item;
+            foundCat = catKey;
+            break;
+          }
+        }
       }
-    });
-
-    if (found) {
-      if (title) title.innerText = `Редактирование: ${found.name}`;
-      document.getElementById('modalProductOriginalId').value = found.id;
-      document.getElementById('modalProductId').value = found.id;
-      document.getElementById('modalProductName').value = found.name;
-      document.getElementById('modalProductCategory').value = found.category || foundCat;
-      document.getElementById('modalProductIcon').value = found.icon || '⚔️';
-      document.getElementById('modalProductPrice').value = found.price || 99;
-      document.getElementById('modalProductBadge').value = found.badge || '';
-      document.getElementById('modalProductImage').value = found.image || '';
-      document.getElementById('modalProductCommands').value = (found.commands || []).join('\n');
-      document.getElementById('modalProductPerks').value = (found.perks || []).join('\n');
     }
+
+    if (titleEl) titleEl.innerText = 'Редактирование товара';
+    if (origIdInput) origIdInput.value = prodId;
+    if (catSelect) catSelect.value = foundCat;
+    if (idInput) idInput.value = found?.id || prodId;
+    if (nameInput) nameInput.value = found?.name || '';
+    if (iconInput) iconInput.value = found?.icon || '📦';
+    if (priceInput) priceInput.value = found?.price || '';
+    if (badgeInput) badgeInput.value = found?.badge || '';
+    if (imageInput) imageInput.value = found?.image || '';
+    if (cmdsInput) cmdsInput.value = (found?.commands || []).join('\n');
+    if (perksInput) perksInput.value = (found?.perks || []).join('\n');
   } else {
-    // Add new
-    if (title) title.innerText = "Создание нового товара";
-    document.getElementById('modalProductOriginalId').value = "";
-    document.getElementById('modalProductId').value = `item_${Date.now()}`;
-    document.getElementById('modalProductName').value = "";
-    document.getElementById('modalProductIcon').value = "📦";
-    document.getElementById('modalProductPrice').value = "99";
-    document.getElementById('modalProductBadge').value = "NEW";
-    document.getElementById('modalProductImage').value = "images/vladyka.jpg";
-    document.getElementById('modalProductCommands').value = "say [Донат] Игрок {player} приобрел товар!";
-    document.getElementById('modalProductPerks').value = "Уникальные возможности\nВысокий статус на сервере";
+    if (titleEl) titleEl.innerText = 'Добавить новый товар';
+    if (origIdInput) origIdInput.value = '';
+    if (idInput) idInput.value = '';
+    if (nameInput) nameInput.value = '';
+    if (iconInput) iconInput.value = '⚔️';
+    if (priceInput) priceInput.value = '';
+    if (badgeInput) badgeInput.value = 'Старт';
+    if (imageInput) imageInput.value = 'images/warrior.jpg';
+    if (cmdsInput) cmdsInput.value = 'lp user {player} parent add voin';
+    if (perksInput) perksInput.value = 'Мгновенное начисление на сервере\n100% гарантия доставки\nНавсегда без сгорания';
   }
 
   modal.classList.remove('hidden');
   setTimeout(() => {
     modal.classList.remove('opacity-0');
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide) lucide.createIcons();
   }, 10);
 }
-
 function closeProductModal() {
   playSound('click');
   const modal = document.getElementById('productModal');
@@ -846,7 +861,9 @@ function escapeAdminHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+let lastAdminPurchasesList = [];
 function renderAdminPurchases(list) {
+  lastAdminPurchasesList = Array.isArray(list) ? list : [];
   const tbody = document.getElementById('adminPurchasesTableBody');
   if (!tbody) return;
 
@@ -886,7 +903,7 @@ function renderAdminPurchases(list) {
         </td>
         <td class="p-3.5 text-gray-400 font-mono text-[11px]">${safeTime}</td>
         <td class="p-3.5 text-right space-x-2">
-          <button onclick="reDispatchPurchase('${safeNick}', '${safeItem}')" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
+          <button onclick="reDispatchPurchaseByIndex(${idx})" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-[11px] transition">
             Выдать заново
           </button>
           <button onclick="deletePurchaseItem(${idx})" class="px-2.5 py-1 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 font-bold text-[11px] transition">
@@ -1048,3 +1065,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     lucide.createIcons();
   }
 });
+
+
+function reDispatchPurchaseByIndex(idx) {
+  const p = lastAdminPurchasesList[idx];
+  if (!p) return;
+  reDispatchPurchase(p.nick, p.item);
+}

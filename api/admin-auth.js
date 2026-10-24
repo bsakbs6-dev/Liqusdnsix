@@ -23,25 +23,36 @@ export default async function handler(req, res) {
     }
 
     const cleanPass = String(password).trim();
-    // Master password from secret environment variables (or default fallback)
-    const masterPassword = (process.env.ADMIN_PASSWORD || 'devildev').trim();
-    const secretJwtKey = process.env.ADMIN_SECRET || 'florymine_super_admin_secret_2026';
+    const masterPassword = (process.env.ADMIN_PASSWORD || '').trim();
+    const secretJwtKey = (process.env.ADMIN_SECRET || '').trim();
 
-    const validPasswords = [masterPassword, 'devildev', 'devildev123'];
+    if (!masterPassword || !secretJwtKey) {
+      console.error('[ADMIN AUTH ERROR]: ADMIN_PASSWORD or ADMIN_SECRET environment variable is missing.');
+      return res.status(500).json({
+        success: false,
+        error: 'Сервер авторизации не настроен (отсутствуют переменные окружения на сервере).'
+      });
+    }
 
-    // Strict timing-safe check
-    if (!validPasswords.includes(cleanPass)) {
+    // Strict timing-safe password verification
+    const passBuffer = Buffer.from(cleanPass, 'utf8');
+    const masterBuffer = Buffer.from(masterPassword, 'utf8');
+    const isMatch = passBuffer.length === masterBuffer.length && crypto.timingSafeEqual(passBuffer, masterBuffer);
+
+    if (!isMatch) {
       return res.status(401).json({ success: false, error: 'Неверный пароль администратора' });
     }
 
-    // Generate signed secure session token
-    const tokenPayload = `${Date.now()}:admin`;
+    // Generate signed secure session token with 24-hour expiration
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+    const tokenPayload = `${Date.now()}:${expiresAt}:admin`;
     const signature = crypto.createHmac('sha256', secretJwtKey).update(tokenPayload).digest('hex');
     const token = `${Buffer.from(tokenPayload).toString('base64')}.${signature}`;
 
     return res.status(200).json({
       success: true,
       token: token,
+      expires_at: expiresAt,
       message: 'Авторизация успешна'
     });
   } catch (err) {

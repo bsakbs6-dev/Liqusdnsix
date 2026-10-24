@@ -90,8 +90,13 @@ export default async function handler(req, res) {
       return res.status(400).send('BAD REQUEST');
     }
 
-    const password2 = process.env.ROBOKASSA_PASSWORD_2 || 'J7FRFzI8Mdg2k9Kiy6da';
-    const password1 = process.env.ROBOKASSA_PASSWORD_1 || 'Nm47TwghTc4jigSAd44T';
+    const password2 = (process.env.ROBOKASSA_PASSWORD_2 || '').trim();
+    const password1 = (process.env.ROBOKASSA_PASSWORD_1 || '').trim();
+
+    if (!password2 && !password1) {
+      console.error('[ROBOKASSA RESULT ERROR]: Missing ROBOKASSA_PASSWORD_1 or ROBOKASSA_PASSWORD_2 in environment variables');
+      return res.status(500).send('SERVER_CONFIGURATION_ERROR');
+    }
 
     // Collect all Shp_ parameters
     const shpParams = {};
@@ -178,7 +183,7 @@ export default async function handler(req, res) {
 
       const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
       const port = process.env.MINECRAFT_PORT || '25933';
-      const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+      const secretKey = (process.env.DONATE_SECRET_KEY || '').trim();
 
       const unitCommands = rawCommands.map(cmd => cmd.replace(/\{player\}/g, player));
       const isMultiUnit = itemId.startsWith('case_') || itemId.startsWith('tokens_');

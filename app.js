@@ -633,9 +633,16 @@ function renderProducts() {
   };
 
   container.innerHTML = items.map(item => {
+    const safeName = escapeHtml(item.name || '');
+    const safeId = escapeHtml(item.id || '');
+    const safeBadge = escapeHtml(item.badge || (item.category === 'cases' ? 'КЕЙС' : (item.category === 'currency' ? 'ВАЛЮТА' : 'VIP')));
+    const safeImage = escapeHtml(item.image || (item.category === 'cases' ? 'images/case_donate.png' : 'images/coins.png'));
+    const safeColor = escapeHtml(item.color || 'from-amber-600 to-yellow-500');
+    const safeBorder = escapeHtml(item.borderColor || 'border-white/[0.08]');
     const perksList = (Array.isArray(item.perks) && item.perks.length > 0)
       ? item.perks
       : ["Мгновенное начисление на сервере", "100% гарантия доставки", "Навсегда без сгорания"];
+    const safePerks = perksList.map(p => escapeHtml(p));
     
     const isHot = item.id === 'vladyka' || item.id === 'emperor';
     const oldPrice = item.price ? Math.round(item.price * 1.35) : null;
@@ -648,15 +655,15 @@ function renderProducts() {
         <div class="relative w-full py-6 px-3 rounded-2xl overflow-hidden mb-3.5 bg-gradient-to-b ${theme.grad} border ${theme.border} flex flex-col items-center justify-center text-center shadow-inner group-hover:scale-[1.02] transition-transform duration-300">
           <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
             <span class="px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono text-gray-400">1.21.x</span>
-            <span class="px-2.5 py-0.5 rounded-full ${theme.badgeBg} text-[9px] font-brand font-black uppercase tracking-wider shadow">${item.badge || 'VIP'}</span>
+            <span class="px-2.5 py-0.5 rounded-full ${theme.badgeBg} text-[9px] font-brand font-black uppercase tracking-wider shadow">${safeBadge}</span>
           </div>
           <div class="my-2">
             <div class="w-14 h-14 rounded-2xl ${theme.iconBox} border flex items-center justify-center text-2xl shadow-[0_0_20px_${theme.glow}] group-hover:scale-110 transition-transform">
-              ${item.icon || '⚔️'}
+              ${item.icon ? escapeHtml(item.icon) : '⚔️'}
             </div>
           </div>
           <div class="font-brand font-black text-xl tracking-wider uppercase text-transparent bg-clip-text ${theme.textGrad}">
-            ${item.name}
+            ${safeName}
           </div>
           <div class="text-[10px] font-bold text-gray-400 tracking-wide mt-0.5">
             ПРИВИЛЕГИЯ НАВСЕГДА
@@ -667,20 +674,20 @@ function renderProducts() {
       visualBannerHtml = `
         <div class="relative w-full py-4 px-3 rounded-2xl overflow-hidden mb-3.5 bg-zinc-950/80 border border-white/10 flex flex-col items-center justify-center text-center shadow-inner group-hover:border-amber-500/40 transition-all">
           <div class="absolute top-2.5 right-2.5">
-            <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] font-brand font-bold uppercase">${item.badge || 'КЕЙС'}</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] font-brand font-bold uppercase">${safeBadge}</span>
           </div>
-          <img src="${item.image || 'images/case_donate.png'}" alt="${item.name}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_10px_20px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-300"  />
-          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
+          <img src="${safeImage}" alt="${safeName}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_10px_20px_rgba(245,158,11,0.25)] group-hover:scale-105 transition-transform duration-300"  />
+          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${safeName}</div>
         </div>
       `;
     } else if (item.category === 'currency') {
       visualBannerHtml = `
         <div class="relative w-full py-4 px-3 rounded-2xl overflow-hidden mb-3.5 bg-zinc-950/80 border border-white/10 flex flex-col items-center justify-center text-center shadow-inner group-hover:border-yellow-500/40 transition-all">
           <div class="absolute top-2.5 right-2.5">
-            <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[9px] font-brand font-bold uppercase">ВАЛЮТА</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 text-[9px] font-brand font-bold uppercase">${safeBadge}</span>
           </div>
-          <img src="${item.image || 'images/coins.png'}" alt="${item.name}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)] group-hover:scale-105 transition-transform duration-300"  />
-          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${item.name}</div>
+          <img src="${safeImage}" alt="${safeName}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)] group-hover:scale-105 transition-transform duration-300"  />
+          <div class="font-brand font-black text-sm text-white mt-1.5 tracking-wide uppercase">${safeName}</div>
         </div>
       `;
     } else {
@@ -689,27 +696,27 @@ function renderProducts() {
           <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-3xl shadow-inner text-emerald-400 group-hover:scale-110 transition-transform">
             ${item.id === 'srv_unban' || item.id === 'unban' ? '🛡️' : '🔊'}
           </div>
-          <div class="font-brand font-black text-sm text-white mt-2 tracking-wide uppercase">${item.name}</div>
+          <div class="font-brand font-black text-sm text-white mt-2 tracking-wide uppercase">${safeName}</div>
         </div>
       `;
     }
 
     return `
-    <div class="product-card group relative bg-gradient-to-b from-[#0f1422] to-[#070a12] border ${item.borderColor || 'border-white/[0.08]'} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/60 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow ${isHot ? 'shadow-[0_0_35px_rgba(245,158,11,0.18)] border-amber-500/40' : ''}">
-      <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${item.color || 'from-amber-600 to-yellow-500'} opacity-20 blur-2xl group-hover:opacity-45 transition-opacity pointer-events-none"></div>
+    <div class="product-card group relative bg-gradient-to-b from-[#0f1422] to-[#070a12] border ${safeBorder} rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden hover:border-amber-500/60 transition-all duration-300 ring-1 ring-inset ring-white/[0.06] inner-top-glow ${isHot ? 'shadow-[0_0_35px_rgba(245,158,11,0.18)] border-amber-500/40' : ''}">
+      <div class="absolute -top-12 -right-12 w-28 h-28 bg-gradient-to-br ${safeColor} opacity-20 blur-2xl group-hover:opacity-45 transition-opacity pointer-events-none"></div>
       
       <div>
         ${visualBannerHtml}
 
         <div class="flex items-baseline justify-between mb-1.5">
           <h3 class="font-display font-black text-lg sm:text-xl text-white tracking-wide group-hover:text-amber-400 transition-colors">
-            ${item.name}
+            ${safeName}
           </h3>
           <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">5 сек</span>
         </div>
 
         <ul class="space-y-1.5 my-3 sm:my-4 text-[11px] sm:text-xs text-gray-300">
-          ${perksList.slice(0, 3).map(p => `
+          ${safePerks.slice(0, 3).map(p => `
             <li class="flex items-center gap-1.5">
               <iconify-icon icon="solar:check-circle-bold-duotone" class="text-amber-400 text-sm shrink-0"></iconify-icon>
               <span class="truncate">${p}</span>
@@ -728,11 +735,11 @@ function renderProducts() {
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="openDetailsModal('${item.id}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center spring-click flex items-center justify-center gap-1.5 hover:border-white/20">
+          <button onclick="openDetailsModal('${safeId}')" class="py-2.5 px-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-white/[0.08] text-gray-300 font-semibold text-xs transition text-center spring-click flex items-center justify-center gap-1.5 hover:border-white/20">
             <iconify-icon icon="solar:info-circle-linear" class="text-sm text-gray-400"></iconify-icon>
             <span>Инфо</span>
           </button>
-          <button onclick="openCheckout('${item.id}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_20px_rgba(245,158,11,0.35)] spring-click flex items-center justify-center gap-1.5">
+          <button onclick="openCheckout('${safeId}')" class="shimmer-btn py-2.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-brand font-black text-[11px] sm:text-xs uppercase tracking-wider transition text-center shadow-[0_0_20px_rgba(245,158,11,0.35)] spring-click flex items-center justify-center gap-1.5">
             <iconify-icon icon="solar:bag-heart-bold-duotone" class="text-black text-sm"></iconify-icon>
             <span>Купить</span>
           </button>
@@ -1742,7 +1749,7 @@ async function processPayment() {
 
     const data = await response.json().catch(() => null);
 
-    if (data && data.payment_url) {
+    if (data && data.payment_url && /^https?:\/\//i.test(data.payment_url)) {
       playSound('success');
       showToast('Счет создан! Переход к оплате...', '💳');
       if (payBtn) {
@@ -1750,7 +1757,8 @@ async function processPayment() {
       }
       if (statusBox) {
         statusBox.className = 'mt-3 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-xs text-center font-bold';
-        statusBox.innerHTML = `Платёж создан! Если переход не произошел автоматически, <a href="${data.payment_url}" class="text-white underline font-extrabold hover:text-[#f39513]">нажмите здесь для оплаты</a>.`;
+        const safePayUrl = encodeURI(data.payment_url);
+        statusBox.innerHTML = `Платёж создан! Если переход не произошел автоматически, <a href="${safePayUrl}" target="_blank" rel="noopener noreferrer" class="text-white underline font-extrabold hover:text-[#f39513]">нажмите здесь для оплаты</a>.`;
         statusBox.classList.remove('hidden');
       }
       // Instant redirect
@@ -2217,10 +2225,21 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchRecentPurchases();
   initCursorSparkTrail();
 
-  // Periodic refreshes
-  setInterval(fetchServerOnline, 25000);
-  setInterval(fetchRecentPurchases, 15000);
-  setInterval(fetchStoreCatalog, 45000);
+  // Periodic refreshes (Tab visibility aware to save CPU and Vercel serverless quota)
+  const runIfTabVisible = (fn) => () => {
+    if (!document.hidden) fn();
+  };
+
+  setInterval(runIfTabVisible(fetchServerOnline), 25000);
+  setInterval(runIfTabVisible(fetchRecentPurchases), 15000);
+  setInterval(runIfTabVisible(fetchStoreCatalog), 45000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      fetchServerOnline();
+      fetchRecentPurchases();
+    }
+  });
 
   // Dynamic Minecraft Skin Avatar Preview (mc-heads.net)
   function updateAvatarHead(inputEl, avatarId) {

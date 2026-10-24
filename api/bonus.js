@@ -7,7 +7,7 @@ const claimsByIP = new Map();
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
   // 3. Verify if player is currently ONLINE on the Minecraft server
   const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
   const port = process.env.MINECRAFT_PORT || '25933';
-  const secret = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+  const secret = (process.env.DONATE_SECRET_KEY || '').trim();
 
   let isPlayerOnline = false;
 

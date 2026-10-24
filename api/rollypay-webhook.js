@@ -54,7 +54,7 @@ function markOrderProcessed(keys) {
 }
 
 function verifySignature(payload, signingSecret, signatureHeader, timestampHeader) {
-  if (!signatureHeader || !timestampHeader || !signingSecret) return true;
+  if (!signatureHeader || !timestampHeader || !signingSecret) return false;
 
   const cleanSig = String(signatureHeader).trim().toLowerCase();
   const rawString = typeof payload === 'string' ? payload : JSON.stringify(payload);
@@ -89,7 +89,6 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     return res.status(200).json({
       service: 'RollyPay Webhook Bridge',
-      terminal: '1ecd2e72-0287-4430-90ac-3f72b336c495',
       status: 'active'
     });
   }
@@ -101,7 +100,17 @@ export default async function handler(req, res) {
   try {
     const signatureHeader = req.headers['x-signature'] || req.headers['X-Signature'] || '';
     const timestampHeader = req.headers['x-timestamp'] || req.headers['X-Timestamp'] || '';
-    const signingSecret = process.env.ROLLYPAY_SIGNING_SECRET || '4SKTgwc3_ghT6pD9NPpDU6UCxSjOl0YNq8aDpQKC5YA';
+    const signingSecret = (process.env.ROLLYPAY_SIGNING_SECRET || '').trim();
+
+    if (!signingSecret) {
+      console.error('[ROLLYPAY WEBHOOK CONFIG ERROR]: ROLLYPAY_SIGNING_SECRET environment variable is missing.');
+      return res.status(500).send('SERVER_CONFIGURATION_ERROR');
+    }
+
+    if (!signatureHeader || !timestampHeader) {
+      console.warn('[ROLLYPAY WEBHOOK REJECTED]: Missing mandatory signature or timestamp headers');
+      return res.status(401).send('UNAUTHORIZED: MISSING_SIGNATURE_HEADERS');
+    }
 
     // Parse payload safely
     let payload = {};
@@ -113,16 +122,14 @@ export default async function handler(req, res) {
 
     console.log('[ROLLYPAY WEBHOOK RECEIVED]:', {
       timestamp: timestampHeader,
-      signature: signatureHeader ? signatureHeader.slice(0, 8) + '...' : 'NONE'
+      signature: signatureHeader.slice(0, 8) + '...'
     });
 
-    // Verify signature
-    if (signatureHeader && timestampHeader) {
-      const valid = verifySignature(payload, signingSecret, signatureHeader, timestampHeader);
-      if (!valid) {
-        console.warn('[ROLLYPAY WEBHOOK]: Signature mismatch');
-        return res.status(400).send('BAD SIGNATURE');
-      }
+    // Verify signature strictly
+    const valid = verifySignature(payload, signingSecret, signatureHeader, timestampHeader);
+    if (!valid) {
+      console.warn('[ROLLYPAY WEBHOOK]: Signature mismatch');
+      return res.status(403).send('FORBIDDEN: BAD_SIGNATURE');
     }
 
     const eventType = payload.event_type || payload.event || '';
@@ -164,21 +171,21 @@ export default async function handler(req, res) {
       return res.status(200).json({ status: 'already_processed', order_id: orderId });
     }
 
-    // Minecraft Command Dictionary
+    // Minecraft Command Dictionary (Aligned with LuckPerms & server configuration)
     const commandTemplates = {
-      warrior: ['lp user {player} parent set warrior'],
-      berserk: ['lp user {player} parent set berserk'],
-      spartan: ['lp user {player} parent set spartan'],
-      knight: ['lp user {player} parent set knight'],
-      lord: ['lp user {player} parent set lord'],
-      vladyka: ['lp user {player} parent set vladyka'],
-      emperor: ['lp user {player} parent set emperor'],
-      case_donate_1: ['dc give {player} donate 1'],
-      case_donate_3: ['dc give {player} donate 3'],
-      case_donate_10: ['dc give {player} donate 10'],
-      case_tokens_1: ['dc give {player} tokens 1'],
-      case_tokens_5: ['dc give {player} tokens 5'],
-      case_tokens_15: ['dc give {player} tokens 15'],
+      warrior: ['lp user {player} parent add voin'],
+      berserk: ['lp user {player} parent add berserk'],
+      spartan: ['lp user {player} parent add spartanec'],
+      knight: ['lp user {player} parent add rytsart'],
+      lord: ['lp user {player} parent add lord'],
+      vladyka: ['lp user {player} parent add vladika'],
+      emperor: ['lp user {player} parent add imperator'],
+      case_donate_1: ['florycase give {player} 1 donate', 'dc give {player} donate 1'],
+      case_donate_3: ['florycase give {player} 3 donate', 'dc give {player} donate 3'],
+      case_donate_10: ['florycase give {player} 10 donate', 'dc give {player} donate 10'],
+      case_tokens_1: ['florycase give {player} 1 tokens', 'dc give {player} tokens 1'],
+      case_tokens_5: ['florycase give {player} 5 tokens', 'dc give {player} tokens 5'],
+      case_tokens_15: ['florycase give {player} 15 tokens', 'dc give {player} tokens 15'],
       tokens_50: ['p give {player} 50'],
       tokens_100: ['p give {player} 100'],
       tokens_500: ['p give {player} 500'],
@@ -207,7 +214,7 @@ export default async function handler(req, res) {
 
     const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
     const port = process.env.MINECRAFT_PORT || '25933';
-    const donateSecretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+    const donateSecretKey = (process.env.DONATE_SECRET_KEY || '').trim();
 
     const pluginPayload = {
       transaction_id: orderId,

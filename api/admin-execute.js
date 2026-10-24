@@ -1,20 +1,36 @@
 // Vercel Serverless Function: Admin Minecraft Command Console Dispatcher
 import crypto from 'crypto';
 
-const SECRET_JWT_KEY = process.env.ADMIN_SECRET || 'florymine_super_admin_secret_2026';
-
 function verifyAdminToken(req) {
   const token = req.headers['x-admin-token'] || (req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : '');
   if (!token) return false;
+
+  const secretJwtKey = (process.env.ADMIN_SECRET || '').trim();
+  if (!secretJwtKey) return false;
 
   try {
     const [payloadB64, signature] = token.split('.');
     if (!payloadB64 || !signature) return false;
 
     const payload = Buffer.from(payloadB64, 'base64').toString('utf8');
-    const expectedSig = crypto.createHmac('sha256', SECRET_JWT_KEY).update(payload).digest('hex');
+    const expectedSig = crypto.createHmac('sha256', secretJwtKey).update(payload).digest('hex');
 
-    return signature === expectedSig;
+    const sigBuf = Buffer.from(signature, 'hex');
+    const expBuf = Buffer.from(expectedSig, 'hex');
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+      return false;
+    }
+
+    // Expiration check: timestamp:expiresAt:role
+    const parts = payload.split(':');
+    if (parts.length >= 3) {
+      const expiresAt = parseInt(parts[1], 10);
+      if (isNaN(expiresAt) || Date.now() > expiresAt) {
+        return false;
+      }
+    }
+
+    return true;
   } catch (e) {
     return false;
   }
@@ -35,7 +51,7 @@ export default async function handler(req, res) {
   }
 
   if (!verifyAdminToken(req)) {
-    return res.status(403).json({ success: false, error: 'Доступ запрещен' });
+    return res.status(403).json({ success: false, error: 'Доступ запрещен. Недействительный или истекший токен.' });
   }
 
   try {
@@ -45,12 +61,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'Укажите команду или ник игрока' });
     }
 
+    const rawCmd = (command || '').trim();
+    if (!rawCmd) {
+      return res.status(400).json({ success: false, error: 'Команда не может быть пустой' });
+    }
+
+    // Blacklist dangerous server teardown commands
+    const forbiddenPatterns = [/^\/?stop\b/i, /^\/?restart\b/i, /^\/?reload\b/i, /^\/?rl\b/i];
+    if (forbiddenPatterns.some(p => p.test(rawCmd))) {
+      return res.status(403).json({ success: false, error: 'Выполнение системных команд остановки/перезагрузки запрещено через веб-консоль' });
+    }
+
     const host = process.env.MINECRAFT_HOST || 'd15.aurorix.net';
     const port = process.env.MINECRAFT_PORT || '25933';
-    const secretKey = process.env.DONATE_SECRET_KEY || 'CHANGE_ME_SECRET_KEY';
+    const secretKey = (process.env.DONATE_SECRET_KEY || '').trim();
 
-    const targetPlayer = player || 'Devil_First_More';
-    const rawCmd = command || 'say [FloryAdmin] Привет с сайта!';
+    const targetPlayer = player ? String(player).trim() : 'Server';
     const formattedCmd = rawCmd.replace(/\{player\}/g, targetPlayer);
 
     const payload = {
